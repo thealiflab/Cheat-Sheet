@@ -192,9 +192,3 @@ Types:
 - *First, gather your sources. Then, begin drafting your ideas. Finally, revise and submit your essay.*
 
 ---
-
-## 📚 End of Course
-
-Well done! You've covered every major grammar point needed for clear, confident, and academic-level writing.
-
-Want this as a downloadable PDF? Ask me!  
