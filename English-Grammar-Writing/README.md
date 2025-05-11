@@ -14,8 +14,7 @@ A sentence must have:
 2. A **predicate** (what the subject does or is)
 
 Example 👉
-
-The dog (subject) barked loudly (predicate).
+- The dog (subject) barked loudly (predicate).
 
 
 ### ➡️ Types: simple, compound, complex, compound-complex.
@@ -664,7 +663,7 @@ This sentence contains:
 | Time / Sequence | *First, next, then, finally* |
 | Conclusion | *In conclusion, to sum up, overall* |
 
-**Example:**  
+👉 Examples: 
 - *First, gather your sources. Then, begin drafting your ideas. Finally, revise and submit your essay.*
 
 ---
