@@ -1,4 +1,4 @@
-```markdown
+
 # Cheat-Sheet Menu
 
 ## Table of Contents
@@ -9,7 +9,6 @@
 - [References](#references)
 - [Contact](#contact)
 
----
 
 ## Introduction
 Brief overview of the cheat-sheet project.
@@ -28,4 +27,3 @@ Links and resources for further reading.
 
 ## Contact
 Information on how to reach out for support or collaboration.
-```
