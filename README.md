@@ -14,10 +14,10 @@ A growing collection of personal study cheat sheets, written in Markdown. Each t
 ```
 Cheat-Sheet/
 ├── AWS/
-│   ├── aws-cloud-practitioner.md   # CLF-C02 study guide
-│   └── assets/                     # Official AWS architecture icons (SVG), by category
-├── English-Grammar-Writing/
-│   └── basic.md                    # Grammar lessons
+│   ├── aws-cloud-practitioner.md
+│   └── assets/
+├── Language/
+│   └── grammar-en.md
 └── README.md
 ```
 
