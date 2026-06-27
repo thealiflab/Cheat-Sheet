@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/aws-certified-cloud-practitioner.svg" width="160" alt="AWS Certified Cloud Practitioner badge"/>
+</p>
+
 # AWS Certified Cloud Practitioner (CLF-C02): Complete Study Guide
 
 This is my full exam preparation cheat sheet for 2026. Practice it with some practice exams to finalise your preparation. Structure: exam overview → Domain 1-4 sections → service comparison tables → pricing/billing breakdown → glossary → final cheat sheet.
