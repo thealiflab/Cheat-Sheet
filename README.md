@@ -18,7 +18,6 @@ Cheat-Sheet/
 │   └── assets/                     # Official AWS architecture icons (SVG), by category
 ├── English-Grammar-Writing/
 │   └── basic.md                    # Grammar lessons
-├── CLAUDE.md                       # Guidance for working in this repo
 └── README.md
 ```
 
