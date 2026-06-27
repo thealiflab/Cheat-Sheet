@@ -32,7 +32,7 @@ This is my full exam preparation cheat sheet for 2026. Practice it with some pra
 
 ---
 
-# <img src="assets/Architecture-Group/Cloud.svg" width="48" height="48"/> DOMAIN 1: CLOUD CONCEPTS (24%)
+# <img src="assets/Architecture-Group/Cloud.svg" width="48" height="48"/> &nbsp;DOMAIN 1: CLOUD CONCEPTS (24%)
 
 ### 1.1 What is Cloud Computing?
 The on-demand delivery of IT resources (compute, storage, databases, networking, analytics, etc.) over the internet with pay-as-you-go pricing, instead of buying, owning, and maintaining physical data centers and servers.
@@ -91,14 +91,14 @@ The on-demand delivery of IT resources (compute, storage, databases, networking,
 
 ---
 
-# <img src="assets/Category/Security-Identity.svg" width="48" height="48"/> DOMAIN 2: SECURITY AND COMPLIANCE (30%, highest weight)
+# <img src="assets/Category/Security-Identity.svg" width="48" height="48"/> &nbsp;DOMAIN 2: SECURITY AND COMPLIANCE (30%, highest weight)
 
 ### 2.1 AWS Shared Responsibility Model
 - **AWS responsibility = "Security OF the cloud"**: physical infrastructure, hardware, global network, hypervisor/virtualization layer, host operating system, facilities.
 - **Customer responsibility = "Security IN the cloud"**: guest OS patching (for IaaS), firewall/security group configuration, IAM management, data encryption, network traffic protection, client-side data, application-level security.
 - **The split shifts depending on service abstraction level**: For EC2 (IaaS), the customer manages more (guest OS, patching). For RDS/Lambda (managed/serverless), AWS manages more, but the customer is STILL always responsible for access configuration, data classification, and credentials, this responsibility never disappears.
 
-### <img src="assets/Security-Identity/Identity-and-Access-Management.svg" width="48" height="48"/> 2.2 IAM (Identity and Access Management)
+### <img src="assets/Security-Identity/Identity-and-Access-Management.svg" width="48" height="48"/> &nbsp;2.2 IAM (Identity and Access Management)
 - **Root user**: created with the account; has unrestricted access. Best practice: enable MFA immediately, lock away credentials, do not use for daily tasks.
 - **IAM Users**: individual identities with long-term credentials (username/password and/or access keys).
 - **IAM Groups**: collections of users sharing the same permissions.
@@ -106,33 +106,33 @@ The on-demand delivery of IT resources (compute, storage, databases, networking,
 - **IAM Policies**: JSON documents defining permissions; can be identity-based (attached to user/group/role) or resource-based (attached directly to a resource like an S3 bucket policy, allowing cross-account access grants).
 - **Principle of Least Privilege**: grant only the permissions required to perform a task, nothing more.
 - **MFA (Multi-Factor Authentication)**: adds a second verification factor beyond username/password.
-- <img src="assets/Security-Identity/IAM-Identity-Center.svg" width="36" height="36"/> **IAM Identity Center** (formerly AWS SSO), centralized workforce identity/single sign-on across multiple AWS accounts and business applications.
+- <img src="assets/Security-Identity/IAM-Identity-Center.svg" width="36" height="36"/> &nbsp;**IAM Identity Center** (formerly AWS SSO), centralized workforce identity/single sign-on across multiple AWS accounts and business applications.
 
 ### 2.3 Compliance and Governance Services
 
 | Service | Purpose |
 |---|---|
-| <img src="assets/Security-Identity/Artifact.svg" width="36" height="36"/> **AWS Artifact** | Self-service portal for compliance reports (SOC, PCI, ISO) and agreements (e.g., BAA for HIPAA) |
-| <img src="assets/Management-Tools/Config.svg" width="36" height="36"/> **AWS Config** | Tracks resource configuration changes over time; evaluates compliance against defined rules |
-| <img src="assets/Management-Tools/CloudTrail.svg" width="36" height="36"/> **AWS CloudTrail** | Logs and audits API calls / account activity ("who did what, when"), Event History enabled by default (90 days, free); create a Trail for long-term/multi-Region/data event logging |
-| <img src="assets/Management-Tools/Organizations.svg" width="36" height="36"/> **AWS Organizations** | Centrally manage multiple accounts; apply Service Control Policies (SCPs) as permission guardrails; enables Consolidated Billing |
-| <img src="assets/Management-Tools/Control-Tower.svg" width="36" height="36"/> **AWS Control Tower** | Automates setup of a secure, governed multi-account environment ("landing zone") using Organizations, IAM Identity Center, and Config under the hood |
-| <img src="assets/Security-Identity/Audit-Manager.svg" width="36" height="36"/> **AWS Audit Manager** | Continuously audits AWS usage to simplify risk/compliance assessment against frameworks/regulations |
+| <img src="assets/Security-Identity/Artifact.svg" width="36" height="36"/> &nbsp;**AWS Artifact** | Self-service portal for compliance reports (SOC, PCI, ISO) and agreements (e.g., BAA for HIPAA) |
+| <img src="assets/Management-Tools/Config.svg" width="36" height="36"/> &nbsp;**AWS Config** | Tracks resource configuration changes over time; evaluates compliance against defined rules |
+| <img src="assets/Management-Tools/CloudTrail.svg" width="36" height="36"/> &nbsp;**AWS CloudTrail** | Logs and audits API calls / account activity ("who did what, when"), Event History enabled by default (90 days, free); create a Trail for long-term/multi-Region/data event logging |
+| <img src="assets/Management-Tools/Organizations.svg" width="36" height="36"/> &nbsp;**AWS Organizations** | Centrally manage multiple accounts; apply Service Control Policies (SCPs) as permission guardrails; enables Consolidated Billing |
+| <img src="assets/Management-Tools/Control-Tower.svg" width="36" height="36"/> &nbsp;**AWS Control Tower** | Automates setup of a secure, governed multi-account environment ("landing zone") using Organizations, IAM Identity Center, and Config under the hood |
+| <img src="assets/Security-Identity/Audit-Manager.svg" width="36" height="36"/> &nbsp;**AWS Audit Manager** | Continuously audits AWS usage to simplify risk/compliance assessment against frameworks/regulations |
 
 ### 2.4 Security and Threat Detection Services
 
 | Service | Purpose | Layer/Type |
 |---|---|---|
-| <img src="assets/Security-Identity/Shield.svg" width="36" height="36"/> **AWS Shield Standard** | Free, automatic DDoS protection for all customers | Network/Transport (L3/L4) |
-| <img src="assets/Security-Identity/Shield.svg" width="36" height="36"/> **AWS Shield Advanced** | Paid, enhanced DDoS protection with 24/7 Shield Response Team (SRT) access and cost protection | Network/Transport (L3/L4) |
-| <img src="assets/Security-Identity/WAF.svg" width="36" height="36"/> **AWS WAF** | Protects web applications against common exploits (SQL injection, XSS) via custom or managed rules | Application (L7) |
-| <img src="assets/Security-Identity/GuardDuty.svg" width="36" height="36"/> **Amazon GuardDuty** | ML-based threat detection; analyzes CloudTrail, VPC Flow Logs, DNS logs for malicious/anomalous activity | Detection |
-| <img src="assets/Security-Identity/Macie.svg" width="36" height="36"/> **Amazon Macie** | Discovers, classifies, and protects sensitive data (e.g., PII) stored in S3 using ML | Data discovery |
-| <img src="assets/Security-Identity/Inspector.svg" width="36" height="36"/> **Amazon Inspector** | Automated vulnerability assessment for EC2 instances and container images | Vulnerability scanning |
-| <img src="assets/Security-Identity/Detective.svg" width="36" height="36"/> **Amazon Detective** | Investigates and analyzes security findings to identify root cause | Investigation |
-| <img src="assets/Security-Identity/Secrets-Manager.svg" width="36" height="36"/> **AWS Secrets Manager** | Stores, manages, and automatically rotates secrets (DB credentials, API keys) | Secrets management |
-| <img src="assets/Security-Identity/Key-Management-Service.svg" width="36" height="36"/> **AWS KMS (Key Management Service)** | Create and manage cryptographic keys for encryption across AWS services | Encryption |
-| <img src="assets/Security-Identity/Certificate-Manager.svg" width="36" height="36"/> **AWS Certificate Manager (ACM)** | Provision, manage, and deploy free SSL/TLS certificates | Encryption in transit |
+| <img src="assets/Security-Identity/Shield.svg" width="36" height="36"/> &nbsp;**AWS Shield Standard** | Free, automatic DDoS protection for all customers | Network/Transport (L3/L4) |
+| <img src="assets/Security-Identity/Shield.svg" width="36" height="36"/> &nbsp;**AWS Shield Advanced** | Paid, enhanced DDoS protection with 24/7 Shield Response Team (SRT) access and cost protection | Network/Transport (L3/L4) |
+| <img src="assets/Security-Identity/WAF.svg" width="36" height="36"/> &nbsp;**AWS WAF** | Protects web applications against common exploits (SQL injection, XSS) via custom or managed rules | Application (L7) |
+| <img src="assets/Security-Identity/GuardDuty.svg" width="36" height="36"/> &nbsp;**Amazon GuardDuty** | ML-based threat detection; analyzes CloudTrail, VPC Flow Logs, DNS logs for malicious/anomalous activity | Detection |
+| <img src="assets/Security-Identity/Macie.svg" width="36" height="36"/> &nbsp;**Amazon Macie** | Discovers, classifies, and protects sensitive data (e.g., PII) stored in S3 using ML | Data discovery |
+| <img src="assets/Security-Identity/Inspector.svg" width="36" height="36"/> &nbsp;**Amazon Inspector** | Automated vulnerability assessment for EC2 instances and container images | Vulnerability scanning |
+| <img src="assets/Security-Identity/Detective.svg" width="36" height="36"/> &nbsp;**Amazon Detective** | Investigates and analyzes security findings to identify root cause | Investigation |
+| <img src="assets/Security-Identity/Secrets-Manager.svg" width="36" height="36"/> &nbsp;**AWS Secrets Manager** | Stores, manages, and automatically rotates secrets (DB credentials, API keys) | Secrets management |
+| <img src="assets/Security-Identity/Key-Management-Service.svg" width="36" height="36"/> &nbsp;**AWS KMS (Key Management Service)** | Create and manage cryptographic keys for encryption across AWS services | Encryption |
+| <img src="assets/Security-Identity/Certificate-Manager.svg" width="36" height="36"/> &nbsp;**AWS Certificate Manager (ACM)** | Provision, manage, and deploy free SSL/TLS certificates | Encryption in transit |
 
 **Exam-critical distinction:** Shield = DDoS (network layer). WAF = application exploits (layer 7). Many questions hinge on identifying the attack type described.
 
@@ -143,9 +143,9 @@ The on-demand delivery of IT resources (compute, storage, databases, networking,
 - **Internet Gateway**: enables communication between a VPC and the internet.
 - **NAT Gateway**: allows instances in a private subnet to access the internet (outbound) without being directly reachable from it (inbound).
 - **VPC Peering**: connects two VPCs to route traffic between them privately.
-- <img src="assets/Networking-Content-Delivery/Direct-Connect.svg" width="36" height="36"/> **AWS Direct Connect**: dedicated, private physical network connection between on-premises and AWS (bypasses public internet, more consistent performance).
-- <img src="assets/Networking-Content-Delivery/Site-to-Site-VPN.svg" width="36" height="36"/> **AWS Site-to-Site VPN**: encrypted connection over the public internet between on-premises and AWS.
-- <img src="assets/Networking-Content-Delivery/Transit-Gateway.svg" width="36" height="36"/> **AWS Transit Gateway**: central hub connecting multiple VPCs and on-premises networks.
+- <img src="assets/Networking-Content-Delivery/Direct-Connect.svg" width="36" height="36"/> &nbsp;**AWS Direct Connect**: dedicated, private physical network connection between on-premises and AWS (bypasses public internet, more consistent performance).
+- <img src="assets/Networking-Content-Delivery/Site-to-Site-VPN.svg" width="36" height="36"/> &nbsp;**AWS Site-to-Site VPN**: encrypted connection over the public internet between on-premises and AWS.
+- <img src="assets/Networking-Content-Delivery/Transit-Gateway.svg" width="36" height="36"/> &nbsp;**AWS Transit Gateway**: central hub connecting multiple VPCs and on-premises networks.
 
 ### 2.6 Encryption Concepts
 - **Encryption at rest**: protecting stored data (e.g., S3 default SSE-S3, EBS encryption, RDS encryption).
@@ -154,44 +154,44 @@ The on-demand delivery of IT resources (compute, storage, databases, networking,
 
 ---
 
-# <img src="assets/Category/Compute.svg" width="48" height="48"/> DOMAIN 3: CLOUD TECHNOLOGY AND SERVICES (34%, largest weight)
+# <img src="assets/Category/Compute.svg" width="48" height="48"/> &nbsp;DOMAIN 3: CLOUD TECHNOLOGY AND SERVICES (34%, largest weight)
 
-### <img src="assets/Category/Compute.svg" width="48" height="48"/> 3.1 Compute Services
+### <img src="assets/Category/Compute.svg" width="48" height="48"/> &nbsp;3.1 Compute Services
 
 | Service | Type | Use Case |
 |---|---|---|
-| <img src="assets/Compute/EC2.svg" width="36" height="36"/> **Amazon EC2** | IaaS virtual servers | Full control over OS; general-purpose, "lift-and-shift" migrations |
-| <img src="assets/Compute/Lambda.svg" width="36" height="36"/> **AWS Lambda** | Serverless, event-driven functions | Run code in response to triggers; pay per request + duration; no server management |
-| <img src="assets/Containers/Elastic-Container-Service.svg" width="36" height="36"/> **Amazon ECS** | Container orchestration | Run Docker containers; can use EC2 or Fargate launch type |
-| <img src="assets/Containers/Elastic-Kubernetes-Service.svg" width="36" height="36"/> **Amazon EKS** | Managed Kubernetes | Run Kubernetes workloads on AWS |
-| <img src="assets/Containers/Fargate.svg" width="36" height="36"/> **AWS Fargate** | Serverless compute engine for containers | Used with ECS/EKS; no EC2 instances to manage |
-| <img src="assets/Compute/Elastic-Beanstalk.svg" width="36" height="36"/> **AWS Elastic Beanstalk** | PaaS | Deploy and scale web apps without managing infrastructure details |
-| <img src="assets/Compute/Lightsail.svg" width="36" height="36"/> **Amazon Lightsail** | Simplified VPS | Easy-to-use virtual private servers for simple workloads/websites |
-| <img src="assets/Compute/Batch.svg" width="36" height="36"/> **AWS Batch** | Batch computing | Run large-scale batch jobs efficiently |
-| <img src="assets/Compute/Outposts-family.svg" width="36" height="36"/> **AWS Outposts** | Hybrid | Run AWS infrastructure and services on-premises |
+| <img src="assets/Compute/EC2.svg" width="36" height="36"/> &nbsp;**Amazon EC2** | IaaS virtual servers | Full control over OS; general-purpose, "lift-and-shift" migrations |
+| <img src="assets/Compute/Lambda.svg" width="36" height="36"/> &nbsp;**AWS Lambda** | Serverless, event-driven functions | Run code in response to triggers; pay per request + duration; no server management |
+| <img src="assets/Containers/Elastic-Container-Service.svg" width="36" height="36"/> &nbsp;**Amazon ECS** | Container orchestration | Run Docker containers; can use EC2 or Fargate launch type |
+| <img src="assets/Containers/Elastic-Kubernetes-Service.svg" width="36" height="36"/> &nbsp;**Amazon EKS** | Managed Kubernetes | Run Kubernetes workloads on AWS |
+| <img src="assets/Containers/Fargate.svg" width="36" height="36"/> &nbsp;**AWS Fargate** | Serverless compute engine for containers | Used with ECS/EKS; no EC2 instances to manage |
+| <img src="assets/Compute/Elastic-Beanstalk.svg" width="36" height="36"/> &nbsp;**AWS Elastic Beanstalk** | PaaS | Deploy and scale web apps without managing infrastructure details |
+| <img src="assets/Compute/Lightsail.svg" width="36" height="36"/> &nbsp;**Amazon Lightsail** | Simplified VPS | Easy-to-use virtual private servers for simple workloads/websites |
+| <img src="assets/Compute/Batch.svg" width="36" height="36"/> &nbsp;**AWS Batch** | Batch computing | Run large-scale batch jobs efficiently |
+| <img src="assets/Compute/Outposts-family.svg" width="36" height="36"/> &nbsp;**AWS Outposts** | Hybrid | Run AWS infrastructure and services on-premises |
 
 **EC2 Pricing Options:**
 - **On-Demand**: pay per second/hour, no commitment, highest unit cost.
 - **Reserved Instances (RI)**: 1 or 3-year commitment for a discount (up to ~72%); Standard RI (less flexible, deeper discount) vs. Convertible RI (can change instance family, slightly less discount).
-- <img src="assets/Cloud-Financial-Management/Savings-Plans.svg" width="36" height="36"/> **Savings Plans**: commit to a $/hour spend for 1 or 3 years; more flexible across instance families/Regions than Standard RIs (Compute Savings Plans) or services (EC2 Instance Savings Plans).
+- <img src="assets/Cloud-Financial-Management/Savings-Plans.svg" width="36" height="36"/> &nbsp;**Savings Plans**: commit to a $/hour spend for 1 or 3 years; more flexible across instance families/Regions than Standard RIs (Compute Savings Plans) or services (EC2 Instance Savings Plans).
 - **Spot Instances**: spare capacity at up to 90% discount; can be interrupted with 2-minute warning; only for fault-tolerant/flexible workloads.
 - **Dedicated Hosts/Instances**: physical server dedicated to you, for licensing or compliance needs.
 - **Capacity Reservations**: reserve capacity in a specific AZ, billed at On-Demand rate (no discount, just guaranteed availability).
 
 **Scaling and Load Balancing:**
-- <img src="assets/Compute/EC2-Auto-Scaling.svg" width="36" height="36"/> **EC2 Auto Scaling**: automatically adjusts the number of instances based on demand/policies/schedules.
-- <img src="assets/Networking-Content-Delivery/Elastic-Load-Balancing.svg" width="36" height="36"/> **Elastic Load Balancing (ELB)**: distributes incoming traffic across multiple targets (Application Load Balancer for HTTP/HTTPS L7, Network Load Balancer for high-performance TCP/UDP L4, Gateway Load Balancer for third-party virtual appliances).
+- <img src="assets/Compute/EC2-Auto-Scaling.svg" width="36" height="36"/> &nbsp;**EC2 Auto Scaling**: automatically adjusts the number of instances based on demand/policies/schedules.
+- <img src="assets/Networking-Content-Delivery/Elastic-Load-Balancing.svg" width="36" height="36"/> &nbsp;**Elastic Load Balancing (ELB)**: distributes incoming traffic across multiple targets (Application Load Balancer for HTTP/HTTPS L7, Network Load Balancer for high-performance TCP/UDP L4, Gateway Load Balancer for third-party virtual appliances).
 
-### <img src="assets/Category/Storage.svg" width="48" height="48"/> 3.2 Storage Services
+### <img src="assets/Category/Storage.svg" width="48" height="48"/> &nbsp;3.2 Storage Services
 
 | Service | Type | Use Case |
 |---|---|---|
-| <img src="assets/Storage/Simple-Storage-Service.svg" width="36" height="36"/> **Amazon S3** | Object storage | Durable (11 nines), scalable storage for any amount of data |
-| <img src="assets/Storage/Elastic-Block-Store.svg" width="36" height="36"/> **Amazon EBS** | Block storage | Persistent storage volumes attached to a single EC2 instance |
-| <img src="assets/Storage/EFS.svg" width="36" height="36"/> **Amazon EFS** | File storage (NFS) | Shared file system accessible by multiple EC2 instances simultaneously |
-| <img src="assets/Storage/FSx.svg" width="36" height="36"/> **Amazon FSx** | Managed file systems | Windows File Server or Lustre-compatible managed file storage |
-| <img src="assets/Storage/Storage-Gateway.svg" width="36" height="36"/> **AWS Storage Gateway** | Hybrid storage | Connects on-premises environments to AWS cloud storage |
-| <img src="assets/Storage/Snowball.svg" width="36" height="36"/> **AWS Snow Family** | Offline data transfer | Physical devices (Snowcone, Snowball, Snowmobile) for bandwidth-constrained, large-scale data migration |
+| <img src="assets/Storage/Simple-Storage-Service.svg" width="36" height="36"/> &nbsp;**Amazon S3** | Object storage | Durable (11 nines), scalable storage for any amount of data |
+| <img src="assets/Storage/Elastic-Block-Store.svg" width="36" height="36"/> &nbsp;**Amazon EBS** | Block storage | Persistent storage volumes attached to a single EC2 instance |
+| <img src="assets/Storage/EFS.svg" width="36" height="36"/> &nbsp;**Amazon EFS** | File storage (NFS) | Shared file system accessible by multiple EC2 instances simultaneously |
+| <img src="assets/Storage/FSx.svg" width="36" height="36"/> &nbsp;**Amazon FSx** | Managed file systems | Windows File Server or Lustre-compatible managed file storage |
+| <img src="assets/Storage/Storage-Gateway.svg" width="36" height="36"/> &nbsp;**AWS Storage Gateway** | Hybrid storage | Connects on-premises environments to AWS cloud storage |
+| <img src="assets/Storage/Snowball.svg" width="36" height="36"/> &nbsp;**AWS Snow Family** | Offline data transfer | Physical devices (Snowcone, Snowball, Snowmobile) for bandwidth-constrained, large-scale data migration |
 
 **S3 Storage Classes (cost/retrieval-time hierarchy, most to least expensive):**
 1. S3 Standard, frequently accessed data
@@ -204,76 +204,76 @@ The on-demand delivery of IT resources (compute, storage, databases, networking,
 
 **Key S3 metrics:** Durability = 99.999999999% (11 nines), won't lose data. Availability = 99.99% (S3 Standard), can access it when needed. **These are NOT the same thing.**
 
-### <img src="assets/Category/Databases.svg" width="48" height="48"/> 3.3 Database Services
+### <img src="assets/Category/Databases.svg" width="48" height="48"/> &nbsp;3.3 Database Services
 
 | Service | Type | Use Case |
 |---|---|---|
-| <img src="assets/Databases/RDS.svg" width="36" height="36"/> **Amazon RDS** | Managed relational DB | MySQL, PostgreSQL, MariaDB, Oracle, SQL Server; AWS handles patching/backups, optional Multi-AZ for failover |
-| <img src="assets/Databases/Aurora.svg" width="36" height="36"/> **Amazon Aurora** | Managed relational DB | MySQL/PostgreSQL-compatible; up to 5x MySQL throughput; high availability built in |
-| <img src="assets/Databases/DynamoDB.svg" width="36" height="36"/> **Amazon DynamoDB** | NoSQL (key-value/document) | Serverless, single-digit millisecond performance at any scale |
-| <img src="assets/Analytics/Redshift.svg" width="36" height="36"/> **Amazon Redshift** | Data warehouse | Large-scale analytics/OLAP queries across massive datasets |
-| <img src="assets/Databases/ElastiCache.svg" width="36" height="36"/> **Amazon ElastiCache** | In-memory caching | Redis or Memcached-compatible; speeds up application performance |
-| <img src="assets/Databases/Neptune.svg" width="36" height="36"/> **Amazon Neptune** | Graph database | Highly connected data (social networks, recommendation engines) |
-| <img src="assets/Databases/DocumentDB.svg" width="36" height="36"/> **Amazon DocumentDB** | Document database | MongoDB-compatible |
-| <img src="assets/Databases/Database-Migration-Service.svg" width="36" height="36"/> **AWS Database Migration Service (DMS)** | Migration | Migrate databases to AWS with minimal downtime |
+| <img src="assets/Databases/RDS.svg" width="36" height="36"/> &nbsp;**Amazon RDS** | Managed relational DB | MySQL, PostgreSQL, MariaDB, Oracle, SQL Server; AWS handles patching/backups, optional Multi-AZ for failover |
+| <img src="assets/Databases/Aurora.svg" width="36" height="36"/> &nbsp;**Amazon Aurora** | Managed relational DB | MySQL/PostgreSQL-compatible; up to 5x MySQL throughput; high availability built in |
+| <img src="assets/Databases/DynamoDB.svg" width="36" height="36"/> &nbsp;**Amazon DynamoDB** | NoSQL (key-value/document) | Serverless, single-digit millisecond performance at any scale |
+| <img src="assets/Analytics/Redshift.svg" width="36" height="36"/> &nbsp;**Amazon Redshift** | Data warehouse | Large-scale analytics/OLAP queries across massive datasets |
+| <img src="assets/Databases/ElastiCache.svg" width="36" height="36"/> &nbsp;**Amazon ElastiCache** | In-memory caching | Redis or Memcached-compatible; speeds up application performance |
+| <img src="assets/Databases/Neptune.svg" width="36" height="36"/> &nbsp;**Amazon Neptune** | Graph database | Highly connected data (social networks, recommendation engines) |
+| <img src="assets/Databases/DocumentDB.svg" width="36" height="36"/> &nbsp;**Amazon DocumentDB** | Document database | MongoDB-compatible |
+| <img src="assets/Databases/Database-Migration-Service.svg" width="36" height="36"/> &nbsp;**AWS Database Migration Service (DMS)** | Migration | Migrate databases to AWS with minimal downtime |
 
-### <img src="assets/Category/Networking-Content-Delivery.svg" width="48" height="48"/> 3.4 Networking and Content Delivery
+### <img src="assets/Category/Networking-Content-Delivery.svg" width="48" height="48"/> &nbsp;3.4 Networking and Content Delivery
 
 | Service | Purpose |
 |---|---|
-| <img src="assets/Networking-Content-Delivery/Virtual-Private-Cloud.svg" width="36" height="36"/> **Amazon VPC** | Isolated virtual network for your resources |
-| <img src="assets/Networking-Content-Delivery/Route-53.svg" width="36" height="36"/> **Amazon Route 53** | Scalable DNS, domain registration, health checking, traffic routing policies |
-| <img src="assets/Networking-Content-Delivery/CloudFront.svg" width="36" height="36"/> **Amazon CloudFront** | CDN, caches content (HTTP/HTTPS) at edge locations to reduce latency |
-| <img src="assets/Networking-Content-Delivery/Global-Accelerator.svg" width="36" height="36"/> **AWS Global Accelerator** | Improves availability/performance for TCP/UDP traffic via the AWS global network (non-HTTP-specific, e.g., gaming, VoIP) |
-| <img src="assets/Networking-Content-Delivery/Direct-Connect.svg" width="36" height="36"/> **AWS Direct Connect** | Dedicated private network link to AWS |
-| <img src="assets/Networking-Content-Delivery/Elastic-Load-Balancing.svg" width="36" height="36"/> **Elastic Load Balancing** | Distributes traffic across multiple targets |
+| <img src="assets/Networking-Content-Delivery/Virtual-Private-Cloud.svg" width="36" height="36"/> &nbsp;**Amazon VPC** | Isolated virtual network for your resources |
+| <img src="assets/Networking-Content-Delivery/Route-53.svg" width="36" height="36"/> &nbsp;**Amazon Route 53** | Scalable DNS, domain registration, health checking, traffic routing policies |
+| <img src="assets/Networking-Content-Delivery/CloudFront.svg" width="36" height="36"/> &nbsp;**Amazon CloudFront** | CDN, caches content (HTTP/HTTPS) at edge locations to reduce latency |
+| <img src="assets/Networking-Content-Delivery/Global-Accelerator.svg" width="36" height="36"/> &nbsp;**AWS Global Accelerator** | Improves availability/performance for TCP/UDP traffic via the AWS global network (non-HTTP-specific, e.g., gaming, VoIP) |
+| <img src="assets/Networking-Content-Delivery/Direct-Connect.svg" width="36" height="36"/> &nbsp;**AWS Direct Connect** | Dedicated private network link to AWS |
+| <img src="assets/Networking-Content-Delivery/Elastic-Load-Balancing.svg" width="36" height="36"/> &nbsp;**Elastic Load Balancing** | Distributes traffic across multiple targets |
 
 **CloudFront vs. Global Accelerator:** CloudFront = caches HTTP/HTTPS content. Global Accelerator = routes any TCP/UDP traffic over AWS's backbone network, no caching involved.
 
-### <img src="assets/Category/Application-Integration.svg" width="48" height="48"/> 3.5 Messaging and Integration
+### <img src="assets/Category/Application-Integration.svg" width="48" height="48"/> &nbsp;3.5 Messaging and Integration
 
 | Service | Pattern | Use Case |
 |---|---|---|
-| <img src="assets/Application-Integration/Simple-Queue-Service.svg" width="36" height="36"/> **Amazon SQS** | Queue (pull-based) | Decouples microservices; messages persist until processed/deleted; prevents message loss |
-| <img src="assets/Application-Integration/Simple-Notification-Service.svg" width="36" height="36"/> **Amazon SNS** | Pub/Sub (push-based) | Fan-out a single message to multiple subscriber endpoints (email, SMS, Lambda, etc.) simultaneously |
-| <img src="assets/Application-Integration/EventBridge.svg" width="36" height="36"/> **Amazon EventBridge** | Event bus / routing | Filters and routes events from AWS services, SaaS apps, and custom sources based on content rules |
-| <img src="assets/Application-Integration/Step-Functions.svg" width="36" height="36"/> **AWS Step Functions** | Workflow orchestration | Coordinates multiple AWS services into serverless workflows/state machines |
-| <img src="assets/Networking-Content-Delivery/API-Gateway.svg" width="36" height="36"/> **Amazon API Gateway** | API management | Create, publish, and manage REST/WebSocket/HTTP APIs at scale |
-| <img src="assets/Business-Applications/Simple-Email-Service.svg" width="36" height="36"/> **Amazon SES** | Email sending/receiving | Transactional and marketing email |
-| <img src="assets/Application-Integration/MQ.svg" width="36" height="36"/> **Amazon MQ** | Managed message broker | Supports Apache ActiveMQ/RabbitMQ for migrating existing message broker apps |
+| <img src="assets/Application-Integration/Simple-Queue-Service.svg" width="36" height="36"/> &nbsp;**Amazon SQS** | Queue (pull-based) | Decouples microservices; messages persist until processed/deleted; prevents message loss |
+| <img src="assets/Application-Integration/Simple-Notification-Service.svg" width="36" height="36"/> &nbsp;**Amazon SNS** | Pub/Sub (push-based) | Fan-out a single message to multiple subscriber endpoints (email, SMS, Lambda, etc.) simultaneously |
+| <img src="assets/Application-Integration/EventBridge.svg" width="36" height="36"/> &nbsp;**Amazon EventBridge** | Event bus / routing | Filters and routes events from AWS services, SaaS apps, and custom sources based on content rules |
+| <img src="assets/Application-Integration/Step-Functions.svg" width="36" height="36"/> &nbsp;**AWS Step Functions** | Workflow orchestration | Coordinates multiple AWS services into serverless workflows/state machines |
+| <img src="assets/Networking-Content-Delivery/API-Gateway.svg" width="36" height="36"/> &nbsp;**Amazon API Gateway** | API management | Create, publish, and manage REST/WebSocket/HTTP APIs at scale |
+| <img src="assets/Business-Applications/Simple-Email-Service.svg" width="36" height="36"/> &nbsp;**Amazon SES** | Email sending/receiving | Transactional and marketing email |
+| <img src="assets/Application-Integration/MQ.svg" width="36" height="36"/> &nbsp;**Amazon MQ** | Managed message broker | Supports Apache ActiveMQ/RabbitMQ for migrating existing message broker apps |
 
-### <img src="assets/Category/Management-Tools.svg" width="48" height="48"/> 3.6 Management, Monitoring, and Developer Tools
+### <img src="assets/Category/Management-Tools.svg" width="48" height="48"/> &nbsp;3.6 Management, Monitoring, and Developer Tools
 
 | Service | Purpose |
 |---|---|
-| <img src="assets/Management-Tools/CloudWatch.svg" width="36" height="36"/> **Amazon CloudWatch** | Monitors performance metrics, collects logs, sets alarms |
-| <img src="assets/Management-Tools/CloudTrail.svg" width="36" height="36"/> **AWS CloudTrail** | Logs API/account activity for auditing |
-| <img src="assets/Management-Tools/Config.svg" width="36" height="36"/> **AWS Config** | Tracks resource configuration and compliance over time |
-| <img src="assets/Management-Tools/Trusted-Advisor.svg" width="36" height="36"/> **AWS Trusted Advisor** | Real-time best-practice recommendations across cost, performance, security, fault tolerance, service limits |
-| <img src="assets/Management-Tools/CloudFormation.svg" width="36" height="36"/> **AWS CloudFormation** | Infrastructure as Code, provision resources via JSON/YAML templates |
-| <img src="assets/Management-Tools/Systems-Manager.svg" width="36" height="36"/> **AWS Systems Manager** | Operational management, patching, automation, parameter storage, session management |
+| <img src="assets/Management-Tools/CloudWatch.svg" width="36" height="36"/> &nbsp;**Amazon CloudWatch** | Monitors performance metrics, collects logs, sets alarms |
+| <img src="assets/Management-Tools/CloudTrail.svg" width="36" height="36"/> &nbsp;**AWS CloudTrail** | Logs API/account activity for auditing |
+| <img src="assets/Management-Tools/Config.svg" width="36" height="36"/> &nbsp;**AWS Config** | Tracks resource configuration and compliance over time |
+| <img src="assets/Management-Tools/Trusted-Advisor.svg" width="36" height="36"/> &nbsp;**AWS Trusted Advisor** | Real-time best-practice recommendations across cost, performance, security, fault tolerance, service limits |
+| <img src="assets/Management-Tools/CloudFormation.svg" width="36" height="36"/> &nbsp;**AWS CloudFormation** | Infrastructure as Code, provision resources via JSON/YAML templates |
+| <img src="assets/Management-Tools/Systems-Manager.svg" width="36" height="36"/> &nbsp;**AWS Systems Manager** | Operational management, patching, automation, parameter storage, session management |
 | **AWS OpsWorks** | Configuration management using Chef/Puppet |
-| <img src="assets/Developer-Tools/X-Ray.svg" width="36" height="36"/> **AWS X-Ray** | Analyze and debug distributed applications (trace requests) |
-| <img src="assets/Management-Tools/Health-Dashboard.svg" width="36" height="36"/> **AWS Personal Health Dashboard** | Alerts about AWS events affecting YOUR specific resources (vs. the public AWS Service Health Dashboard, which shows overall service status for everyone) |
+| <img src="assets/Developer-Tools/X-Ray.svg" width="36" height="36"/> &nbsp;**AWS X-Ray** | Analyze and debug distributed applications (trace requests) |
+| <img src="assets/Management-Tools/Health-Dashboard.svg" width="36" height="36"/> &nbsp;**AWS Personal Health Dashboard** | Alerts about AWS events affecting YOUR specific resources (vs. the public AWS Service Health Dashboard, which shows overall service status for everyone) |
 
-### <img src="assets/Category/Migration-Modernization.svg" width="48" height="48"/> 3.7 Migration and Transfer
-- <img src="assets/Storage/Snowball.svg" width="36" height="36"/> **AWS Snow Family**: offline transfer for large/bandwidth-constrained data.
-- <img src="assets/Migration-Modernization/DataSync.svg" width="36" height="36"/> **AWS DataSync**: automates online data transfer between on-premises and AWS.
-- <img src="assets/Migration-Modernization/Application-Discovery-Service.svg" width="36" height="36"/> **AWS Application Discovery Service**: discovers on-premises servers/workloads to plan migration.
-- <img src="assets/Migration-Modernization/Migration-Evaluator.svg" width="36" height="36"/> **AWS Migration Evaluator**: estimates cost savings of migrating to AWS (business case building).
+### <img src="assets/Category/Migration-Modernization.svg" width="48" height="48"/> &nbsp;3.7 Migration and Transfer
+- <img src="assets/Storage/Snowball.svg" width="36" height="36"/> &nbsp;**AWS Snow Family**: offline transfer for large/bandwidth-constrained data.
+- <img src="assets/Migration-Modernization/DataSync.svg" width="36" height="36"/> &nbsp;**AWS DataSync**: automates online data transfer between on-premises and AWS.
+- <img src="assets/Migration-Modernization/Application-Discovery-Service.svg" width="36" height="36"/> &nbsp;**AWS Application Discovery Service**: discovers on-premises servers/workloads to plan migration.
+- <img src="assets/Migration-Modernization/Migration-Evaluator.svg" width="36" height="36"/> &nbsp;**AWS Migration Evaluator**: estimates cost savings of migrating to AWS (business case building).
 - **The "6 R's" of Migration:** Rehost (lift-and-shift, e.g., EC2), Replatform, Repurchase (move to SaaS), Refactor (re-architect), Retire, Retain.
 
-### <img src="assets/Category/Artificial-Intelligence.svg" width="48" height="48"/> 3.8 Analytics and AI/ML (light coverage, but appears)
-- <img src="assets/Analytics/Athena.svg" width="36" height="36"/> **Amazon Athena**: serverless SQL queries directly against S3 data.
+### <img src="assets/Category/Artificial-Intelligence.svg" width="48" height="48"/> &nbsp;3.8 Analytics and AI/ML (light coverage, but appears)
+- <img src="assets/Analytics/Athena.svg" width="36" height="36"/> &nbsp;**Amazon Athena**: serverless SQL queries directly against S3 data.
 - **Amazon QuickSight**: business intelligence/dashboarding.
-- <img src="assets/Analytics/Glue.svg" width="36" height="36"/> **AWS Glue**: serverless data integration/ETL.
-- <img src="assets/Analytics/Kinesis.svg" width="36" height="36"/> **Amazon Kinesis**: real-time data streaming.
-- <img src="assets/Analytics/SageMaker.svg" width="36" height="36"/> **Amazon SageMaker**: build, train, and deploy machine learning models.
-- <img src="assets/Artificial-Intelligence/Comprehend.svg" width="36" height="36"/> <img src="assets/Artificial-Intelligence/Rekognition.svg" width="36" height="36"/> <img src="assets/Artificial-Intelligence/Transcribe.svg" width="36" height="36"/> <img src="assets/Artificial-Intelligence/Polly.svg" width="36" height="36"/> <img src="assets/Artificial-Intelligence/Translate.svg" width="36" height="36"/> **Amazon Comprehend / Rekognition / Transcribe / Polly / Translate**: pre-built AI services for NLP, image/video analysis, speech-to-text, text-to-speech, translation.
+- <img src="assets/Analytics/Glue.svg" width="36" height="36"/> &nbsp;**AWS Glue**: serverless data integration/ETL.
+- <img src="assets/Analytics/Kinesis.svg" width="36" height="36"/> &nbsp;**Amazon Kinesis**: real-time data streaming.
+- <img src="assets/Analytics/SageMaker.svg" width="36" height="36"/> &nbsp;**Amazon SageMaker**: build, train, and deploy machine learning models.
+- <img src="assets/Artificial-Intelligence/Comprehend.svg" width="36" height="36"/> &nbsp;<img src="assets/Artificial-Intelligence/Rekognition.svg" width="36" height="36"/> &nbsp;<img src="assets/Artificial-Intelligence/Transcribe.svg" width="36" height="36"/> &nbsp;<img src="assets/Artificial-Intelligence/Polly.svg" width="36" height="36"/> &nbsp;<img src="assets/Artificial-Intelligence/Translate.svg" width="36" height="36"/> &nbsp;**Amazon Comprehend / Rekognition / Transcribe / Polly / Translate**: pre-built AI services for NLP, image/video analysis, speech-to-text, text-to-speech, translation.
 
 ---
 
-# <img src="assets/Category/Cloud-Financial-Management.svg" width="48" height="48"/> DOMAIN 4: BILLING, PRICING, AND SUPPORT (12%)
+# <img src="assets/Category/Cloud-Financial-Management.svg" width="48" height="48"/> &nbsp;DOMAIN 4: BILLING, PRICING, AND SUPPORT (12%)
 
 ### 4.1 Pricing Fundamentals
 AWS pricing is based on three fundamental drivers: **Compute, Storage, and Data Transfer OUT** (data transfer IN is generally free).
@@ -283,11 +283,11 @@ AWS pricing is based on three fundamental drivers: **Compute, Storage, and Data 
 | Tool | Purpose |
 |---|---|
 | **AWS Pricing Calculator** | Estimate costs BEFORE deployment, based on a planned architecture |
-| <img src="assets/Cloud-Financial-Management/Cost-Explorer.svg" width="36" height="36"/> **AWS Cost Explorer** | Visualize historical spending patterns AND forecast future costs |
-| <img src="assets/Cloud-Financial-Management/Budgets.svg" width="36" height="36"/> **AWS Budgets** | Set custom cost/usage/RI/Savings Plan thresholds; sends alerts when actual or forecasted spend exceeds them |
-| <img src="assets/Cloud-Financial-Management/Cost-and-Usage-Report.svg" width="36" height="36"/> **AWS Cost and Usage Report (CUR)** | Most detailed, granular billing data export available |
+| <img src="assets/Cloud-Financial-Management/Cost-Explorer.svg" width="36" height="36"/> &nbsp;**AWS Cost Explorer** | Visualize historical spending patterns AND forecast future costs |
+| <img src="assets/Cloud-Financial-Management/Budgets.svg" width="36" height="36"/> &nbsp;**AWS Budgets** | Set custom cost/usage/RI/Savings Plan thresholds; sends alerts when actual or forecasted spend exceeds them |
+| <img src="assets/Cloud-Financial-Management/Cost-and-Usage-Report.svg" width="36" height="36"/> &nbsp;**AWS Cost and Usage Report (CUR)** | Most detailed, granular billing data export available |
 | **Cost Allocation Tags** | Tag resources to break down costs by department/project/environment |
-| <img src="assets/Cloud-Financial-Management/Billing-Conductor.svg" width="36" height="36"/> **AWS Billing Conductor** | Customize billing data presentation, often used by resellers/MSPs |
+| <img src="assets/Cloud-Financial-Management/Billing-Conductor.svg" width="36" height="36"/> &nbsp;**AWS Billing Conductor** | Customize billing data presentation, often used by resellers/MSPs |
 | **Consolidated Billing (via Organizations)** | One bill for all member accounts; enables pooled volume discounts |
 
 ### 4.3 AWS Free Tier, Three Types
@@ -295,7 +295,7 @@ AWS pricing is based on three fundamental drivers: **Compute, Storage, and Data 
 2. **12 Months Free**: free usage amounts starting from account creation date, for the first 12 months only.
 3. **Trials**: short-term free offers starting from the date you first use a specific service.
 
-### <img src="assets/Customer-Enablement/Support.svg" width="48" height="48"/> 4.4 AWS Support Plans
+### <img src="assets/Customer-Enablement/Support.svg" width="48" height="48"/> &nbsp;4.4 AWS Support Plans
 
 | Plan | Cost | Response Time (Critical) | Key Features |
 |---|---|---|---|
@@ -308,8 +308,8 @@ AWS pricing is based on three fundamental drivers: **Compute, Storage, and Data 
 **Memorize the response-time SLA pattern: Basic = none, Developer = hours, Business = 1 hour, Enterprise On-Ramp = 30 min, Enterprise = 15 min.**
 
 ### 4.5 Marketplace and Procurement
-- <img src="assets/General-Icons/Marketplace_Light.svg" width="36" height="36"/> **AWS Marketplace**: curated digital catalog of third-party software that runs on AWS, billed through your AWS account.
-- <img src="assets/Management-Tools/Organizations.svg" width="36" height="36"/> **AWS Organizations + Consolidated Billing**: single bill across linked accounts, volume discount pooling.
+- <img src="assets/General-Icons/Marketplace_Light.svg" width="36" height="36"/> &nbsp;**AWS Marketplace**: curated digital catalog of third-party software that runs on AWS, billed through your AWS account.
+- <img src="assets/Management-Tools/Organizations.svg" width="36" height="36"/> &nbsp;**AWS Organizations + Consolidated Billing**: single bill across linked accounts, volume discount pooling.
 
 ---
 
