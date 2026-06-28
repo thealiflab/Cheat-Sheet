@@ -7,7 +7,6 @@ A growing collection of personal study cheat sheets, written in Markdown. Each t
 | Topic | Description |
 |-------|-------------|
 | [AWS](AWS/aws-cloud-practitioner.md) | AWS Certified Cloud Practitioner (CLF-C02) complete study guide — exam overview, all four domains, service comparison tables, billing/pricing, and a glossary, illustrated with official AWS service icons. |
-| [English Grammar & Writing](English-Grammar-Writing/basic.md) | A grammar course for error-free essay writing — sentence structure, parts of speech, tenses, punctuation, and more across 15 lessons. |
 
 ## Repository structure
 
@@ -16,8 +15,6 @@ Cheat-Sheet/
 ├── AWS/
 │   ├── aws-cloud-practitioner.md
 │   └── assets/
-├── Language/
-│   └── grammar-en.md
 └── README.md
 ```
 
