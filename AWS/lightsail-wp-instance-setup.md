@@ -193,3 +193,15 @@ It should show:
 define( 'WP_HOME', 'https://yourdomain.com' );
 define( 'WP_SITEURL', 'https://yourdomain.com' );
 ```
+
+---
+
+## Auto-renewal
+
+Certbot on Debian via apt sets up a systemd timer automatically. Test it with:
+
+```bash
+sudo certbot renew --dry-run
+```
+
+Should return `All simulated renewals succeeded`. Certificate renews automatically every 60 days before the 90-day expiry.
