@@ -102,7 +102,7 @@ The on-demand delivery of IT resources (compute, storage, databases, networking,
 - **Customer responsibility = "Security IN the cloud"**: guest OS patching (for IaaS), firewall/security group configuration, IAM management, data encryption, network traffic protection, client-side data, application-level security.
 - **The split shifts depending on service abstraction level**: For EC2 (IaaS), the customer manages more (guest OS, patching). For RDS/Lambda (managed/serverless), AWS manages more, but the customer is STILL always responsible for access configuration, data classification, and credentials, this responsibility never disappears.
 
-<img src="assets/images/aws-shared-responsibilities-model.png" width="975" height="439"/>
+<img src="assets/images/aws-shared-responsibilities-model.png" width="1024" height="412"/>
 
 ### <img src="assets/Security-Identity/Identity-and-Access-Management.svg" width="48" height="48"/> &nbsp;2.2 IAM (Identity and Access Management)
 - **Root user**: created with the account; has unrestricted access. Best practice: enable MFA immediately, lock away credentials, do not use for daily tasks.
