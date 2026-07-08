@@ -71,6 +71,8 @@ The on-demand delivery of IT resources (compute, storage, databases, networking,
 
 **Why multiple Regions/AZs matter:** Fault tolerance, disaster recovery, data residency/compliance, and reduced latency for global users.
 
+<img src="assets/images/aws-region-azs.png" width="500" height="500"/>
+
 ### 1.6 AWS Well-Architected Framework, Six Pillars (memorize all six)
 1. **Operational Excellence**: run and monitor systems to deliver business value; continually improve processes.
 2. **Security**: protect data, systems, and assets through risk assessment and mitigation.
@@ -89,6 +91,8 @@ The on-demand delivery of IT resources (compute, storage, databases, networking,
 - **Scalability**: vertical (bigger instance) vs. horizontal (more instances) scaling.
 - **Disaster Recovery (DR) strategies** (know these four, in increasing cost/complexity order): Backup and Restore → Pilot Light → Warm Standby → Multi-site Active/Active.
 
+<img src="assets/images/disaster-recovery-strategies.png" width="975" height="439"/>
+
 ---
 
 # <img src="assets/Category/Security-Identity.svg" width="48" height="48"/> &nbsp;DOMAIN 2: SECURITY AND COMPLIANCE (30%, highest weight)
@@ -97,6 +101,8 @@ The on-demand delivery of IT resources (compute, storage, databases, networking,
 - **AWS responsibility = "Security OF the cloud"**: physical infrastructure, hardware, global network, hypervisor/virtualization layer, host operating system, facilities.
 - **Customer responsibility = "Security IN the cloud"**: guest OS patching (for IaaS), firewall/security group configuration, IAM management, data encryption, network traffic protection, client-side data, application-level security.
 - **The split shifts depending on service abstraction level**: For EC2 (IaaS), the customer manages more (guest OS, patching). For RDS/Lambda (managed/serverless), AWS manages more, but the customer is STILL always responsible for access configuration, data classification, and credentials, this responsibility never disappears.
+
+<img src="assets/images/aws-shared-responsibilities-model.jpeg" width="975" height="439"/>
 
 ### <img src="assets/Security-Identity/Identity-and-Access-Management.svg" width="48" height="48"/> &nbsp;2.2 IAM (Identity and Access Management)
 - **Root user**: created with the account; has unrestricted access. Best practice: enable MFA immediately, lock away credentials, do not use for daily tasks.
@@ -146,6 +152,8 @@ The on-demand delivery of IT resources (compute, storage, databases, networking,
 - <img src="assets/Networking-Content-Delivery/Direct-Connect.svg" width="36" height="36"/> &nbsp;**AWS Direct Connect**: dedicated, private physical network connection between on-premises and AWS (bypasses public internet, more consistent performance).
 - <img src="assets/Networking-Content-Delivery/Site-to-Site-VPN.svg" width="36" height="36"/> &nbsp;**AWS Site-to-Site VPN**: encrypted connection over the public internet between on-premises and AWS.
 - <img src="assets/Networking-Content-Delivery/Transit-Gateway.svg" width="36" height="36"/> &nbsp;**AWS Transit Gateway**: central hub connecting multiple VPCs and on-premises networks.
+
+<img src="assets/images/cloud-native-networking.png" width="1000" height="464"/>
 
 ### 2.6 Encryption Concepts
 - **Encryption at rest**: protecting stored data (e.g., S3 default SSE-S3, EBS encryption, RDS encryption).
