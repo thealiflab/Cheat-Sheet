@@ -7,6 +7,7 @@ A growing collection of personal study and reference cheat sheets, written in Ma
 | Topic | Cheat sheet | Description |
 |-------|-------------|-------------|
 | AWS | [AWS Certified Cloud Practitioner (CLF-C02)](AWS/aws-cloud-practitioner.md) | Complete exam study guide — exam overview, all four domains, critical service comparison tables, billing/pricing breakdown, initialisms, and a glossary, illustrated with official AWS service icons. |
+| AWS | [AWS Certified AI Practitioner (AIF-C01)](AWS/aws-ai-practitioner.md) | Complete exam study guide — exam overview, all five domains (AI/ML fundamentals, generative AI, foundation models, responsible AI, security & governance), service comparison tables, initialisms, and a glossary, illustrated with official AWS service icons. |
 | AWS | [Lightsail WordPress + SSL setup](AWS/lightsail-wp-instance-setup.md) | Step-by-step guide for provisioning a Lightsail WordPress instance and issuing a free Let's Encrypt certificate with Certbot, including Route 53 DNS, the www → apex redirect, `wp-config.php` fixes, and auto-renewal. |
 | 3CX | [3CX Architecture Cheatsheet](3CX/3CX.md) | How a 3CX V20 phone system actually fits together — deployment models, core services, SIP vs. RTP, NAT traversal, and troubleshooting — aimed at whoever has to administer and troubleshoot it. |
 
@@ -17,6 +18,7 @@ Cheat-Sheet/
 ├── 3CX/
 │   └── 3CX.md
 ├── AWS/
+│   ├── aws-ai-practitioner.md
 │   ├── aws-cloud-practitioner.md
 │   ├── lightsail-wp-instance-setup.md
 │   └── assets/
