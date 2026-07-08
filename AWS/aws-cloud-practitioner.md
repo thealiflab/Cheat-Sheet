@@ -328,6 +328,7 @@ AWS pricing is based on three fundamental drivers: **Compute, Storage, and Data 
 | Security Group vs. NACL | SG = stateful, instance-level, allow only. NACL = stateless, subnet-level, allow + deny |
 | CloudTrail vs. CloudWatch vs. Config vs. GuardDuty | CloudTrail = logs WHO did WHAT (API audit). CloudWatch = monitors performance/metrics/logs/alarms. Config = tracks configuration state/compliance over time. GuardDuty = ML-based threat detection |
 | SNS vs. SQS vs. EventBridge | SNS = push/fan-out pub-sub. SQS = pull-based queue, persists messages. EventBridge = content-based event routing/filtering across many sources |
+| SNS vs. SES vs. Pinpoint vs. WorkMail | SNS = notifications to subscribers (email/SMS/push/HTTP, pub-sub). SES = bulk/transactional email sending for applications. Pinpoint = targeted marketing campaigns across email/SMS/push with analytics. WorkMail = managed business email and calendaring (like Exchange/Gmail) |
 | RDS vs. Aurora vs. DynamoDB vs. Redshift | RDS = managed relational (standard engines). Aurora = AWS's enhanced MySQL/PostgreSQL-compatible engine. DynamoDB = NoSQL key-value/document. Redshift = data warehouse/analytics (OLAP) |
 | CloudFront vs. Global Accelerator | CloudFront = HTTP/HTTPS caching CDN. Global Accelerator = TCP/UDP network-layer routing (no caching) |
 | Shield vs. WAF | Shield = DDoS (network/transport layer). WAF = application exploits like SQLi/XSS (layer 7) |
@@ -337,6 +338,58 @@ AWS pricing is based on three fundamental drivers: **Compute, Storage, and Data 
 | Standard RI vs. Convertible RI vs. Savings Plans vs. Spot | Standard RI = cheapest but least flexible. Convertible RI = can change instance family. Savings Plans = $/hour commitment, flexible across families/services. Spot = deepest discount, interruptible only |
 | Cost Explorer vs. Budgets vs. Pricing Calculator | Cost Explorer = visualize/forecast EXISTING spend. Budgets = alert when thresholds crossed. Pricing Calculator = estimate cost BEFORE deployment |
 | Trusted Advisor vs. Artifact | Trusted Advisor = best-practice recommendations (cost/security/performance/fault tolerance/limits). Artifact = compliance reports and agreements (SOC, PCI, BAA) |
+| Inspector vs. Trusted Advisor | Inspector = automated vulnerability scanning of workloads (EC2, ECR containers, Lambda) for CVEs and network exposure. Trusted Advisor = account-level best-practice checks across cost, security, performance, fault tolerance, and service limits |
+
+---
+
+## KNOW YOUR INITIALISMS
+
+| Initialism | Full Name | Notes |
+|------------|-----------|-------|
+| ACM | Amazon Certificate Manager | SSL/TLS certificate management |
+| ALB | Application Load Balancer | Layer 7 HTTP/HTTPS load balancer |
+| ASG | Auto Scaling Group | Automatically scales EC2 instances |
+| CFN | CloudFormation | Infrastructure as Code (IaC) |
+| CLB | Classic Load Balancer | Legacy load balancer |
+| EB | Elastic Beanstalk | Platform as a Service (PaaS) |
+| EBS | Elastic Block Store | Block storage for EC2 |
+| EC2 | Elastic Compute Cloud | Virtual servers in AWS |
+| ECR | Elastic Container Registry | Docker/container image registry |
+| ECS | Elastic Container Service | AWS container orchestration service |
+| EFS | Elastic File System | Managed NFS file storage |
+| EKS | Elastic Kubernetes Service | Managed Kubernetes service |
+| ELB | Elastic Load Balancer | General family of AWS load balancers |
+| EMR | Elastic MapReduce | Big data processing using Hadoop/Spark |
+| ES | Elasticsearch | Legacy name for Amazon OpenSearch Service |
+| GWLB | Gateway Load Balancer | Load balancing for virtual appliances |
+| IAM | Identity and Access Management | Users, groups, roles, and permissions |
+| IoT | Internet of Things | Connects and manages IoT devices |
+| MQ | Amazon MQ (ActiveMQ/RabbitMQ) | Managed message broker |
+| MSK | Managed Streaming for Apache Kafka | Managed Kafka service |
+| NLB | Network Load Balancer | Layer 4 TCP/UDP load balancer |
+| PoLP | Principle of Least Privilege | Grant only the minimum required permissions |
+| RAM | AWS Resource Access Manager | Share AWS resources across accounts |
+| RDS | Relational Database Service | Managed relational databases |
+| RI | Reserved Instances | Discounted EC2 pricing option |
+| S3 | Simple Storage Service | Object storage |
+| SES | Simple Email Service | Email sending and receiving |
+| SNS | Simple Notification Service | Pub/Sub messaging service |
+| SQS | Simple Queue Service | Message queue |
+| SSM | AWS Systems Manager | Manage and automate AWS resources |
+| SWF | Simple Workflow Service | Workflow orchestration service |
+| TAM | Technical Account Manager | AWS Enterprise Support advisor |
+| VPC | Virtual Private Cloud | Isolated virtual network |
+| VPN | Virtual Private Network | Secure private connectivity |
+| WAF | Web Application Firewall | Protects web applications from common attacks |
+
+### Quick Memory Tips
+
+- Most services starting with **Elastic** begin with **E** (EC2, EBS, EFS, ECS, EKS, ECR, ELB, EMR, EB).
+- **Simple** services typically begin with **S** (S3, SNS, SQS, SES, SWF).
+- **ALB = Layer 7**, **NLB = Layer 4**, **GWLB = Virtual Appliances**, **CLB = Legacy**.
+- **IAM = Identity**, **RAM = Resource Sharing**.
+- **EBS = Block Storage**, **EFS = File Storage**, **S3 = Object Storage**.
+- **EC2 runs compute**, **RDS stores relational data**, **VPC provides networking**.
 
 ---
 
