@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/Category/Artificial-Intelligence.svg" width="120" alt="AWS Certified AI Practitioner"/>
+  <img src="assets/aws-certified-ai-practitioner.svg" width="160" alt="AWS Certified AI Practitioner"/>
 </p>
 
 # AWS Certified AI Practitioner (AIF-C01): Complete Study Guide
