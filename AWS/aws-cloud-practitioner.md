@@ -420,4 +420,4 @@ AWS pricing is based on three fundamental drivers: **Compute, Storage, and Data 
 
 ### OSI Model
 
-<img src="assets/images/OSI_model.gif"/>
+<img src="assets/images/OSI_model.gif" width="400" height="600"/>
