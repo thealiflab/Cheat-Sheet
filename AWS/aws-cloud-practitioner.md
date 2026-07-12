@@ -415,3 +415,9 @@ AWS pricing is based on three fundamental drivers: **Compute, Storage, and Data 
 - **Serverless**: no server provisioning/management required by the customer (Lambda, Fargate, DynamoDB on-demand).
 
 ---
+
+## Important Figures
+
+### OSI Model
+
+<img src="assets/images/OSI_model.gif"/>
