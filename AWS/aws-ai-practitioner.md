@@ -64,6 +64,8 @@ This is my full exam preparation cheat sheet for 2026. Practice it with some pra
 | **Features** | Input variables the model uses to make predictions | `square_footage`, `bedrooms`, `zip_code` for a house-price model |
 | **Inference** | Using a trained model to make predictions on new data | Sending a new listing to a SageMaker endpoint and getting back "$412,000" |
 
+📌 **Churn** (used in examples throughout this guide): when a customer **stops using a service** — cancels a subscription, closes an account, or simply goes inactive. **Churn prediction** is a classic **binary classification** problem (will this customer leave: yes/no?) and one of the most common real-world ML use cases, because keeping an existing customer is far cheaper than acquiring a new one.
+
 ### 1.3 Types of Machine Learning (heavily tested — know when each applies)
 
 | Type | Data | Goal | Examples |
@@ -165,13 +167,42 @@ Running example: a **house-price model**, predictions off by $10k on four homes 
 | "Show me where the model is making mistakes" | *"An analyst wants to see how many defective items were passed as good vs. how many good items were rejected."* | **Confusion matrix** |
 
 ### 1.6 The ML Development Lifecycle (ML pipeline)
-1. **Define the business problem** (and whether ML is even appropriate)
-2. **Collect data** → 3. **Prepare/clean data** (feature engineering, labeling)
-4. **Train the model** → 5. **Evaluate** (metrics above)
-6. **Tune hyperparameters** → 7. **Deploy** (real-time endpoint or batch)
-8. **Monitor** (drift detection, retraining) — this is **MLOps**.
 
-**When NOT to use AI/ML:** simple deterministic rules suffice, no/poor-quality data available, full interpretability legally required, or cost outweighs benefit.
+The lifecycle is a **loop, not a straight line** — monitoring feeds back into retraining. Expect questions that give you an activity and ask which stage it belongs to, or which AWS service supports it.
+
+| # | Stage | What actually happens | AWS service |
+|---|---|---|---|
+| 1 | **Define the business problem** | Turn a business goal into an ML question, define success in *business* terms ("cut churn 10%") **and** a model metric (recall ≥ 0.85). Decide whether ML is even the right tool | — |
+| 2 | **Collect data** | Gather and centralize raw data; check you have **enough, and that it's representative** | S3 (data lake), Kinesis, Glue |
+| 3 | **Prepare / clean data** | Handle missing values, remove duplicates, label data, **feature engineering** (creating and encoding the input variables), split into train/validation/test | SageMaker **Data Wrangler**, **Ground Truth** (labeling), **Feature Store** |
+| 4 | **Train the model** | Choose an algorithm, feed it the training data, let it learn the patterns | SageMaker Training Jobs |
+| 5 | **Evaluate** | Score the model on **held-out test data** using the metrics in 1.5; check for over/underfitting and bias | SageMaker **Clarify** (bias + explainability) |
+| 6 | **Tune hyperparameters** | Adjust the settings *you* control (learning rate, tree depth, epochs) and re-evaluate against the **validation** set | SageMaker **AMT** (Automatic Model Tuning) |
+| 7 | **Deploy** | Push the model to production as a real-time endpoint, batch job, or serverless (see 1.7) | SageMaker Endpoints / Batch Transform |
+| 8 | **Monitor & retrain** | Watch live quality, detect **drift**, retrain when performance decays — this loops back to step 2 | SageMaker **Model Monitor**, CloudWatch |
+
+👉 Steps 2-3 typically consume **~70-80% of the total effort**. If an exam question asks where teams spend the most time, the answer is **data preparation**.
+
+**Parameters vs. hyperparameters (commonly confused):**
+- **Parameters** are learned *by* the model during training (e.g., neural network weights). You don't set them.
+- **Hyperparameters** are set *by you before* training (learning rate, number of epochs, tree depth, batch size). Tuning these is step 6.
+
+**MLOps** = applying DevOps practices to ML: automation, CI/CD, versioning of *data and models* (not just code), reproducibility, and continuous monitoring. **SageMaker Pipelines** orchestrates the whole workflow; the **Model Registry** versions and approves models before deployment.
+
+<p align="center">
+  <img src="assets/MLOps.png"/>
+</p>
+
+**Model drift — why step 8 exists:**
+- **Data drift**: the *input* data changes (new customer demographics, new product mix).
+- **Concept drift**: the *relationship* between input and output changes (post-pandemic buying behavior; fraudsters inventing new tactics).
+- Either way the model silently decays in production. **The fix is retraining on fresh data**, which is why the lifecycle is a loop.
+
+**When NOT to use AI/ML** (a real exam topic — ML is not always the answer):
+- Simple **deterministic rules** suffice ("flag any transaction over $10,000") — cheaper, instant, fully predictable.
+- **No data, or poor-quality data** available — no amount of modeling fixes this.
+- **Full interpretability is legally required** and a black-box model can't provide it.
+- **Cost or latency outweighs the benefit**, or the outcome must be 100% accurate every time (ML is probabilistic by nature).
 
 ### 1.7 Inference Types
 
