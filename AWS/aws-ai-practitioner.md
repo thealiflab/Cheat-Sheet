@@ -206,7 +206,20 @@ The lifecycle is a **loop, not a straight line** — monitoring feeds back into 
 
 ### 1.7 Inference Types
 
-**Inference** is step 7 of the lifecycle: using the trained model in production. SageMaker offers four options, and the exam picks between them on **how fast the answer is needed, how big the payload is, and how steady the traffic is**. Listed here **fastest first**:
+**Inference** is the act of **feeding new, unseen data into an already-trained model and getting a prediction back**. Training is when the model *learns* the patterns; inference is when it *applies* them. It is step 7 of the lifecycle (deployment) and it's where a model finally delivers business value.
+
+**Training vs. inference — the distinction the exam leans on:**
+
+| | **Training** | **Inference** |
+|---|---|---|
+| What happens | Model **learns** patterns from historical data | Model **applies** what it learned to new data |
+| Frequency | Occasional (once, then periodic retraining) | Continuous — every prediction request |
+| Cost profile | Expensive but short bursts | Cheaper per request, but **runs forever** → usually the larger lifetime cost |
+| Example | Feeding 5 years of past transactions to learn fraud patterns | Scoring the card swipe happening right now |
+
+👉 Because inference runs indefinitely, **choosing the right inference type is largely a cost decision**, which is exactly why AWS gives you four of them.
+
+SageMaker offers four options, and the exam picks between them on **how fast the answer is needed, how big the payload is, and how steady the traffic is**. Listed here **fastest first**:
 
 | Type | Latency | Endpoint / cost model | Payload & traffic | Best for |
 |---|---|---|---|---|
@@ -235,38 +248,38 @@ The lifecycle is a **loop, not a straight line** — monitoring feeds back into 
 
 ### <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="48" height="48"/> &nbsp;1.8 Amazon SageMaker AI (the build-it-yourself ML platform)
 
-| Feature | Purpose |
-|---|---|
-| **SageMaker Studio** | Web-based IDE for the whole ML lifecycle |
-| <img src="assets/Artificial-Intelligence/SageMaker-Ground-Truth.svg" width="36" height="36"/> &nbsp;**SageMaker Ground Truth** | Data **labeling** service (human workforce + automated labeling) |
-| **SageMaker Data Wrangler** | Visual data preparation/feature engineering |
-| **SageMaker Feature Store** | Central repository for storing/sharing ML features |
-| **SageMaker Autopilot / Canvas** | AutoML; Canvas = **no-code** ML for business analysts |
-| **SageMaker JumpStart** | Hub of pre-trained models and solutions (including foundation models) to deploy quickly |
-| **SageMaker Clarify** | Detects **bias** in data/models and explains predictions (explainability) |
-| **SageMaker Model Monitor** | Monitors deployed models for data/model **drift** |
-| **SageMaker Pipelines** | CI/CD workflow orchestration for ML (MLOps) |
-| **SageMaker Model Cards** | Documentation of a model's intended use, risk rating, and training details (governance) |
-| **SageMaker Model Registry** | Catalog and version control for trained models |
+| Feature | Purpose | Lifecycle stage |
+|---|---|---|
+| **SageMaker Studio** | Web-based IDE for the whole ML lifecycle — notebooks, experiments, training, and deployment in one browser workspace, so nothing runs on a laptop | All |
+| <img src="assets/Artificial-Intelligence/SageMaker-Ground-Truth.svg" width="36" height="36"/> &nbsp;**SageMaker Ground Truth** | Data **labeling**: sends raw data to human labelers (your team, a vendor, or Mechanical Turk) and uses **active learning** to auto-label the easy items, cutting labeling cost. This is how you create the labeled data supervised learning requires | 3. Prepare |
+| **SageMaker Data Wrangler** | Visual, **low-code data preparation** — import from S3/Redshift/Athena, spot missing values and outliers, apply 300+ built-in transformations, and do **feature engineering** without writing pandas code | 3. Prepare |
+| **SageMaker Feature Store** | Central repository to **store, share, and reuse features** across teams and models. Prevents **training/serving skew** by guaranteeing training and inference use the identical feature definitions | 3. Prepare |
+| **SageMaker Autopilot / Canvas** | **AutoML** — hand it a tabular dataset and a target column; it automatically tries algorithms and hyperparameters and ranks the resulting models. **Canvas** is the **no-code, point-and-click** front end aimed at business analysts who don't write code | 4-6. Train/Tune |
+| **SageMaker JumpStart** | A hub of **pre-trained models and ready-made solution templates** (including foundation models) you can deploy or fine-tune in a few clicks instead of training from scratch | 4. Train / 7. Deploy |
+| **SageMaker Clarify** | Two jobs: **detects bias** in the data *before* training and in the model *after* training, and provides **explainability** (which features drove a prediction, via feature attribution). The go-to answer for "explain the model" or "check for unfair treatment" | 5. Evaluate |
+| **SageMaker Model Monitor** | Continuously watches a **deployed** endpoint for **data drift, model-quality decay, and bias drift**, comparing live traffic against a training baseline and alerting via CloudWatch when it degrades | 8. Monitor |
+| **SageMaker Pipelines** | **CI/CD orchestration for ML (MLOps)** — chains prepare → train → evaluate → deploy into a repeatable, automated, version-tracked workflow that can be re-run on new data | All (automation) |
+| **SageMaker Model Cards** | **Governance documentation** for a model: intended use, risk rating, training data, evaluation results, and limitations — recorded in one auditable place for regulators and reviewers | Governance |
+| **SageMaker Model Registry** | **Catalog and version control** for trained models, with an **approval workflow** so only reviewed model versions get promoted to production | 7. Deploy |
 
 ### 1.9 Pre-trained AWS AI Services (no ML expertise needed — heavily tested "pick the right service" questions)
 
-| Service | Capability |
-|---|---|
-| <img src="assets/Artificial-Intelligence/Rekognition.svg" width="36" height="36"/> &nbsp;**Amazon Rekognition** | Image/video analysis: object detection, facial analysis, content moderation, text-in-image |
-| <img src="assets/Artificial-Intelligence/Textract.svg" width="36" height="36"/> &nbsp;**Amazon Textract** | Extract text, handwriting, tables, and form data from scanned **documents** (beyond simple OCR) |
-| <img src="assets/Artificial-Intelligence/Comprehend.svg" width="36" height="36"/> &nbsp;**Amazon Comprehend** | NLP: sentiment analysis, entity extraction, key phrases, PII detection, language detection |
-| <img src="assets/Artificial-Intelligence/Transcribe.svg" width="36" height="36"/> &nbsp;**Amazon Transcribe** | **Speech-to-text** (audio → text), supports custom vocabularies |
-| <img src="assets/Artificial-Intelligence/Polly.svg" width="36" height="36"/> &nbsp;**Amazon Polly** | **Text-to-speech** (text → lifelike audio) |
-| <img src="assets/Artificial-Intelligence/Translate.svg" width="36" height="36"/> &nbsp;**Amazon Translate** | Neural machine **translation** between languages |
-| <img src="assets/Artificial-Intelligence/Lex.svg" width="36" height="36"/> &nbsp;**Amazon Lex** | Build conversational **chatbots**/voice bots (the tech behind Alexa) |
-| <img src="assets/Artificial-Intelligence/Kendra.svg" width="36" height="36"/> &nbsp;**Amazon Kendra** | Intelligent **enterprise search** across internal documents using natural language |
-| <img src="assets/Artificial-Intelligence/Personalize.svg" width="36" height="36"/> &nbsp;**Amazon Personalize** | Real-time personalized **recommendations** (same tech as Amazon.com) |
-| <img src="assets/Artificial-Intelligence/Forecast.svg" width="36" height="36"/> &nbsp;**Amazon Forecast** | Time-series **forecasting** (demand, inventory) |
-| <img src="assets/Artificial-Intelligence/Fraud-Detector.svg" width="36" height="36"/> &nbsp;**Amazon Fraud Detector** | Detect online **fraud** (fake accounts, payment fraud) |
-| <img src="assets/Artificial-Intelligence/Comprehend-Medical.svg" width="36" height="36"/> &nbsp;**Amazon Comprehend Medical** | Extract medical information from unstructured clinical text |
-| <img src="assets/Artificial-Intelligence/Augmented-AI-A2I.svg" width="36" height="36"/> &nbsp;**Amazon Augmented AI (A2I)** | Adds **human review** workflows for low-confidence ML predictions |
-| <img src="assets/Artificial-Intelligence/DeepRacer.svg" width="36" height="36"/> &nbsp;**AWS DeepRacer** | 1/18-scale race car for learning **reinforcement learning** |
+| Service | Capability | Example (think of it as...) |
+|---|---|---|
+| <img src="assets/Artificial-Intelligence/Rekognition.svg" width="36" height="36"/> &nbsp;**Amazon Rekognition** | Image and video analysis: **object and scene detection**, facial analysis and face comparison, celebrity recognition, **content moderation** (nudity/violence), and text-in-image. Works on both stored files and live video streams | **Google Photos** recognizing your friends' faces, or **Instagram** auto-blurring graphic content. *Use case:* a dating app auto-rejecting inappropriate profile pictures |
+| <img src="assets/Artificial-Intelligence/Textract.svg" width="36" height="36"/> &nbsp;**Amazon Textract** | Extracts text, handwriting, **tables, and form key-value pairs** from scanned documents — going beyond plain OCR by preserving *structure*, so "Name: John" comes back as a labeled field, not loose text | **Adobe Scan** or a banking app's **check-deposit-by-photo**. *Use case:* an insurer auto-reading 10,000 scanned claim forms into a database |
+| <img src="assets/Artificial-Intelligence/Comprehend.svg" width="36" height="36"/> &nbsp;**Amazon Comprehend** | NLP over text: **sentiment** (positive/negative/neutral/mixed), entity extraction (people, places, dates), key phrases, language detection, topic modeling, and **PII detection/redaction** | The engine behind a **Trustpilot-style review dashboard** saying "78% positive". *Use case:* scanning support tickets to flag angry customers for escalation |
+| <img src="assets/Artificial-Intelligence/Transcribe.svg" width="36" height="36"/> &nbsp;**Amazon Transcribe** | **Speech-to-text** (audio → text) with speaker identification (diarization), timestamps, custom vocabularies for jargon, and automatic PII redaction | **Otter.ai**, **Zoom live captions**, or **YouTube auto-subtitles**. *Use case:* transcribing call-center recordings so they can be searched and analyzed |
+| <img src="assets/Artificial-Intelligence/Polly.svg" width="36" height="36"/> &nbsp;**Amazon Polly** | **Text-to-speech** (text → lifelike audio) in dozens of languages and voices, with **neural voices** and SSML control over pronunciation, pauses, and emphasis | The voice of **Alexa**, **Google Maps navigation**, or an audiobook narrator. *Use case:* a news site offering a "listen to this article" button |
+| <img src="assets/Artificial-Intelligence/Translate.svg" width="36" height="36"/> &nbsp;**Amazon Translate** | Neural machine **translation** between 75+ languages, with custom terminology so brand names and product terms stay untranslated | **Google Translate** / **DeepL**. *Use case:* an e-commerce site instantly localizing product listings into 12 languages |
+| <img src="assets/Artificial-Intelligence/Lex.svg" width="36" height="36"/> &nbsp;**Amazon Lex** | Builds conversational **chatbots and voice bots** using **intents** (what the user wants) and **slots** (the details needed) — the same speech + language engine that powers Alexa | **Alexa** or the automated phone menu that says *"Tell me why you're calling."* *Use case:* a bank bot handling "check my balance" and "reset my PIN" without an agent |
+| <img src="assets/Artificial-Intelligence/Kendra.svg" width="36" height="36"/> &nbsp;**Amazon Kendra** | Intelligent **enterprise search**: ask a natural-language question and get a specific answer (not a link list) from internal SharePoint, S3, Confluence, and databases — respecting each user's permissions | **Google search, but only over your company's internal documents**. *Use case:* an employee asking "how many vacation days do I get after 5 years?" and getting the exact HR-policy sentence |
+| <img src="assets/Artificial-Intelligence/Personalize.svg" width="36" height="36"/> &nbsp;**Amazon Personalize** | Real-time personalized **recommendations** and re-ranked search results from your user-interaction history — the same technology behind Amazon.com's "customers also bought" | **Netflix's "Because you watched..."** or **Spotify Discover Weekly**. *Use case:* a streaming service tailoring its homepage per viewer |
+| <img src="assets/Artificial-Intelligence/Forecast.svg" width="36" height="36"/> &nbsp;**Amazon Forecast** | **Time-series forecasting** for future numeric values, combining your history with related factors like price, promotions, weather, and holidays | The system telling a supermarket **how much milk to stock next Tuesday**. *Use case:* predicting energy demand or retail inventory per store |
+| <img src="assets/Artificial-Intelligence/Fraud-Detector.svg" width="36" height="36"/> &nbsp;**Amazon Fraud Detector** | Detects online **fraud** — fake account creation, payment fraud, promo/coupon abuse — scoring events in real time using your data plus 20+ years of Amazon fraud expertise | Your **bank texting "was this you?"** seconds after a suspicious purchase. *Use case:* blocking bots creating thousands of fake free-trial accounts |
+| <img src="assets/Artificial-Intelligence/Comprehend-Medical.svg" width="36" height="36"/> &nbsp;**Amazon Comprehend Medical** | **HIPAA-eligible** NLP for clinical text: extracts medications, dosages, diagnoses, symptoms, and test results from doctors' notes, and links them to standard medical codes (ICD-10, RxNorm) | A **digital medical scribe** reading a doctor's messy notes and filling in the chart. *Use case:* turning free-text physician notes into structured billing codes |
+| <img src="assets/Artificial-Intelligence/Augmented-AI-A2I.svg" width="36" height="36"/> &nbsp;**Amazon Augmented AI (A2I)** | Adds a **human-in-the-loop** review step: predictions below a confidence threshold are automatically routed to a person to verify, and the corrections can feed back into training | The **"we couldn't read this — a human will check it"** step in a deposit or ID-verification app. *Use case:* routing blurry scanned checks to a reviewer instead of guessing |
+| <img src="assets/Artificial-Intelligence/DeepRacer.svg" width="36" height="36"/> &nbsp;**AWS DeepRacer** | A 1/18-scale autonomous race car (plus a 3D simulator and racing league) for **learning reinforcement learning** hands-on by designing reward functions | A **video game for learning RL** — trial, error, and reward, like teaching a dog tricks with treats. *Use case:* educational only; never the answer to a production question |
 
 **The three-layer AWS AI stack (know where each service sits):**
 1. **AI Services** (top, easiest): Rekognition, Comprehend, Translate, etc. — pre-trained APIs, no ML knowledge needed.
