@@ -43,7 +43,11 @@ This is my full exam preparation cheat sheet for 2026. Practice it with some pra
 
 👉 AI ⊃ ML ⊃ Deep Learning ⊃ Generative AI.
 
-<img src="assets/ai_hierarchy.png" width="400" height="350"/>
+<p align="center">
+  <img src="assets/ai_hierarchy.png" width="400" height="350"/>
+</p>
+
+
 
 
 ### 1.2 Core Data and Model Terminology
@@ -74,23 +78,42 @@ This is my full exam preparation cheat sheet for 2026. Practice it with some pra
 - **Classification** predicts a **category/class** (yes/no, cat/dog/bird).
 - **Regression** predicts a **continuous numeric value** (price, temperature, demand).
 
+<p align="center">
+  <img src="assets/classification-vs-regression.jpg" width="400" height="250"/>
+</p>
+
+
 ### 1.4 Common ML Problems: Fit, Bias, and Variance
+
+**The three base terms (know these before the problems below):**
+- **Fit**: how well the model's learned pattern matches the underlying pattern in the data. A "good fit" captures the real signal without copying the noise — the two failure modes are *over*fitting and *under*fitting.
+- **Bias**: error from **wrong or oversimplified assumptions** — the model is too rigid to represent reality (e.g., assuming a straight line when the truth is a curve). High bias = consistently wrong in the same direction.
+- **Variance**: error from **being too sensitive to the specific training data** — small changes in the training set produce a very different model. High variance = the model chases noise.
+
+👉 Think of a dartboard: **high bias** = all darts tightly grouped but off-center; **high variance** = darts scattered all over, even if centered on average.
+
+**The resulting problems:**
 - **Overfitting**: model memorizes training data, performs great on training but poorly on new data (**high variance**). Fix: more/diverse data, regularization, early stopping, simpler model.
+  - *Example:* a loan-default model scores **99% on training data but 62% on test data** — it memorized individual applicants instead of learning general risk patterns.
 - **Underfitting**: model is too simple to capture patterns, performs poorly everywhere (**high bias**). Fix: more features, more complex model, train longer.
+  - *Example:* fitting a **straight line to clearly curved** sales data — **58% on training and 57% on test**; bad everywhere, not just on new data.
 - **Bias-variance tradeoff**: the balancing act between the two; the goal is a model that **generalizes** to unseen data.
+  - *Example:* a decision tree at depth 2 underfits, at depth 50 overfits; depth ~8 hits the sweet spot with **88% training / 86% test** — the small gap is the sign of a model that generalizes.
+
+**Exam tip:** the giveaway is the *gap* between training and test scores. **Big gap = overfitting. Both scores low = underfitting.**
 
 ### 1.5 Model Evaluation Metrics (know which metric fits which problem)
 
-| Metric | Problem type | Meaning |
-|---|---|---|
-| **Accuracy** | Classification | % of all predictions that were correct (misleading on imbalanced data) |
-| **Precision** | Classification | Of predicted positives, how many were actually positive (minimize **false positives**) |
-| **Recall** | Classification | Of actual positives, how many were caught (minimize **false negatives**, e.g., medical screening) |
-| **F1 score** | Classification | Harmonic mean of precision and recall (balanced view on imbalanced data) |
-| **AUC-ROC** | Classification | Ability to distinguish classes across thresholds (1.0 = perfect, 0.5 = random) |
-| **Confusion matrix** | Classification | Table of true/false positives/negatives |
-| **MAE / MSE / RMSE** | Regression | Average size of prediction errors (lower = better) |
-| **R² (R-squared)** | Regression | How much variance the model explains |
+| Metric | Problem type | Meaning | Example |
+|---|---|---|---|
+| **Accuracy** | Classification | % of all predictions that were correct (misleading on imbalanced data) | 90 correct out of 100 emails = 90%. But if only 1% of transactions are fraud, always predicting "not fraud" scores 99% and catches nothing |
+| **Precision** | Classification | Of predicted positives, how many were actually positive (minimize **false positives**) | Spam filter flags 100 emails, 95 really are spam → precision 95%. The 5 legit emails sent to junk are the cost |
+| **Recall** | Classification | Of actual positives, how many were caught (minimize **false negatives**, e.g., medical screening) | 200 patients have the disease, the screen catches 180 → recall 90%. The 20 missed cases are the cost |
+| **F1 score** | Classification | Harmonic mean of precision and recall (balanced view on imbalanced data) | Precision 0.90 + recall 0.50 → F1 ≈ 0.64 (a plain average would flatter it at 0.70) |
+| **AUC-ROC** | Classification | Ability to distinguish classes across thresholds (1.0 = perfect, 0.5 = random) | A churn model scoring AUC 0.87 ranks a random churner above a random non-churner 87% of the time |
+| **Confusion matrix** | Classification | Table of true/false positives/negatives | 1,000 loan applications → 850 TN, 90 TP, 40 FP (wrongly denied), 20 FN (bad loans approved) |
+| **MAE / MSE / RMSE** | Regression | Average size of prediction errors (lower = better) | House-price model with RMSE of $18,000 is off by roughly $18k per home; MSE/RMSE punish a single $200k miss far harder than MAE |
+| **R² (R-squared)** | Regression | How much variance the model explains | R² = 0.82 → the features explain 82% of the variation in sales; the other 18% is unexplained |
 
 ### 💡Note:
 A classic exam pattern: "A hospital wants to catch every possible case of a disease" → optimize **recall**. "A spam filter must never block a legitimate email" → optimize **precision**.
