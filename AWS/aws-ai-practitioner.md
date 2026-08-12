@@ -48,17 +48,17 @@ This is my full exam preparation cheat sheet for 2026. Practice it with some pra
 
 ### 1.2 Core Data and Model Terminology
 
-| Term | Definition |
-|---|---|
-| **Labeled data** | Data with known answers/tags attached (required for supervised learning) |
-| **Unlabeled data** | Raw data without tags (used in unsupervised/self-supervised learning) |
-| **Structured data** | Tabular data with rows/columns (databases, CSV) |
-| **Unstructured data** | Text, images, audio, video, no predefined format |
-| **Training data** | Data the model learns from |
-| **Validation data** | Data used to tune hyperparameters during training |
-| **Test data** | Held-out data used to measure final model performance |
-| **Features** | Input variables the model uses to make predictions |
-| **Inference** | Using a trained model to make predictions on new data |
+| Term | Definition | Example |
+|---|---|---|
+| **Labeled data** | Data with known answers/tags attached (required for supervised learning) | 10,000 emails each tagged `spam` or `not spam`; photos tagged `cat` / `dog` |
+| **Unlabeled data** | Raw data without tags (used in unsupervised/self-supervised learning) | A folder of 1M product reviews with no rating or category attached |
+| **Structured data** | Tabular data with rows/columns (databases, CSV) | An RDS `customers` table with columns `age`, `income`, `churned` |
+| **Unstructured data** | Text, images, audio, video, no predefined format | Support-call recordings, scanned PDFs, X-ray images in S3 |
+| **Training data** | Data the model learns from | 70% of the housing dataset used to fit the price-prediction model |
+| **Validation data** | Data used to tune hyperparameters during training | 15% held aside to compare learning rates 0.01 vs. 0.001 |
+| **Test data** | Held-out data used to measure final model performance | The final 15% the model never saw, used to report 92% accuracy |
+| **Features** | Input variables the model uses to make predictions | `square_footage`, `bedrooms`, `zip_code` for a house-price model |
+| **Inference** | Using a trained model to make predictions on new data | Sending a new listing to a SageMaker endpoint and getting back "$412,000" |
 
 ### 1.3 Types of Machine Learning (heavily tested — know when each applies)
 
