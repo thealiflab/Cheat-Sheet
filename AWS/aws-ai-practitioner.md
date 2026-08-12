@@ -223,13 +223,15 @@ The lifecycle is a **loop, not a straight line** — monitoring feeds back into 
 
 #### 💡 Exam patterns
 
-| The question says... | The answer is... |
-|---|---|
-| "**Sub-second** response for users", "live", "interactive" | **Real-time** |
-| "Traffic is **unpredictable / intermittent**", "don't pay for idle", "no infrastructure to manage" | **Serverless** |
-| "**Large payloads**" or "long processing time" but a wait is fine | **Asynchronous** |
-| "Score **all records** overnight", "no endpoint needed", "**lowest cost**" | **Batch transform** |
-| "Cold start is acceptable" | **Serverless** (this phrase is the giveaway) |
+| The question says... | Example exam scenario | The answer is... |
+|---|---|---|
+| "**Sub-second** response for users", "live", "interactive" | *"An e-commerce site must approve or decline a card transaction before the checkout page loads, with steady traffic all day. Which inference option?"* | **Real-time** |
+| "Traffic is **unpredictable / intermittent**", "don't pay for idle", "no infrastructure to manage" | *"An internal HR tool classifies a handful of résumés a few times a day. The team doesn't want to pay for an idle endpoint or manage servers."* | **Serverless** |
+| "**Large payloads**" or "long processing time" but a wait is fine | *"A media company submits 500 MB video files for content moderation; results are needed within the hour, not instantly."* | **Asynchronous** |
+| "Score **all records** overnight", "no endpoint needed", "**lowest cost**" | *"A telecom scores its entire 10-million-row customer table for churn risk once a month and writes results back to S3 at the lowest possible cost."* | **Batch transform** |
+| "Cold start is acceptable" | *"A startup is launching a new feature with unknown demand and can tolerate a short delay on the first request after an idle period."* | **Serverless** (this phrase is the giveaway) |
+| "Steady, **predictable** traffic" + low latency | *"A support chatbot serves a constant ~200 requests per second and must reply instantly."* | **Real-time** (serverless would add cold starts) |
+| Request **exceeds the size or timeout limit** of a real-time endpoint | *"A team's real-time endpoint fails on 200 MB inputs that take 12 minutes to process. What should they switch to?"* | **Asynchronous** (real-time caps at ~6 MB / 60s) |
 
 ### <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="48" height="48"/> &nbsp;1.8 Amazon SageMaker AI (the build-it-yourself ML platform)
 
