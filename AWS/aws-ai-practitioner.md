@@ -43,6 +43,9 @@ This is my full exam preparation cheat sheet for 2026. Practice it with some pra
 
 👉 AI ⊃ ML ⊃ Deep Learning ⊃ Generative AI.
 
+<img src="assets/ai_hierarchy.png" width="400" height="350"/>
+
+
 ### 1.2 Core Data and Model Terminology
 
 | Term | Definition |
