@@ -292,33 +292,93 @@ SageMaker offers four options, and the exam picks between them on **how fast the
 
 ### 2.1 Core GenAI Concepts (memorize these definitions)
 
-| Concept | Definition |
-|---|---|
-| **Foundation Model (FM)** | Very large model pre-trained on broad data, adaptable to many downstream tasks |
-| **Large Language Model (LLM)** | A foundation model specialized in understanding/generating **text** |
-| **Token** | The basic unit of text an LLM processes (~a word fragment; you're billed per token) |
-| **Embedding** | A numeric **vector** representation of text/images that captures semantic meaning; similar meanings → nearby vectors |
-| **Vector database** | Stores embeddings and finds semantically similar items (powers RAG search) |
-| **Transformer** | The neural network architecture behind modern LLMs; uses **self-attention** to weigh relationships between all tokens at once |
-| **Context window** | Maximum number of tokens a model can consider in one request (prompt + response) |
-| **Prompt** | The input/instruction given to a model |
-| **Completion / Response** | The model's generated output |
-| **Multimodal model** | Handles multiple data types (e.g., text + images in, text out) |
-| **Diffusion model** | Architecture behind image generators; iteratively removes noise to create images (e.g., Stable Diffusion, Amazon Titan/Nova image models) |
-| **Unimodal model** | Works with a single data type (text in, text out) |
+Domain 2 assumes this vocabulary in every question, so learn it first. The concepts are grouped below by what they describe: **the models**, **how text is represented**, and **how a request is structured**.
+
+#### A. The models themselves
+
+| Concept | Definition | In plain English / Example |
+|---|---|---|
+| **Foundation Model (FM)** | A very large model **pre-trained on broad, unlabeled data** (self-supervised) that can be adapted to many different downstream tasks without retraining from scratch | A **university graduate**: broadly educated, then quickly trained for a specific job. One FM can summarize, translate, and write code — older ML needed a separate model per task |
+| **Large Language Model (LLM)** | A foundation model specialized in understanding and generating **text** | Claude, Amazon Nova, Llama. **All LLMs are FMs, but not all FMs are LLMs** (image models are FMs too) |
+| **Transformer** | The neural-network **architecture** behind modern LLMs. Its **self-attention** mechanism weighs the relationship between *all* tokens at once rather than reading strictly left-to-right | Reading the whole sentence before deciding what "it" refers to. Processing tokens in **parallel** is what made training at this scale possible |
+| **Diffusion model** | The architecture behind **image generators**: starts from pure noise and **iteratively removes it** until an image matching the prompt emerges | Sculpting a statue out of static. Used by Stable Diffusion and Amazon Titan/Nova image models |
+| **Unimodal model** | Works with a **single** data type | Text in → text out |
+| **Multimodal model** | Accepts and/or produces **multiple** data types | Upload a photo of your fridge and ask "what can I cook?" — image + text in, text out |
+
+#### B. How text is represented
+
+| Concept | Definition | In plain English / Example |
+|---|---|---|
+| **Token** | The basic unit of text a model processes — roughly a word fragment. Models don't see letters or words, only tokens, and **you are billed per token (input + output)** | "unbelievable" might split into `un` + `believ` + `able`. **Rule of thumb: 1 token ≈ 4 characters ≈ ¾ of a word**, so 1,000 tokens ≈ 750 words |
+| **Embedding** | A numeric **vector** representation of text or images that captures **semantic meaning**, so similar meanings sit close together in vector space | "king" and "queen" land near each other; "king" and "banana" don't. This is what lets search match **meaning instead of exact keywords** |
+| **Vector database** | Stores embeddings and retrieves the most **semantically similar** items to a query | The searchable memory behind **RAG** (see 3.2). AWS options: OpenSearch Serverless, Aurora pgvector, Neptune Analytics |
+
+👉 **Tokens vs. embeddings** (easy to confuse): a **token** is a *chunk of text*; an **embedding** is a *list of numbers representing meaning*. Tokenizing splits the text up; embedding turns it into coordinates.
+
+#### C. Structuring a request
+
+| Concept | Definition | In plain English / Example |
+|---|---|---|
+| **Prompt** | The input or instruction given to the model | *"Summarize this contract in 3 bullet points."* Quality of prompt drives quality of output — hence prompt engineering |
+| **Completion / Response** | The model's generated output | The 3 bullet points that come back |
+| **Context window** | The **maximum tokens a model can consider in one request — prompt *and* response combined**. It is the model's short-term memory and it does **not** persist between calls | A 200K-token window fits a ~500-page book. Exceed it and the request fails or the earliest content is dropped — a common cause of a chatbot "forgetting" the start of a long conversation |
+
+**Cost and limits both run on tokens**, which is why the exam keeps returning to them: longer prompts mean higher cost, higher latency, and a greater risk of hitting the context window.
 
 ### 2.2 How LLMs Generate Text
-LLMs predict the **next most likely token** repeatedly. Generation is controlled by **inference parameters**:
 
-| Parameter | Effect |
+#### The core mechanic: one token at a time
+
+An LLM does **not** plan a whole answer. It repeatedly predicts the **next most likely token**, appends it to the text, and feeds the result back in as the new input. This loop is called **autoregressive generation**.
+
+```
+"The weather today is" → [model] → "sunny"
+"The weather today is sunny" → [model] → " and"
+"The weather today is sunny and" → [model] → " warm"   ... and so on
+```
+
+At each step the model produces a **probability distribution over every possible next token**:
+
+| Candidate token | Probability |
 |---|---|
-| **Temperature** | Randomness/creativity. Low (→0) = deterministic, factual. High = creative, varied |
-| **Top-p (nucleus sampling)** | Consider only tokens whose cumulative probability ≤ p (lower = safer choices) |
-| **Top-k** | Consider only the k most likely next tokens |
-| **Max tokens** | Caps response length (controls cost too) |
-| **Stop sequences** | Strings that halt generation when produced |
+| "sunny" | 40% |
+| "cloudy" | 25% |
+| "rainy" | 20% |
+| "windy" | 10% |
+| "purple" | 5% |
 
-👉 Exam pattern: "responses should be consistent and repeatable" → **lower the temperature**. "Responses should be more creative" → **raise it**.
+**Inference parameters decide how that list gets turned into an actual choice.** Always picking the top token would make output repetitive and robotic, so the model *samples* — and that sampling is what you control.
+
+👉 This also explains two things the exam tests: **why LLMs are non-deterministic** (sampling means the same prompt can give different answers), and **why they hallucinate** (the model optimizes for *plausible next token*, not *true statement* — it has no fact-checking step).
+
+#### The inference parameters
+
+| Parameter | What it controls | How it works | Typical values |
+|---|---|---|---|
+| **Temperature** | **Randomness / creativity** | Reshapes the probability distribution. **Low (→0)** sharpens it — the top token dominates, output is focused and near-deterministic. **High (→1+)** flattens it, giving unlikely tokens ("purple") a real chance | **0-0.3** factual Q&A, extraction, code · **0.7-1.0** brainstorming, marketing copy |
+| **Top-k** | **How many candidates** are eligible | Keeps only the **k most likely** tokens and samples from those. A fixed-size shortlist | `k=3` → only "sunny", "cloudy", "rainy" can be chosen |
+| **Top-p** (nucleus sampling) | **How much probability mass** is eligible | Adds tokens from most to least likely until their probabilities reach **p**, then samples from that set. The shortlist **resizes itself** based on model confidence | `p=0.85` → "sunny" + "cloudy" + "rainy" (0.40+0.25+0.20). `p=0.5` → just "sunny" + "cloudy" |
+| **Max tokens** | **Response length** | Hard cap on tokens generated. Also a **direct cost and latency control** | Set it deliberately — output tokens are billed |
+| **Stop sequences** | **Where to stop** | Generation halts immediately if the model produces one of these strings | `"\n\nHuman:"` to stop a chat turn running on |
+
+**Top-k vs. top-p** — both trim the candidate list, but top-k is a fixed count while top-p adapts: when the model is confident (one token at 95%), top-p narrows to almost nothing; when it's unsure (many similar options), top-p widens. **Guidance: tune temperature *or* top-p, not both** — stacking them makes behavior hard to reason about.
+
+**Generation stops when** one of three things happens: max tokens is reached, a stop sequence appears, or the model emits its own end-of-sequence token.
+
+#### 💡 Exam patterns
+
+| The question says... | Example exam scenario | The answer is... | Why |
+|---|---|---|---|
+| "Consistent, **repeatable**, factual answers" | *"A bank's assistant answers policy questions. Two employees asking the same question must get the same answer."* | **Lower the temperature** (toward 0) | Sharpens the distribution so the top token wins nearly every time |
+| "More **creative / diverse / varied** output" | *"A marketing team complains the model produces the same bland slogan every time and wants more variety."* | **Raise the temperature** (0.7-1.0) | Flattens the distribution so lower-probability tokens get chosen |
+| "Responses are **too long** / cost is too high" | *"A summarization feature returns multi-page answers, driving up per-request cost."* | **Reduce max tokens** | Output tokens are billed; this is the direct cost lever |
+| "Model **keeps generating past** where it should" | *"A chatbot answers, then invents the user's next question and answers that too."* | **Add a stop sequence** | Halts generation the moment that string appears |
+| "Restrict to a **fixed number** of candidate words" | *"A team wants the model to only ever consider its 10 most likely next words."* | **Top-k** | Fixed-size shortlist, regardless of confidence |
+| "Restrict by **probability mass** / adapt to confidence" | *"A team wants a narrow candidate set when the model is confident but a wider one when it isn't."* | **Top-p** (nucleus sampling) | The shortlist resizes itself with the distribution |
+| "Same prompt gives **different answers** each time" | *"A QA tester files a bug: identical prompts return different wording on each run."* | Not a bug — LLMs are **non-deterministic**; lower temperature to reduce it | Output is *sampled* from a distribution, not looked up |
+| "The model states **false facts confidently**" | *"An assistant cites a court case that doesn't exist."* | **Hallucination** — lower temperature helps slightly; the real fix is **RAG** (see 3.2) | The model predicts plausible tokens, not verified truth |
+| Answer choices offer **both** temperature and top-p tuning | *"Which single change increases response diversity?"* | Adjust **one**, not both | Stacking them makes behavior unpredictable — standard AWS guidance |
+| "Reduce **latency** of responses" | *"A voice assistant's replies take too long to start speaking."* | **Reduce max tokens** (and prompt length) | Fewer tokens generated = less time; latency scales with output length |
 
 ### 2.3 GenAI Use Cases and Limitations
 **Use cases:** text generation/summarization, chatbots and virtual assistants, code generation, image/video/audio generation, translation, search, recommendation, data augmentation.
