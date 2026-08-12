@@ -152,15 +152,17 @@ Running example: a **house-price model**, predictions off by $10k on four homes 
 
 #### 💡 Exam patterns to memorize
 
-| The question says... | The answer is... |
-|---|---|
-| "Catch **every** possible case" (disease, fraud, threat) | **Recall** |
-| "Must **never** flag a legitimate one" (spam, loan denial) | **Precision** |
-| "Balance both" / "data is imbalanced" | **F1 score** |
-| "99% accuracy but the model is useless" | Imbalanced data — accuracy is the wrong metric |
-| "Compare models across all thresholds" | **AUC-ROC** |
-| "Predicting a price / amount / temperature" | **RMSE, MAE, or R²** (never accuracy or F1) |
-| "Large errors are especially costly" | **RMSE** (over MAE) |
+| The question says... | Example exam scenario | The answer is... |
+|---|---|---|
+| "Catch **every** possible case" (disease, fraud, threat) | *"A hospital screens for a rare cancer. Missing a case delays treatment; a false alarm only triggers a second test. Which metric should the team optimize?"* | **Recall** |
+| "Must **never** flag a legitimate one" (spam, loan denial) | *"A bank's spam filter quarantines customer emails. Blocking a legitimate email risks losing a client. Which metric matters most?"* | **Precision** |
+| "Balance both" / "data is imbalanced" | *"Only 0.2% of transactions are fraudulent. The company needs a single metric that reflects both missed fraud and false alarms."* | **F1 score** |
+| "99% accuracy but the model is useless" | *"A defect-detection model reports 99% accuracy, yet the factory says it never flags a defective unit. What explains this?"* | Imbalanced data — accuracy is the wrong metric (the model just predicts the majority class) |
+| "Compare models across all thresholds" | *"A team must choose between three churn models before deciding on a cutoff score. Which metric compares overall separating power?"* | **AUC-ROC** |
+| "Predicting a price / amount / temperature" | *"A retailer forecasts next month's sales in dollars. Which metric evaluates the model?"* | **RMSE, MAE, or R²** (never accuracy or F1) |
+| "Large errors are especially costly" | *"An energy company predicts grid demand; a single large under-forecast causes a blackout, while small misses are harmless."* | **RMSE** (over MAE) |
+| "Explain how much the features account for" | *"A stakeholder asks what proportion of the variation in house prices the model actually explains."* | **R²** |
+| "Show me where the model is making mistakes" | *"An analyst wants to see how many defective items were passed as good vs. how many good items were rejected."* | **Confusion matrix** |
 
 ### 1.6 The ML Development Lifecycle (ML pipeline)
 1. **Define the business problem** (and whether ML is even appropriate)
