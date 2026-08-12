@@ -206,12 +206,30 @@ The lifecycle is a **loop, not a straight line** — monitoring feeds back into 
 
 ### 1.7 Inference Types
 
-| Type | Latency | Use case |
-|---|---|---|
-| **Real-time inference** | Milliseconds, persistent endpoint | Chatbots, fraud checks at checkout |
-| **Batch inference** | Minutes-hours, no persistent endpoint | Nightly scoring of a whole dataset (cheapest for bulk) |
-| **Asynchronous inference** | Near real-time, queued | Large payloads with tolerable wait |
-| **Serverless inference** | On-demand, scales to zero | Intermittent/unpredictable traffic |
+**Inference** is step 7 of the lifecycle: using the trained model in production. SageMaker offers four options, and the exam picks between them on **how fast the answer is needed, how big the payload is, and how steady the traffic is**. Listed here **fastest first**:
+
+| Type | Latency | Endpoint / cost model | Payload & traffic | Best for |
+|---|---|---|---|---|
+| **Real-time inference** | **Milliseconds** — consistently the lowest | **Always-on** endpoint; you pay 24/7 whether used or not (most expensive) | Small payloads (~6 MB), **steady, predictable** traffic | Chatbots, fraud check at checkout, live product recommendations |
+| **Serverless inference** | **Milliseconds — but with cold starts** after idle periods | No servers to manage; **scales to zero**, pay per request only | Small payloads, **intermittent / spiky / unpredictable** traffic | An internal tool used a few times an hour; new apps with unknown traffic |
+| **Asynchronous inference** | **Seconds to minutes** — requests are **queued** | Endpoint that can **scale to zero** when the queue is empty | **Large payloads (up to ~1 GB)** and long processing times (up to ~1 hour) | Large video/image analysis, long documents — a wait is acceptable |
+| **Batch transform** | **Minutes to hours** | **No persistent endpoint at all** — spins up, runs, shuts down. **Cheapest** | Entire datasets read from S3, results written back to S3 | Nightly churn scoring of all customers; monthly demand forecast |
+
+**The tradeoff in one line:** speed costs money. Real-time is fastest and priciest because the endpoint idles at your expense; batch is slowest and cheapest because nothing runs between jobs.
+
+**Serverless vs. real-time** — both are millisecond-class, so the deciding factor is **traffic pattern, not speed**: steady traffic → real-time; sporadic traffic where you don't want to pay for idle time → serverless (accepting occasional cold-start delay).
+
+**Asynchronous vs. batch** — both tolerate waiting, so the deciding factor is **how requests arrive**: one large request at a time as it comes in → asynchronous; a whole dataset processed in one sweep → batch.
+
+#### 💡 Exam patterns
+
+| The question says... | The answer is... |
+|---|---|
+| "**Sub-second** response for users", "live", "interactive" | **Real-time** |
+| "Traffic is **unpredictable / intermittent**", "don't pay for idle", "no infrastructure to manage" | **Serverless** |
+| "**Large payloads**" or "long processing time" but a wait is fine | **Asynchronous** |
+| "Score **all records** overnight", "no endpoint needed", "**lowest cost**" | **Batch transform** |
+| "Cold start is acceptable" | **Serverless** (this phrase is the giveaway) |
 
 ### <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="48" height="48"/> &nbsp;1.8 Amazon SageMaker AI (the build-it-yourself ML platform)
 
