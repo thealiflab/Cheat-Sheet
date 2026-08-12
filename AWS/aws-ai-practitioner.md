@@ -104,19 +104,63 @@ This is my full exam preparation cheat sheet for 2026. Practice it with some pra
 
 ### 1.5 Model Evaluation Metrics (know which metric fits which problem)
 
-| Metric | Problem type | Meaning | Example |
-|---|---|---|---|
-| **Accuracy** | Classification | % of all predictions that were correct (misleading on imbalanced data) | 90 correct out of 100 emails = 90%. But if only 1% of transactions are fraud, always predicting "not fraud" scores 99% and catches nothing |
-| **Precision** | Classification | Of predicted positives, how many were actually positive (minimize **false positives**) | Spam filter flags 100 emails, 95 really are spam → precision 95%. The 5 legit emails sent to junk are the cost |
-| **Recall** | Classification | Of actual positives, how many were caught (minimize **false negatives**, e.g., medical screening) | 200 patients have the disease, the screen catches 180 → recall 90%. The 20 missed cases are the cost |
-| **F1 score** | Classification | Harmonic mean of precision and recall (balanced view on imbalanced data) | Precision 0.90 + recall 0.50 → F1 ≈ 0.64 (a plain average would flatter it at 0.70) |
-| **AUC-ROC** | Classification | Ability to distinguish classes across thresholds (1.0 = perfect, 0.5 = random) | A churn model scoring AUC 0.87 ranks a random churner above a random non-churner 87% of the time |
-| **Confusion matrix** | Classification | Table of true/false positives/negatives | 1,000 loan applications → 850 TN, 90 TP, 40 FP (wrongly denied), 20 FN (bad loans approved) |
-| **MAE / MSE / RMSE** | Regression | Average size of prediction errors (lower = better) | House-price model with RMSE of $18,000 is off by roughly $18k per home; MSE/RMSE punish a single $200k miss far harder than MAE |
-| **R² (R-squared)** | Regression | How much variance the model explains | R² = 0.82 → the features explain 82% of the variation in sales; the other 18% is unexplained |
+**The metric depends on the problem type.** Classification (predicting a category) and regression (predicting a number) use completely different metrics — never mix them. An exam answer offering "RMSE" for a spam-detection question is wrong on sight.
 
-### 💡Note:
-A classic exam pattern: "A hospital wants to catch every possible case of a disease" → optimize **recall**. "A spam filter must never block a legitimate email" → optimize **precision**.
+#### Step 1: The confusion matrix (everything else is built from it)
+
+Every classification prediction lands in one of four buckets. Pick which class is the "positive" one first (usually the rare/interesting thing: fraud, disease, churn).
+
+|  | **Model predicts POSITIVE** | **Model predicts NEGATIVE** |
+|---|---|---|
+| **Actually POSITIVE** | ✅ **TP** — True Positive (correctly caught) | ❌ **FN** — False Negative (**missed it**) |
+| **Actually NEGATIVE** | ❌ **FP** — False Positive (**false alarm**) | ✅ **TN** — True Negative (correctly ignored) |
+
+- **False Positive = false alarm.** You flagged something innocent.
+- **False Negative = a miss.** The real case slipped through.
+
+👉 Which error hurts more is a *business* decision, not a math one — and that is exactly what the exam asks about.
+
+#### Step 2: Classification metrics
+
+Running example: **1,000 transactions, 100 of them actually fraud.** The model flags 80 as fraud, and 60 of those are real fraud.
+→ **TP = 60, FP = 20, FN = 40, TN = 880**
+
+| Metric | Formula | In plain English | Our example | Use when |
+|---|---|---|---|---|
+| **Accuracy** | (TP + TN) / all | Of all predictions, how many were right? | (60 + 880) / 1000 = **94%** | Classes are **balanced**. Dangerously misleading otherwise |
+| **Precision** | TP / (TP + FP) | When it says "yes", how often is it right? | 60 / 80 = **75%** | **False alarms are expensive** (blocking good emails, wrongly denying loans) |
+| **Recall** (Sensitivity, TPR) | TP / (TP + FN) | Of everything it should have caught, how much did it catch? | 60 / 100 = **60%** | **Misses are dangerous** (cancer screening, fraud, security threats) |
+| **F1 score** | 2 × (P × R) / (P + R) | Single balanced score combining precision and recall | 2 × (.75 × .60) / 1.35 = **0.67** | You need **one number** and the data is imbalanced |
+| **AUC-ROC** | Area under the TPR-vs-FPR curve | How well it separates the two classes at **any** threshold | e.g. **0.87** | Comparing models **independent of threshold**. 1.0 = perfect, 0.5 = coin flip |
+
+**Read the example row-by-row and the lesson jumps out:** accuracy says **94%** — sounds excellent. But recall is **60%**, meaning **40 frauds walked straight through**. On imbalanced data, accuracy flatters a bad model. This is the single most-tested idea in this section.
+
+**The precision/recall tradeoff:** they pull against each other. Lower the threshold and you flag more transactions → recall goes up, precision goes down (more false alarms). Raise it and the reverse happens. You **cannot** maximize both; you choose based on which error costs more.
+
+#### Step 3: Regression metrics (predicting a number)
+
+Running example: a **house-price model**, predictions off by $10k on four homes and $200k on a fifth.
+
+| Metric | Formula | In plain English | Our example | Notes |
+|---|---|---|---|---|
+| **MAE** (Mean Absolute Error) | avg( \|actual − predicted\| ) | Average miss, in the original units | **$48,000** | Treats all errors equally; **robust to outliers** |
+| **MSE** (Mean Squared Error) | avg( (actual − predicted)² ) | Average *squared* miss | **8.08 billion** | Units are squared (dollars²) → hard to interpret |
+| **RMSE** (Root MSE) | √MSE | Squared-error penalty, back in original units | **≈ $90,000** | **Punishes large errors hard** — use when big misses are unacceptable |
+| **R²** (R-squared) | 1 − (model error / baseline error) | % of the variation the model explains | e.g. **0.82** | 1.0 = perfect, 0 = no better than predicting the average |
+
+👉 **MAE $48k vs. RMSE $90k from the same predictions.** The gap is entirely the one $200k miss — squaring it makes it dominate. **A big RMSE-vs-MAE gap means a few large errors are hiding in your model.**
+
+#### 💡 Exam patterns to memorize
+
+| The question says... | The answer is... |
+|---|---|
+| "Catch **every** possible case" (disease, fraud, threat) | **Recall** |
+| "Must **never** flag a legitimate one" (spam, loan denial) | **Precision** |
+| "Balance both" / "data is imbalanced" | **F1 score** |
+| "99% accuracy but the model is useless" | Imbalanced data — accuracy is the wrong metric |
+| "Compare models across all thresholds" | **AUC-ROC** |
+| "Predicting a price / amount / temperature" | **RMSE, MAE, or R²** (never accuracy or F1) |
+| "Large errors are especially costly" | **RMSE** (over MAE) |
 
 ### 1.6 The ML Development Lifecycle (ML pipeline)
 1. **Define the business problem** (and whether ML is even appropriate)
