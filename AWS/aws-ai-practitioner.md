@@ -580,66 +580,260 @@ This section is easy points: the questions are usually "which AWS benefit addres
 
 # <img src="assets/Artificial-Intelligence/Bedrock-AgentCore.svg" width="48" height="48"/> &nbsp;DOMAIN 3: APPLICATIONS OF FOUNDATION MODELS (28%, largest weight)
 
+**What this domain is really about:** Domains 1 and 2 asked *what* things are. Domain 3 — the largest slice of the exam — asks *how you actually build something*. Every topic here is a step in the same journey: **pick a model → feed it your knowledge (RAG) → talk to it well (prompting) → change it if needed (fine-tuning) → prove it works (evaluation) → let it take actions (agents) → wire it all together (architecture)**. Keep that order in mind and the whole domain hangs together as one story.
+
 ### 3.1 Criteria for Selecting a Foundation Model
-- **Modality**: text, image, multimodal, embeddings?
-- **Model size / capability**: bigger ≈ more capable but slower and pricier.
-- **Context window size**: how much text must fit in one request?
-- **Latency and cost** requirements (per-token pricing).
-- **Customization options**: does it support fine-tuning?
-- **Language/domain coverage**, licensing, and provider terms.
-- **Benchmark performance** on your actual task (always evaluate on your own data).
+
+There is no "best" foundation model — only the best fit for a specific job and budget. The exam gives you a business requirement and expects you to name the criterion that decides it.
+
+| Criterion | The question it answers | Why it decides things |
+|---|---|---|
+| **Modality** | What kind of data goes in and comes out — text, image, audio, video, **multimodal**, or **embeddings**? | A text-only model can't caption photos. This is the **first filter**: it eliminates most candidates instantly |
+| **Model size / capability** | How hard is the reasoning? | Bigger ≈ smarter, but **slower and pricier**. A simple classification job does not need the largest model |
+| **Context window** | How much text must fit in a **single request**? | Measured in tokens. Summarizing a 300-page contract in one call needs a large window; a short chat does not |
+| **Latency** | Does a human wait for the answer in real time? | Interactive chat needs a fast, smaller model; an overnight batch job does not |
+| **Cost** | What's the per-token price × expected volume? | Remember **input tokens are billed too**, so long RAG contexts drive real cost |
+| **Customization support** | Can it be fine-tuned or continued pre-trained? | Not every model in Bedrock supports customization — this can rule one out |
+| **Language and domain coverage** | Does it handle the languages/jargon you need? | A model strong in English may be weak in Japanese or in medical terminology |
+| **Licensing and provider terms** | Are the usage rights acceptable? | Commercial-use restrictions and data-handling terms vary by provider |
+| **Benchmark and task performance** | Does it do well on **your** task? | Public benchmarks are a starting point only — **always evaluate on your own data** |
+| **Responsible-AI profile** | Known bias, safety behavior, transparency | Check the provider's documentation and **AWS AI Service Cards** |
+
+👉 **The cost/quality tradeoff in one line:** larger model = better quality, higher latency, higher price. When a question emphasizes **speed or cost**, the intended answer is usually **a smaller model** (or distillation) — not a bigger one.
+
+👉 **The two-step method the exam rewards:** first filter by **hard requirements** (modality, context window, language, customization support), then choose among survivors by **cost, latency, and measured accuracy on your own data**.
+
+#### 💡 Exam patterns
+
+| The question says... | The answer is... |
+|---|---|
+| "Analyze **images and text together**" | A **multimodal** model — modality is the deciding criterion |
+| "Summarize very **long documents in one request**" | **Context window** size |
+| "Responses must be **instant** for chat users" and cost matters | A **smaller/faster** model — latency and cost |
+| "Which model is **best**?" | **Evaluate on your own data** — no universal best model |
+| "Convert text into **vectors** for search" | An **embeddings** model (e.g., Amazon Titan Embeddings) |
+| "We must be able to **fine-tune** it later" | **Customization support** narrows the choice |
 
 ### 3.2 Retrieval-Augmented Generation (RAG) — know this flow cold
-1. Your documents are split into **chunks** → 2. an **embeddings model** converts chunks to vectors → 3. vectors are stored in a **vector database** → 4. a user's question is embedded and **semantically similar chunks are retrieved** → 5. retrieved context + question are sent to the LLM → 6. the LLM answers **grounded in your data**, reducing hallucinations, with no retraining.
 
-**AWS vector database options (recognize these):** Amazon OpenSearch Service (with vector engine), Amazon Aurora PostgreSQL / RDS for PostgreSQL (**pgvector**), Amazon Neptune (graph + vectors), Amazon DocumentDB, Amazon MemoryDB, Amazon S3 Vectors.
+**The plain-English idea:** an FM only knows what it saw during training. RAG hands it the right pages from *your* documents at the moment of the question, so it can answer about things it never learned. It's the **open-book exam** for a model — and no retraining is involved.
+
+**The two phases.** The exam sometimes splits these, so keep them separate in your head:
+
+**Phase 1 — Ingestion (done ahead of time, once per document):**
+1. **Chunk** — split your documents into passages small enough to be meaningful and to fit in a prompt.
+2. **Embed** — an **embeddings model** turns each chunk into a **vector** (a list of numbers capturing its *meaning*).
+3. **Store** — the vectors go into a **vector database**, indexed for similarity search.
+
+**Phase 2 — Retrieval and generation (every time a user asks something):**
+4. **Embed the question** using the *same* embeddings model, then find the **semantically most similar chunks** (nearest vectors).
+5. **Augment the prompt** — the retrieved chunks are pasted in as context alongside the user's question.
+6. **Generate** — the LLM answers **grounded in your data**, and can **cite the source chunks**.
+
+👉 **Why vectors and not keyword search:** embeddings capture meaning, so a question about "time off policy" retrieves a chunk titled "annual leave entitlement" even though **no words match**. That's **semantic search**, and it's the whole point of the vector database.
+
+**What RAG buys you (each of these is a possible exam answer):** current, up-to-the-minute knowledge without retraining · **fewer hallucinations** (answers grounded in real text) · **citations** for traceability · access to **private data** the model never saw · **per-user permissions** enforced at retrieval time · far cheaper than fine-tuning.
+
+**What RAG does *not* fix:** the model's **tone, style, or output format** — that's fine-tuning territory (see §2.5). RAG also cannot answer if the right chunk isn't retrieved, so **retrieval quality is the usual culprit when a RAG app gives bad answers**.
+
+**AWS vector database options (recognize these as vector stores):**
+
+| Option | Note |
+|---|---|
+| **Amazon OpenSearch Service** (vector engine) | The most common default for Bedrock Knowledge Bases |
+| **Amazon Aurora PostgreSQL / RDS for PostgreSQL** (**pgvector**) | Add vectors to a relational database you already run |
+| **Amazon Neptune Analytics** | Graph relationships **plus** vectors |
+| **Amazon DocumentDB** / **Amazon MemoryDB** | Document and in-memory options (MemoryDB = lowest latency) |
+| **Amazon S3 Vectors** | Low-cost vector storage in S3 |
+| **Amazon Kendra** | Not a vector DB per se — a managed **intelligent search** retrieval layer for RAG |
+
+👉 **On AWS, the managed shortcut is Bedrock Knowledge Bases**: it performs chunking, embedding, vector storage, retrieval, and citation for you. If a question says "**implement RAG with the least operational effort**," that is the answer — not a hand-built pipeline.
+
+#### 💡 Exam patterns
+
+| The question says... | The answer is... |
+|---|---|
+| "Answer from **internal/private documents** without retraining" | **RAG** |
+| "Reduce **hallucinations** by grounding answers in real sources" | **RAG** (plus Guardrails contextual grounding) |
+| "Information changes **daily/weekly**" | **RAG** — fine-tuning would be stale immediately |
+| "What stores the **embeddings**?" | A **vector database** |
+| "What converts text into embeddings?" | An **embeddings model** (e.g., **Titan Embeddings**) |
+| "Users find documents by **meaning, not exact keywords**" | **Semantic search** via vector similarity |
+| "RAG with the **least effort / fully managed**" | **Bedrock Knowledge Bases** |
+| "The RAG app returns **irrelevant answers**" | Fix **retrieval** — chunking strategy, embeddings, or number of retrieved results |
 
 ### 3.3 Prompt Engineering Techniques (heavily tested)
 
-| Technique | Description |
+**Prompt engineering is the cheapest customization there is** (§2.5, rung 1): you change the input, never the model. The exam tests whether you can name a technique from a description.
+
+| Technique | What you do | Use it when |
+|---|---|---|
+| **Zero-shot prompting** | Ask for the task directly, with **no examples** | The task is common and the model already knows it ("Summarize this email") |
+| **One-shot prompting** | Provide **exactly one** worked example | You need to show a format and have a single sample |
+| **Few-shot prompting** | Provide **a handful of worked examples** showing the desired pattern | You need a specific format/style and have 2–5 samples — **the answer whenever a question mentions "a few examples"** |
+| **Chain-of-thought (CoT)** | Ask the model to reason **step by step** before answering ("Let's think step by step") | Math, logic, and multi-step reasoning problems where the model jumps to a wrong answer |
+| **Prompt templates** | Reusable prompt skeletons with **variables** filled at runtime | You need consistency across many requests in an application |
+| **Negative prompting** | State explicitly what the model must **NOT** do or include | Excluding topics, formats, or unwanted elements (common in image generation) |
+| **Role / persona prompting** | Tell the model who to be ("You are a senior tax accountant") | You want a specific voice, expertise level, or audience framing |
+
+**Anatomy of a good prompt** — the four parts the exam expects you to recognize:
+
+| Part | Purpose | Example |
+|---|---|---|
+| **Instruction** | The task | "Summarize the customer complaint below." |
+| **Context** | Background the model needs | "You are a support supervisor at a telecom company." |
+| **Input data** | The actual content to work on | *(the complaint text)* |
+| **Output format indicator** | How the answer should be shaped | "Respond in JSON with keys `issue` and `severity`." |
+
+👉 **Prompt engineering vs. inference parameters:** prompting shapes *what* you ask; **temperature / top-p / top-k** (§2.2) shape *how randomly* the model answers. "Make outputs more consistent and repeatable" → **lower the temperature**, not a better prompt.
+
+**Prompt attacks — know the difference, they are near-identical distractors:**
+
+| Attack | What the attacker is doing | Memory hook |
+|---|---|---|
+| **Prompt injection** | Embeds malicious instructions in the input to **override the system prompt** ("Ignore previous instructions and…") | **Inject** new orders |
+| **Jailbreaking** | Crafts prompts (role-play, hypotheticals) to **bypass safety guardrails** and get forbidden content | **Break out** of the rules |
+| **Prompt leaking** | Tricks the model into **revealing its hidden system prompt** or confidential context | **Leak** the secret instructions |
+| **Poisoning** | Corrupts the **training or knowledge-base data** itself so the model learns bad behavior | Poison the **source** |
+
+**Mitigations:** **Bedrock Guardrails** (filters both input and output), input validation and sanitization, keeping secrets out of prompts, **least-privilege IAM** for agent actions, and human review for high-risk outputs.
+
+#### 💡 Exam patterns
+
+| The question says... | The answer is... |
 |---|---|
-| **Zero-shot prompting** | Ask the task directly with **no examples** |
-| **Few-shot prompting** | Include a **few worked examples** in the prompt to show the desired pattern |
-| **One-shot prompting** | Exactly one example |
-| **Chain-of-thought (CoT)** | Ask the model to reason **step by step** (improves math/logic tasks); e.g., add "think step by step" |
-| **Prompt templates** | Reusable prompt structures with variables filled at runtime |
-| **Negative prompting** | Explicitly state what the model should NOT do/include |
-
-**Anatomy of a good prompt:** instruction (the task) + context (background info) + input data + output format indicator (e.g., "respond in JSON").
-
-**Prompt attacks (know the difference):**
-- **Prompt injection**: attacker embeds malicious instructions in input to override the system prompt.
-- **Jailbreaking**: crafting prompts to bypass the model's safety guardrails.
-- **Prompt leaking**: tricking the model into revealing its hidden system prompt or sensitive context.
-- Mitigations: Bedrock **Guardrails**, input validation, least-privilege agent permissions.
+| "Give the model **a few examples** of the desired output" | **Few-shot prompting** |
+| "No examples provided, just ask" | **Zero-shot prompting** |
+| "Model gets **multi-step math/logic** wrong" | **Chain-of-thought** prompting |
+| "Ensure a **consistent prompt structure** across an application" | **Prompt templates** |
+| "User input contains '**ignore your previous instructions**'" | **Prompt injection** |
+| "User role-plays to get the model to produce **banned content**" | **Jailbreaking** |
+| "Model **revealed its system prompt**" | **Prompt leaking** |
+| "Best defense across all prompt attacks on Bedrock" | **Guardrails** + input validation + least privilege |
 
 ### 3.4 Fine-Tuning in Practice
-- Requires a **labeled dataset** of prompt-completion pairs (instruction tuning).
-- **Domain adaptation fine-tuning**: adapt to industry vocabulary (via continued pre-training on unlabeled domain text).
-- **RLHF**: humans rank outputs; a reward model teaches the FM human preferences (alignment).
-- In Bedrock, fine-tuning creates a **private copy** of the model, served via Provisioned Throughput.
-- Risk: **catastrophic forgetting**, fine-tuning too narrowly can degrade general capabilities.
+
+**When you've already tried prompting and RAG and the model still doesn't *behave* right, you change the model itself.** (Revisit §2.5 for choosing between the options — this section is about doing it.)
+
+| Concept | What it means in practice |
+|---|---|
+| **Instruction tuning** | The standard fine-tune: train on a **labeled dataset of prompt→completion pairs** so the model learns your task, tone, and format |
+| **Domain-adaptation fine-tuning** | Teach industry vocabulary using **continued pre-training on unlabeled domain text** — no labels required |
+| **PEFT / LoRA** | **Parameter-efficient** fine-tuning: updates only a small set of parameters, so it's much **cheaper and faster** with most of the benefit |
+| **RLHF** | Humans **rank** outputs → a **reward model** learns those preferences → the FM is tuned toward them. This is **alignment**, and the keyword is **human preferences** |
+| **In Bedrock** | Fine-tuning creates a **private copy** of the model (your data never trains the base model), and serving it **requires Provisioned Throughput** |
+
+**Data quality is the whole game.** A fine-tune is only as good as its dataset: examples must be **representative, correctly labeled, diverse, and free of bias and PII**. Split data into **training / validation / test** sets, and remember the classic failure — **overfitting**, where the model memorizes the training examples and performs poorly on anything new (§1.4).
+
+**The risks the exam names explicitly:**
+- **Catastrophic forgetting** — tuning too narrowly degrades the model's *general* abilities. The model gets great at your task and worse at everything else.
+- **Cost** — labeling, training compute, and mandatory Provisioned Throughput to serve it.
+- **Staleness** — a fine-tuned model's knowledge is **frozen** at training time; new facts require retraining (this is exactly why **RAG** exists).
+- **Baked-in data** — anything in the training set is available to every user, with no per-document access control.
+
+#### 💡 Exam patterns
+
+| The question says... | The answer is... |
+|---|---|
+| "We have **labeled prompt/response pairs**" | **Fine-tuning (instruction tuning)** |
+| "Large volume of **unlabeled** industry text" | **Continued pre-training / domain adaptation** |
+| "Humans **rank** model responses to align behavior" | **RLHF** |
+| "Fine-tune with **limited budget/compute**" | **PEFT / LoRA** |
+| "Model got better at our task but **worse at general tasks**" | **Catastrophic forgetting** |
+| "Great on training data, **poor on new data**" | **Overfitting** |
+| "How do we run the fine-tuned Bedrock model?" | **Provisioned Throughput** |
 
 ### 3.5 Evaluating Foundation Model Performance
 
-| Method/Metric | Used for |
-|---|---|
-| **ROUGE** | Evaluating **summarization** (overlap with reference summaries) |
-| **BLEU** | Evaluating **translation** quality |
-| **BERTScore** | Semantic similarity between generated and reference text |
-| **Perplexity** | How well a model predicts text (lower = better) |
-| **Benchmarks (MMLU, HELM, GLUE…)** | Standardized general-capability comparisons |
-| **Human evaluation** | Gold standard for subjective quality (fluency, helpfulness, brand tone) |
-| **Business metrics** | Ultimately what matters: user satisfaction, conversion rate, cost per interaction |
+**You cannot use accuracy or F1 here.** Those need one correct answer to compare against, and generated text has many valid forms. So GenAI evaluation compares output to **reference text**, or asks **humans**, or measures **business results**.
 
-👉 Remember the pairing: **ROUGE = summaRization, BLEU = translation (Bilingual)**.
+| Method / Metric | What it measures | Used for |
+|---|---|---|
+| **ROUGE** | **Recall**-oriented overlap with reference text — how much of the reference the output captured | **Summarization** |
+| **BLEU** | **Precision**-oriented overlap with reference text | **Translation** |
+| **BERTScore** | **Semantic** similarity (meaning, not exact words) between output and reference | Any generation task where paraphrasing is acceptable |
+| **Perplexity** | How well the model predicts the next token — **lower is better** | General language-modeling quality; comparing base models |
+| **Benchmarks (MMLU, HELM, GLUE, BIG-bench)** | Standardized general-capability scores | Comparing models before you test on your own data |
+| **Human evaluation** | Subjective quality — fluency, helpfulness, safety, **brand tone** | The **gold standard** for anything a metric can't score |
+| **Business metrics** | Real-world outcome — user satisfaction/CSAT, task-completion rate, conversion, deflection rate, cost per interaction | What ultimately justifies the project |
+
+👉 **Memory hooks:** **ROUGE = summa**R**ization** · **BLEU = translation (Bilingual)** · **Perplexity = perplexed, so lower is better**.
+
+👉 **The judgment the exam tests:** if the quality is **objective and has a reference answer**, use an automatic metric. If it's **subjective** (tone, helpfulness, brand fit), use **human evaluation**. If the question asks whether the *project* succeeded, use **business metrics**. In Bedrock, both automatic and human evaluation are offered through **Model Evaluation**.
+
+#### 💡 Exam patterns
+
+| The question says... | The answer is... |
+|---|---|
+| "Evaluate quality of **generated summaries**" | **ROUGE** |
+| "Evaluate **machine translation**" | **BLEU** |
+| "Compare **meaning** rather than exact wording" | **BERTScore** |
+| "Judge **brand voice / helpfulness / tone**" | **Human evaluation** (Bedrock Model Evaluation) |
+| "Compare general capability across models" | **Benchmarks** — then test on your own data |
+| "Did the deployment **succeed for the business**?" | **Business metrics** (CSAT, deflection rate, cost per interaction) |
+| "Lower is better" | **Perplexity** (or loss) |
 
 ### 3.6 Agents and Multi-Step Applications
-- **Agents** extend FMs beyond text generation: they break a goal into steps, call **tools/APIs/Lambda functions**, retrieve knowledge, and act (e.g., "book a flight and email the itinerary").
-- **Bedrock Agents** handle orchestration, session memory, and action groups (OpenAPI-defined actions) for you.
+
+**The distinction to hold onto:** a plain FM **produces text**. An **agent takes actions**. If the scenario requires something to actually happen in another system — a ticket created, an order refunded, a flight booked — the answer involves an **agent**, not a better prompt.
+
+**How an agent works:** you give it a goal in plain language; the FM **plans** the steps, decides **which tool to call** and with what parameters, **calls** it, reads the result, and **loops** until the goal is met — then reports back.
+
+| Bedrock Agents concept | What it is |
+|---|---|
+| **Action groups** | The tools the agent may use — API operations defined by an **OpenAPI schema**, backed by **AWS Lambda** functions that do the real work |
+| **Knowledge Bases** | Attach RAG so the agent can look facts up while it works |
+| **Orchestration** | The managed plan → call → observe → repeat loop, so you don't build it |
+| **Session memory / state** | Retains context across turns in a conversation |
+| **Traces** | A step-by-step record of the agent's reasoning and tool calls — essential for debugging and transparency |
+
+**Security note the exam likes:** an agent that can call APIs can also be **tricked into calling them** via prompt injection. The mitigations are **least-privilege IAM** on the Lambda functions, **Guardrails**, and **human approval** for high-impact actions.
+
+#### 💡 Exam patterns
+
+| The question says... | The answer is... |
+|---|---|
+| "Model must **take an action** / update a system / complete a booking" | **Bedrock Agents** |
+| "Break a complex request into **multiple steps** automatically" | **Agents** (orchestration) |
+| "How does an agent connect to company systems?" | **Action groups** → **Lambda** functions (OpenAPI schema) |
+| "Agent must also **answer from documents**" | Attach a **Knowledge Base** |
+| "Limit the damage if the agent is manipulated" | **Least-privilege IAM** + **Guardrails** + human approval |
 
 ### 3.7 GenAI Application Architecture (typical exam scenario)
-User → application front end → **Amazon Bedrock** (FM + Guardrails) → **Knowledge Base** (RAG over S3 documents, embeddings in a vector store) → optional **Agent** actions via Lambda → responses logged to CloudWatch, API calls audited by CloudTrail.
+
+Nearly every "design this solution" question in Domain 3 is a variation of one reference architecture. Learn it once and you can reason through all of them.
+
+```
+User
+  │
+  ▼
+Front end (web/mobile app, API Gateway + Lambda)
+  │
+  ▼
+Amazon Bedrock  ──►  Guardrails        (filters the prompt in, and the response out)
+  │
+  ├─► Knowledge Base   → S3 documents → embeddings → vector store   (RAG: grounding + citations)
+  │
+  └─► Agent            → Action groups → Lambda → your APIs/databases (taking action)
+  │
+  ▼
+Response to user
+  │
+  └─► CloudWatch (logs, metrics)  ·  CloudTrail (API audit trail)  ·  KMS (encryption)  ·  IAM (access control)
+```
+
+| Layer | Component | Why it's there |
+|---|---|---|
+| Interface | Front end + API Gateway/Lambda | Where users interact; keeps credentials off the client |
+| Reasoning | **Bedrock FM** | Generates the response |
+| Safety | **Guardrails** | Blocks disallowed topics, redacts PII, checks grounding — **on input and output** |
+| Knowledge | **Knowledge Base** + vector store over **S3** | Grounds answers in your data, with citations |
+| Action | **Agent** + action groups + **Lambda** | Lets the system *do* things, not just talk |
+| Observability | **CloudWatch** | Logs, latency, token usage, error rates |
+| Audit | **CloudTrail** | Records who called which API and when |
+| Security | **IAM**, **KMS**, **PrivateLink/VPC endpoints** | Access control, encryption, private network path |
+
+👉 **Reading the question:** the requirement tells you which layer to add. "Answers must come from our docs" → **Knowledge Base**. "Must not discuss competitors or expose PII" → **Guardrails**. "Must file the ticket" → **Agent**. "We need an audit trail for regulators" → **CloudTrail**. "Monitor cost and latency" → **CloudWatch**. "Data must never traverse the public internet" → **VPC endpoints/PrivateLink**.
 
 ---
 
