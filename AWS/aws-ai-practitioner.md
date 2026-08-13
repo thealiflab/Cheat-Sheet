@@ -397,49 +397,184 @@ At each step the model produces a **probability distribution over every possible
 
 ### 2.5 Model Customization Approaches (ordered by cost/complexity — VERY heavily tested)
 
-| Approach | What it is | Cost/effort | Changes model weights? |
-|---|---|---|---|
-| **Prompt engineering** | Craft better instructions/examples in the prompt | Cheapest, instant | ❌ No |
-| **RAG (Retrieval-Augmented Generation)** | Retrieve relevant documents from a knowledge base (vector DB) and inject them into the prompt | Low-moderate; keeps data current without retraining | ❌ No |
-| **Fine-tuning** | Further train the FM on your labeled, domain-specific data | High (needs labeled data + compute) | ✅ Yes |
-| **Continued pre-training** | Train further on large amounts of **unlabeled** domain data | Higher | ✅ Yes |
-| **Training from scratch** | Build your own FM | Extreme (millions of dollars) | ✅ (new model) |
+A foundation model arrives knowing a great deal about the world in general and **nothing about your company in particular**. **Customization** is how you close that gap. The exam almost never asks "what is fine-tuning?" — it describes a business situation and asks **which of the five approaches fits**, so the skill being tested is picking the *cheapest* approach that actually solves the stated problem.
 
-### 💡Note:
-"Company wants the model to answer using its latest internal documents, updated daily" → **RAG** (retraining daily is impractical). "Company wants the model to adopt a specific style/behavior or master domain vocabulary" → **fine-tuning**.
+👉 **The golden rule: always start at the top of the ladder and only climb when the rung below genuinely cannot do the job.** If two options both work, the exam wants the cheaper/simpler one. Prompt engineering and RAG solve the large majority of real scenarios.
+
+| # | Approach | What it is | Data needed | Cost / effort | Time to value | Changes model weights? |
+|---|---|---|---|---|---|---|
+| 1 | **Prompt engineering** | Craft better instructions, context, and examples **inside the prompt** (zero-/few-shot, chain-of-thought, role setting) | None — just well-written text | Cheapest, essentially free | Minutes | ❌ No |
+| 2 | **RAG (Retrieval-Augmented Generation)** | Retrieve relevant documents from a knowledge base (**vector DB**) at query time and inject them into the prompt as context | Your documents (**unlabeled**, no training pairs) | Low–moderate (embedding + vector store + retrieval infra) | Days | ❌ No |
+| 3 | **Fine-tuning** | Further train the FM on your **labeled** prompt→response examples so it internalizes a task, tone, or format | Hundreds–thousands of **labeled** examples | High (labeled data + GPU compute + Provisioned Throughput to serve) | Weeks | ✅ Yes (private copy) |
+| 4 | **Continued pre-training** (a.k.a. domain adaptation) | Keep pre-training the FM on a large body of **unlabeled** domain text so it absorbs specialized vocabulary and style | Large volumes of raw **unlabeled** domain text | Higher still | Weeks–months | ✅ Yes (private copy) |
+| 5 | **Training from scratch** | Build your own foundation model from zero | Internet-scale data | Extreme — millions of dollars, months, a research team | Months–years | ✅ (an entirely new model) |
+
+**The tradeoff in one line:** cost, effort, and required expertise climb steeply as you go down the table, while flexibility to change the model's *inherent behavior* climbs with it. Almost every exam answer is rung 1, 2, or 3 — rung 5 is nearly always a distractor.
+
+#### The three distinctions that decide most questions
+
+**A. RAG vs. fine-tuning — the single most tested comparison.** They fix *different* problems, so "which is better" is never the real question; "what is broken" is.
+
+| | **RAG** | **Fine-tuning** |
+|---|---|---|
+| Fixes | The model **doesn't know the facts** (missing, private, or out-of-date knowledge) | The model **doesn't behave the way you want** (wrong tone, format, or task skill) |
+| Knowledge freshness | **Real-time** — update the document store and the next answer reflects it | **Frozen** at training time — new facts require retraining |
+| Hallucinations | **Reduces** them by grounding answers in retrieved source text | Does **not** fix them; can even increase confidence in wrong answers |
+| Citations / traceability | ✅ Can cite the source document | ❌ No source to point to |
+| Access control | Respects per-document permissions at retrieval time | ❌ Training data is baked in for everyone |
+| Cost shape | Ongoing retrieval + **longer prompts** (more input tokens per call) | Big upfront training cost, then **shorter prompts** per call |
+
+👉 Memory hook: **RAG = an open-book exam** (the model looks facts up). **Fine-tuning = studying for the exam** (the model changes what it knows how to do). And they are **not mutually exclusive** — "improve accuracy *and* adopt our house style" legitimately means **both**.
+
+**B. Fine-tuning vs. continued pre-training — decided by the data you have.**
+- **Labeled pairs** (prompt + ideal response, e.g., a support ticket and the approved reply) → **fine-tuning** (also called *instruction tuning* when the pairs are instructions).
+- **Raw unlabeled domain text** (a decade of legal filings, medical journals, internal wikis) → **continued pre-training**, to teach vocabulary and domain style rather than a specific task.
+- The giveaway word in the question is almost always **"labeled"** or **"unlabeled."**
+
+**C. Prompt engineering vs. everything else — decided by whether the knowledge fits in the prompt.** If the needed context is small and stable (a style guide, a handful of examples, a fixed policy), paste it into the prompt. If it's a large, growing, or frequently changing corpus that can't fit in the context window, you need **RAG**.
+
+#### Supporting concepts the exam name-drops
+
+- **PEFT (Parameter-Efficient Fine-Tuning) / LoRA** — fine-tunes only a small set of added parameters instead of all of them. **Far cheaper and faster** than full fine-tuning with most of the benefit; the answer when a question stresses "fine-tune **on a limited budget**."
+- **Instruction tuning** — fine-tuning specifically on instruction→response pairs to make a model follow directions better.
+- **RLHF (Reinforcement Learning from Human Feedback)** — uses **human preference rankings** to align outputs with human values (helpful, honest, harmless). The keyword is **human feedback/preferences**, not labeled examples.
+- **Model distillation** — trains a **smaller, cheaper, faster "student" model** to imitate a large "teacher" model. The answer when a question wants **lower inference cost/latency** while preserving quality.
+- **In Amazon Bedrock:** fine-tuning and continued pre-training both produce a **private copy** of the model (your data never trains the base model), and serving a customized model **requires Provisioned Throughput** — a real recurring cost that makes customization meaningfully more expensive than RAG. **Bedrock Knowledge Bases** is the managed way to do RAG; **Bedrock Model Customization** is the managed way to fine-tune.
+
+#### 💡 Exam patterns
+
+| The question says... | Example exam scenario | The answer is... |
+|---|---|---|
+| "Latest **internal documents**", "updated **daily**", "must cite sources", "avoid retraining" | *"A firm wants its assistant to answer from policy documents that change every day, with a link to the source paragraph."* | **RAG** (retraining daily is impractical) |
+| Model "**makes up** answers", "needs to be **grounded** in company data" | *"Support bot invents refund policies that don't exist. What reduces hallucinations most directly?"* | **RAG** (grounding in retrieved text) |
+| "Adopt our **brand voice / specific format / tone**", "consistently respond as a X specialist" | *"Outputs must always follow the company's structured incident-report format."* | **Fine-tuning** (behavior, not facts) |
+| "We have **thousands of labeled** example question/answer pairs" | *"A team has 5,000 past tickets with approved responses and wants the model to reply the same way."* | **Fine-tuning** (labeled pairs = the tell) |
+| "Large volume of **unlabeled** domain text", "master medical/legal **terminology**" | *"A hospital has 10 years of unlabeled clinical notes and wants the model to understand its jargon."* | **Continued pre-training** |
+| "Fine-tune but **minimize cost / limited compute**" | *"A startup wants a customized model but can't afford full fine-tuning."* | **PEFT / LoRA** |
+| "Align outputs with **human preferences / values**", "reviewers rank responses" | *"Human reviewers rank pairs of responses and the model is updated to prefer the better ones."* | **RLHF** |
+| "**Reduce inference cost and latency** while keeping quality" | *"A production model is too slow and expensive; they want a smaller model with similar accuracy."* | **Model distillation** (or simply choosing a smaller FM) |
+| "**Quickest / cheapest / no infrastructure**", "improve output with **no data**" | *"A team must improve summary quality this afternoon with no budget."* | **Prompt engineering** (always try this rung first) |
+| Only **a few examples** are available to steer the model | *"They have 3 sample outputs showing the desired format."* | **Few-shot prompting**, not fine-tuning (too little data to train on) |
+| "Needs both **accurate current data** and **domain-specific tone**" | *"Answers must reflect this week's inventory and sound like our brand."* | **RAG + fine-tuning** (they're complementary) |
+| "Build our **own foundation model**", huge budget, no existing FM fits | *"A research lab needs a model for a language no FM supports."* | **Training from scratch** — but treat it as a **distractor** unless the question is explicit |
+| "Customized model in Bedrock must be **served in production**" | *"What's required to run a fine-tuned Bedrock model?"* | **Provisioned Throughput** |
 
 ### <img src="assets/Artificial-Intelligence/Bedrock.svg" width="48" height="48"/> &nbsp;2.6 Amazon Bedrock (the GenAI centerpiece of this exam)
-Fully managed, **serverless** service offering foundation models from multiple providers (Amazon Nova/Titan, Anthropic Claude, Meta Llama, Mistral, Cohere, Stability AI) through a **single API**. Your data is **NOT** used to train the base models and never leaves your AWS environment.
 
-| Bedrock feature | Purpose |
+Bedrock is a **fully managed, serverless** service that offers foundation models from **multiple providers through a single API**. You never provision a GPU, patch a server, or manage an endpoint — you call an API, and AWS runs the model. It is the default correct answer whenever a scenario says "build a GenAI application on AWS."
+
+**Why "single API" matters:** swapping from one provider's model to another is a change of the model ID in your request, not a rewrite of your application. That is the flexibility argument the exam rewards.
+
+**The privacy guarantee (memorize this — it appears verbatim in questions):** your prompts and data are **NOT used to train the base models**, are **not shared with the model provider**, and **stay inside your AWS account/Region**. Traffic can stay off the public internet via **VPC endpoints (AWS PrivateLink)**, data is encrypted with **KMS**, and access is controlled by **IAM**.
+
+**Model providers available (know that it's multi-vendor, not just Amazon):**
+
+| Provider | Models | Typically known for |
+|---|---|---|
+| **Amazon** | **Nova**, Titan | Amazon's own family — text, image, video, and **embeddings**; strong price-performance |
+| **Anthropic** | **Claude** | Long context windows, reasoning, high-quality text |
+| **Meta** | **Llama** | Open-weight models |
+| **Mistral AI** | Mistral, Mixtral | Efficient, low-cost models |
+| **Cohere** | Command, Embed | Text generation and **embeddings** |
+| **Stability AI** | Stable Diffusion | **Image generation** |
+| **AI21 Labs** | Jamba / Jurassic | Long-form text |
+
+#### Bedrock features (each one is a likely exam answer)
+
+| Bedrock feature | Purpose | The scenario that points to it |
+|---|---|---|
+| **Model catalog / Playground** | Compare and experiment with FMs in the console before committing | "Evaluate several models side by side without writing code" |
+| **Knowledge Bases** | Fully managed **RAG**: point it at your data (e.g., S3) and Bedrock handles **chunking, embeddings, vector storage, retrieval, and citations** | "Answer from our internal documents with the least development effort" |
+| **Agents** | **Multi-step task automation**: the FM plans the steps, calls APIs/**Lambda** functions (*action groups*), consults Knowledge Bases, and completes the task | "Not just answer — actually book the appointment / process the return" |
+| **Guardrails** | Configurable safety layer: **denied topics**, harmful-content filters, **word filters**, **PII redaction/masking**, and **contextual grounding checks** to catch hallucinations. Applies to **both the prompt and the response**, and works across models | Anything about blocking, filtering, redacting, or enforcing safety policy consistently |
+| **Model customization** | **Fine-tuning** (labeled data) and **continued pre-training** (unlabeled data), producing a **private copy** of the model | See §2.5 — customization ladder rungs 3 and 4 |
+| **Model evaluation** | **Automatic** evaluation (built-in metrics/datasets) or **human** evaluation (your own team or an AWS-managed work team) for subjective qualities | "Compare models for accuracy" → automatic; "judge tone/brand friendliness/helpfulness" → **human** |
+| **Provisioned Throughput** | Reserved capacity purchased in **model units** for guaranteed throughput — and **required to serve a customized (fine-tuned or continued-pre-trained) model** | "Predictable high volume" or "how do we run our fine-tuned model in production?" |
+| **Watermark detection** | Detects whether an image was generated by Amazon **Titan/Nova** image models | "Verify whether this image was AI-generated" |
+| **Bedrock Studio / PartyRock** | Low- and no-code environments for building and sharing GenAI apps | "Let non-developers prototype" |
+
+#### Bedrock pricing modes
+
+| Mode | How you pay | Use when |
+|---|---|---|
+| **On-Demand** | Per **input and output token** (or per image), **no commitment** | Variable, unpredictable, or exploratory workloads — the default |
+| **Batch** | Bulk asynchronous processing at a **discount** (roughly half of on-demand) | Large jobs where results aren't needed immediately |
+| **Provisioned Throughput** | **Hourly commitment** (1- or 6-month terms) for guaranteed capacity | Steady high volume, latency guarantees, or **any custom model** |
+
+👉 **The cost lever the exam loves:** you pay per **token**, and **input tokens count too**. That is why stuffing huge context into every prompt (or a poorly tuned RAG retrieval) raises cost — and why a **smaller model** is often the right answer to "reduce cost/latency."
+
+#### 💡 Exam patterns
+
+| The question says... | The answer is... |
 |---|---|
-| **Model catalog / Playground** | Compare and experiment with FMs in the console |
-| **Knowledge Bases** | Fully managed **RAG**: connect your data (e.g., S3), Bedrock handles chunking, embeddings, vector storage, retrieval |
-| **Agents** | Multi-step task automation: the FM plans, calls APIs/Lambda functions, and completes actions |
-| **Guardrails** | Configurable safety filters: block topics, filter harmful content, redact PII, detect hallucinations via **contextual grounding checks** |
-| **Model customization** | Fine-tuning and continued pre-training on your data (creates a private copy of the model) |
-| **Model evaluation** | Automatic (metrics) or **human** evaluation to compare models |
-| **Provisioned Throughput** | Reserved capacity pricing for predictable, high-volume workloads (required for custom/fine-tuned models) |
-| **Watermark detection** | Detects if an image was generated by Amazon Titan/Nova image models |
-
-**Bedrock pricing modes:** **On-Demand** (pay per input/output token, no commitment), **Batch** (bulk async processing at a discount), **Provisioned Throughput** (hourly commitment for guaranteed capacity).
+| "Access **multiple providers'** models through **one API**", "avoid vendor lock-in" | **Amazon Bedrock** |
+| "**Serverless**, no infrastructure to manage" for GenAI | **Bedrock** (SageMaker means you manage infrastructure) |
+| "Will our data be used to **train the model**?" | **No** — Bedrock does not use your data to train base models |
+| "Keep Bedrock traffic **off the public internet**" | **VPC endpoints / PrivateLink** |
+| "Managed **RAG** with the least effort" | **Bedrock Knowledge Bases** (not a hand-built vector DB) |
+| "Model must **take actions** / call APIs / complete a multi-step task" | **Bedrock Agents** |
+| "**Block** certain topics, **redact PII**, filter harmful content" | **Bedrock Guardrails** |
+| "Detect when the model's answer **isn't supported by the source**" | **Guardrails contextual grounding checks** |
+| "Compare models on **subjective** quality like tone or brand fit" | **Bedrock Model Evaluation — human evaluation** |
+| "**Guaranteed capacity**" or "run our **fine-tuned** model" | **Provisioned Throughput** |
+| "Large volume of prompts, results **not needed immediately**, lowest cost" | **Batch** inference mode |
+| "Is this image **AI-generated**?" | **Watermark detection** |
 
 ### 2.7 Other AWS GenAI Services
 
-| Service | Purpose |
-|---|---|
-| <img src="assets/Artificial-Intelligence/Q.svg" width="36" height="36"/> &nbsp;**Amazon Q Business** | Ready-to-use GenAI **assistant for employees**: answers questions over company data connectors (SharePoint, Salesforce, S3…) with user-permission awareness |
-| <img src="assets/Artificial-Intelligence/Q.svg" width="36" height="36"/> &nbsp;**Amazon Q Developer** | GenAI coding assistant (formerly **CodeWhisperer**): code generation, explanation, security scanning, AWS expertise in the console/IDE |
-| <img src="assets/Artificial-Intelligence/Nova.svg" width="36" height="36"/> &nbsp;**Amazon Nova / Titan** | Amazon's own family of foundation models (text, image, video, embeddings) available in Bedrock |
-| **PartyRock** | Free, no-code Bedrock playground for building shareable GenAI apps (learning/prototyping) |
+The exam's recurring trap here is offering **Bedrock** when the scenario actually describes a **ready-made** product. If the company wants a working assistant rather than a platform to build one, the answer is **Amazon Q**.
 
-**Bedrock vs. Amazon Q vs. SageMaker (classic exam question):**
-- **Amazon Q** = ready-to-use assistant (highest abstraction, no building required).
-- **Bedrock** = build your own GenAI apps on managed FMs via API.
-- **SageMaker AI** = full control: train, tune, and host your own models (most expertise required).
+| Service | Purpose | Think of it as... |
+|---|---|---|
+| <img src="assets/Artificial-Intelligence/Q.svg" width="36" height="36"/> &nbsp;**Amazon Q Business** | Ready-to-use GenAI **assistant for employees**: connects to company data via **40+ built-in connectors** (SharePoint, Salesforce, Confluence, S3, Slack…) and answers with **citations**. Critically, it is **permission-aware** — each user only sees answers drawn from documents they're already allowed to read | A search-and-answer assistant over the company intranet, with no building required |
+| <img src="assets/Artificial-Intelligence/App-Studio.svg" width="36" height="36"/> &nbsp;**Amazon Q Apps** | Lets employees turn a **plain-English description** into a small shareable internal app, built on Q Business | "Describe the tool you want" → a working internal app |
+| <img src="assets/Artificial-Intelligence/Q.svg" width="36" height="36"/> &nbsp;**Amazon Q Developer** | GenAI **coding assistant** (formerly **CodeWhisperer**): code generation and completion in the IDE, code explanation, **security vulnerability scanning**, unit-test and documentation generation, plus AWS expertise and cost/resource questions in the console | A pair programmer that also knows your AWS account |
+| <img src="assets/Artificial-Intelligence/Nova.svg" width="36" height="36"/> &nbsp;**Amazon Nova / Titan** | Amazon's own **foundation models** — text, image, video, and **embeddings** — available in Bedrock. **Titan Embeddings** is the usual answer for converting text to vectors for a vector database | Amazon's in-house model family |
+| **PartyRock** | **Free, no-code** Bedrock playground for building and sharing GenAI apps; requires no AWS account | A sandbox for learning and prototyping, not production |
+| <img src="assets/Artificial-Intelligence/Kendra.svg" width="36" height="36"/> &nbsp;**Amazon Kendra** | **Intelligent enterprise search** using natural-language queries over connected repositories; frequently used as the **retrieval layer** in a custom RAG architecture | Enterprise search that returns answers, not just links |
+| <img src="assets/Artificial-Intelligence/Augmented-AI-A2I.svg" width="36" height="36"/> &nbsp;**Amazon A2I (Augmented AI)** | Routes **low-confidence predictions to human reviewers**, building a human-in-the-loop workflow | The "escalate to a person when the model isn't sure" answer |
+| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker JumpStart** | Deploy or fine-tune **pre-trained models and FMs** inside SageMaker, where **you control the hosting infrastructure** | Bedrock's alternative when you need infrastructure-level control |
+
+#### The abstraction ladder (classic exam question)
+
+| Level | Service | You supply | You get | Expertise needed |
+|---|---|---|---|---|
+| Highest abstraction | **Amazon Q** | Your data connectors | A **finished assistant** — no building | Lowest — business users |
+| Middle | **Amazon Bedrock** | Prompts and API calls | **Managed FMs** to build your own app on | Moderate — developers |
+| Lowest abstraction | **SageMaker AI** | Data, code, model choice, infrastructure decisions | **Full control** to train, tune, and host models | Highest — ML practitioners |
+
+👉 **Decide by what the company wants to own.** "We want an assistant" → **Q**. "We want to build an application" → **Bedrock**. "We need our own model, our own training, our own endpoints" → **SageMaker AI**. The cheapest and fastest option that satisfies the requirement is always the intended answer.
+
+#### 💡 Exam patterns
+
+| The question says... | The answer is... |
+|---|---|
+| "**Employees** ask questions about internal company documents", "least effort", "**respect existing permissions**" | **Amazon Q Business** |
+| "Help **developers write code**", "scan code for **security vulnerabilities**" | **Amazon Q Developer** |
+| "Convert text into **vectors/embeddings** for a vector store" | **Amazon Titan Embeddings** (via Bedrock) |
+| "**No-code**, free, just experimenting / learning" | **PartyRock** |
+| "**Natural-language enterprise search** across repositories" | **Amazon Kendra** |
+| "Send **low-confidence** results to a **human reviewer**" | **Amazon A2I** |
+| "Deploy a pre-trained FM but **control the hosting infrastructure**" | **SageMaker JumpStart** (not Bedrock) |
+| "Business users need a **custom internal app** from a description" | **Amazon Q Apps** |
 
 ### 2.8 Advantages of AWS for GenAI
-Security and privacy built in (your prompts/data stay yours), model choice via Bedrock, lower barrier to entry, pay-as-you-go economics, integration with existing AWS services, purpose-built silicon (Trainium/Inferentia) for better price-performance.
+
+This section is easy points: the questions are usually "which AWS benefit addresses this concern?" Map each concern to its advantage.
+
+| Advantage | What it means | The concern it answers |
+|---|---|---|
+| **Security and privacy by default** | Your prompts and outputs are **not used to train base models**, stay in your account and Region, and are protected by **IAM, KMS encryption, and PrivateLink** | "Will our confidential data leak or train someone else's model?" |
+| **Choice of models** | Multiple providers behind **one Bedrock API**, so you can pick the best model per task and switch later | "How do we avoid **vendor lock-in** and pick the right model?" |
+| **Lower barrier to entry** | Managed and pre-trained services mean **no ML PhD, no GPU cluster, no model training** required | "We have no ML expertise" |
+| **Speed to market** | Knowledge Bases, Agents, and Guardrails replace months of custom RAG/safety plumbing | "We need a prototype in production quickly" |
+| **Pay-as-you-go economics** | Per-token on-demand pricing with no upfront commitment; commit only when volume is predictable | "We can't justify a large upfront investment" |
+| **Scalability and reliability** | Serverless scaling across AWS's global Regions and Availability Zones | "Can it handle our traffic spikes?" |
+| **Integration with existing AWS services** | Native fit with S3, Lambda, CloudWatch, CloudTrail, IAM, and SageMaker | "It must work with what we already run on AWS" |
+| **Responsible AI tooling built in** | **Guardrails**, **Model Evaluation**, **SageMaker Clarify**, **Model Cards**, and **AI Service Cards** | "How do we prove this is safe, fair, and governed?" |
+| **Purpose-built silicon** | **AWS Trainium** (training) and **AWS Inferentia** (inference) chips deliver better **price-performance** than general-purpose GPUs; **AWS Neuron** is the SDK for them | "How do we cut training/inference cost?" |
+
+👉 **Memory hook for the chips:** **Train**ium → **training**. **Infer**entia → **inference**. That one-letter mnemonic is worth a free point.
 
 ---
 
