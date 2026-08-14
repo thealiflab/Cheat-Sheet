@@ -64,9 +64,9 @@ This is my full exam preparation cheat sheet for 2026. Practice it with some pra
 | **Features** | Input variables the model uses to make predictions | `square_footage`, `bedrooms`, `zip_code` for a house-price model |
 | **Inference** | Using a trained model to make predictions on new data | Sending a new listing to a SageMaker endpoint and getting back "$412,000" |
 
-📌 **Churn** (used in examples throughout this guide): when a customer **stops using a service** — cancels a subscription, closes an account, or simply goes inactive. **Churn prediction** is a classic **binary classification** problem (will this customer leave: yes/no?) and one of the most common real-world ML use cases, because keeping an existing customer is far cheaper than acquiring a new one.
+📌 **Churn** (used in examples throughout this guide): when a customer **stops using a service**, whether that means cancelling a subscription, closing an account, or simply going inactive. **Churn prediction** is a classic **binary classification** problem (will this customer leave: yes/no?) and one of the most common real-world ML use cases, because keeping an existing customer is far cheaper than acquiring a new one.
 
-### 1.3 Types of Machine Learning (heavily tested — know when each applies)
+### 1.3 Types of Machine Learning (heavily tested: know when each applies)
 
 | Type | Data | Goal | Examples |
 |---|---|---|---|
@@ -88,25 +88,25 @@ This is my full exam preparation cheat sheet for 2026. Practice it with some pra
 ### 1.4 Common ML Problems: Fit, Bias, and Variance
 
 **The three base terms (know these before the problems below):**
-- **Fit**: how well the model's learned pattern matches the underlying pattern in the data. A "good fit" captures the real signal without copying the noise — the two failure modes are *over*fitting and *under*fitting.
-- **Bias**: error from **wrong or oversimplified assumptions** — the model is too rigid to represent reality (e.g., assuming a straight line when the truth is a curve). High bias = consistently wrong in the same direction.
-- **Variance**: error from **being too sensitive to the specific training data** — small changes in the training set produce a very different model. High variance = the model chases noise.
+- **Fit**: how well the model's learned pattern matches the underlying pattern in the data. A "good fit" captures the real signal without copying the noise. The two failure modes are *over*fitting and *under*fitting.
+- **Bias**: error from **wrong or oversimplified assumptions**; the model is too rigid to represent reality (e.g., assuming a straight line when the truth is a curve). High bias = consistently wrong in the same direction.
+- **Variance**: error from **being too sensitive to the specific training data**; small changes in the training set produce a very different model. High variance = the model chases noise.
 
 👉 Think of a dartboard: **high bias** = all darts tightly grouped but off-center; **high variance** = darts scattered all over, even if centered on average.
 
 **The resulting problems:**
 - **Overfitting**: model memorizes training data, performs great on training but poorly on new data (**high variance**). Fix: more/diverse data, regularization, early stopping, simpler model.
-  - *Example:* a loan-default model scores **99% on training data but 62% on test data** — it memorized individual applicants instead of learning general risk patterns.
+  - *Example:* a loan-default model scores **99% on training data but 62% on test data**. It memorized individual applicants instead of learning general risk patterns.
 - **Underfitting**: model is too simple to capture patterns, performs poorly everywhere (**high bias**). Fix: more features, more complex model, train longer.
-  - *Example:* fitting a **straight line to clearly curved** sales data — **58% on training and 57% on test**; bad everywhere, not just on new data.
+  - *Example:* fitting a **straight line to clearly curved** sales data, **58% on training and 57% on test**; bad everywhere, not just on new data.
 - **Bias-variance tradeoff**: the balancing act between the two; the goal is a model that **generalizes** to unseen data.
-  - *Example:* a decision tree at depth 2 underfits, at depth 50 overfits; depth ~8 hits the sweet spot with **88% training / 86% test** — the small gap is the sign of a model that generalizes.
+  - *Example:* a decision tree at depth 2 underfits, at depth 50 overfits; depth ~8 hits the sweet spot with **88% training / 86% test**. The small gap is the sign of a model that generalizes.
 
 **Exam tip:** the giveaway is the *gap* between training and test scores. **Big gap = overfitting. Both scores low = underfitting.**
 
 ### 1.5 Model Evaluation Metrics (know which metric fits which problem)
 
-**The metric depends on the problem type.** Classification (predicting a category) and regression (predicting a number) use completely different metrics — never mix them. An exam answer offering "RMSE" for a spam-detection question is wrong on sight.
+**The metric depends on the problem type.** Classification (predicting a category) and regression (predicting a number) use completely different metrics. Never mix them. An exam answer offering "RMSE" for a spam-detection question is wrong on sight.
 
 #### Step 1: The confusion matrix (everything else is built from it)
 
@@ -114,13 +114,13 @@ Every classification prediction lands in one of four buckets. Pick which class i
 
 |  | **Model predicts POSITIVE** | **Model predicts NEGATIVE** |
 |---|---|---|
-| **Actually POSITIVE** | ✅ **TP** — True Positive (correctly caught) | ❌ **FN** — False Negative (**missed it**) |
-| **Actually NEGATIVE** | ❌ **FP** — False Positive (**false alarm**) | ✅ **TN** — True Negative (correctly ignored) |
+| **Actually POSITIVE** | ✅ **TP**: True Positive (correctly caught) | ❌ **FN**: False Negative (**missed it**) |
+| **Actually NEGATIVE** | ❌ **FP**: False Positive (**false alarm**) | ✅ **TN**: True Negative (correctly ignored) |
 
 - **False Positive = false alarm.** You flagged something innocent.
 - **False Negative = a miss.** The real case slipped through.
 
-👉 Which error hurts more is a *business* decision, not a math one — and that is exactly what the exam asks about.
+👉 Which error hurts more is a *business* decision, not a math one, and that is exactly what the exam asks about.
 
 #### Step 2: Classification metrics
 
@@ -135,7 +135,7 @@ Running example: **1,000 transactions, 100 of them actually fraud.** The model f
 | **F1 score** | 2 × (P × R) / (P + R) | Single balanced score combining precision and recall | 2 × (.75 × .60) / 1.35 = **0.67** | You need **one number** and the data is imbalanced |
 | **AUC-ROC** | Area under the TPR-vs-FPR curve | How well it separates the two classes at **any** threshold | e.g. **0.87** | Comparing models **independent of threshold**. 1.0 = perfect, 0.5 = coin flip |
 
-**Read the example row-by-row and the lesson jumps out:** accuracy says **94%** — sounds excellent. But recall is **60%**, meaning **40 frauds walked straight through**. On imbalanced data, accuracy flatters a bad model. This is the single most-tested idea in this section.
+**Read the example row by row:** accuracy says **94%**, which sounds excellent. But recall is **60%**, meaning **40 frauds walked straight through**. On imbalanced data, accuracy flatters a bad model. This is the single most-tested idea in this section.
 
 **The precision/recall tradeoff:** they pull against each other. Lower the threshold and you flag more transactions → recall goes up, precision goes down (more false alarms). Raise it and the reverse happens. You **cannot** maximize both; you choose based on which error costs more.
 
@@ -147,10 +147,10 @@ Running example: a **house-price model**, predictions off by $10k on four homes 
 |---|---|---|---|---|
 | **MAE** (Mean Absolute Error) | avg( \|actual − predicted\| ) | Average miss, in the original units | **$48,000** | Treats all errors equally; **robust to outliers** |
 | **MSE** (Mean Squared Error) | avg( (actual − predicted)² ) | Average *squared* miss | **8.08 billion** | Units are squared (dollars²) → hard to interpret |
-| **RMSE** (Root MSE) | √MSE | Squared-error penalty, back in original units | **≈ $90,000** | **Punishes large errors hard** — use when big misses are unacceptable |
+| **RMSE** (Root MSE) | √MSE | Squared-error penalty, back in original units | **≈ $90,000** | **Punishes large errors hard**; use when big misses are unacceptable |
 | **R²** (R-squared) | 1 − (model error / baseline error) | % of the variation the model explains | e.g. **0.82** | 1.0 = perfect, 0 = no better than predicting the average |
 
-👉 **MAE $48k vs. RMSE $90k from the same predictions.** The gap is entirely the one $200k miss — squaring it makes it dominate. **A big RMSE-vs-MAE gap means a few large errors are hiding in your model.**
+👉 **MAE $48k vs. RMSE $90k from the same predictions.** The gap is entirely the one $200k miss; squaring it makes it dominate. **A big RMSE-vs-MAE gap means a few large errors are hiding in your model.**
 
 #### 💡 Exam patterns to memorize
 
@@ -159,7 +159,7 @@ Running example: a **house-price model**, predictions off by $10k on four homes 
 | "Catch **every** possible case" (disease, fraud, threat) | *"A hospital screens for a rare cancer. Missing a case delays treatment; a false alarm only triggers a second test. Which metric should the team optimize?"* | **Recall** |
 | "Must **never** flag a legitimate one" (spam, loan denial) | *"A bank's spam filter quarantines customer emails. Blocking a legitimate email risks losing a client. Which metric matters most?"* | **Precision** |
 | "Balance both" / "data is imbalanced" | *"Only 0.2% of transactions are fraudulent. The company needs a single metric that reflects both missed fraud and false alarms."* | **F1 score** |
-| "99% accuracy but the model is useless" | *"A defect-detection model reports 99% accuracy, yet the factory says it never flags a defective unit. What explains this?"* | Imbalanced data — accuracy is the wrong metric (the model just predicts the majority class) |
+| "99% accuracy but the model is useless" | *"A defect-detection model reports 99% accuracy, yet the factory says it never flags a defective unit. What explains this?"* | Imbalanced data; accuracy is the wrong metric (the model just predicts the majority class) |
 | "Compare models across all thresholds" | *"A team must choose between three churn models before deciding on a cutoff score. Which metric compares overall separating power?"* | **AUC-ROC** |
 | "Predicting a price / amount / temperature" | *"A retailer forecasts next month's sales in dollars. Which metric evaluates the model?"* | **RMSE, MAE, or R²** (never accuracy or F1) |
 | "Large errors are especially costly" | *"An energy company predicts grid demand; a single large under-forecast causes a blackout, while small misses are harmless."* | **RMSE** (over MAE) |
@@ -168,18 +168,18 @@ Running example: a **house-price model**, predictions off by $10k on four homes 
 
 ### 1.6 The ML Development Lifecycle (ML pipeline)
 
-The lifecycle is a **loop, not a straight line** — monitoring feeds back into retraining. Expect questions that give you an activity and ask which stage it belongs to, or which AWS service supports it.
+The lifecycle is a **loop, not a straight line**: monitoring feeds back into retraining. Expect questions that give you an activity and ask which stage it belongs to, or which AWS service supports it.
 
 | # | Stage | What actually happens | AWS service |
 |---|---|---|---|
-| 1 | **Define the business problem** | Turn a business goal into an ML question, define success in *business* terms ("cut churn 10%") **and** a model metric (recall ≥ 0.85). Decide whether ML is even the right tool | — |
+| 1 | **Define the business problem** | Turn a business goal into an ML question, define success in *business* terms ("cut churn 10%") **and** a model metric (recall ≥ 0.85). Decide whether ML is even the right tool | n/a |
 | 2 | **Collect data** | Gather and centralize raw data; check you have **enough, and that it's representative** | <img src="assets/Storage/Simple-Storage-Service.svg" width="36" height="36"/> &nbsp;S3 (data lake), <img src="assets/Analytics/Kinesis.svg" width="36" height="36"/> &nbsp;Kinesis, <img src="assets/Analytics/Glue.svg" width="36" height="36"/> &nbsp;Glue |
 | 3 | **Prepare / clean data** | Handle missing values, remove duplicates, label data, **feature engineering** (creating and encoding the input variables), split into train/validation/test | <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;SageMaker **Data Wrangler**, <img src="assets/Artificial-Intelligence/SageMaker-Ground-Truth.svg" width="36" height="36"/> &nbsp;**Ground Truth** (labeling), **Feature Store** |
 | 4 | **Train the model** | Choose an algorithm, feed it the training data, let it learn the patterns | <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;SageMaker Training Jobs |
 | 5 | **Evaluate** | Score the model on **held-out test data** using the metrics in 1.5; check for over/underfitting and bias | <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;SageMaker **Clarify** (bias + explainability) |
 | 6 | **Tune hyperparameters** | Adjust the settings *you* control (learning rate, tree depth, epochs) and re-evaluate against the **validation** set | <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;SageMaker **AMT** (Automatic Model Tuning) |
 | 7 | **Deploy** | Push the model to production as a real-time endpoint, batch job, or serverless (see 1.7) | <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;SageMaker Endpoints / Batch Transform |
-| 8 | **Monitor & retrain** | Watch live quality, detect **drift**, retrain when performance decays — this loops back to step 2 | <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;SageMaker **Model Monitor**, <img src="assets/Management-Tools/CloudWatch.svg" width="36" height="36"/> &nbsp;CloudWatch |
+| 8 | **Monitor & retrain** | Watch live quality, detect **drift**, retrain when performance decays, which loops back to step 2 | <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;SageMaker **Model Monitor**, <img src="assets/Management-Tools/CloudWatch.svg" width="36" height="36"/> &nbsp;CloudWatch |
 
 👉 Steps 2-3 typically consume **~70-80% of the total effort**. If an exam question asks where teams spend the most time, the answer is **data preparation**.
 
@@ -193,14 +193,14 @@ The lifecycle is a **loop, not a straight line** — monitoring feeds back into 
   <img src="assets/MLOps.png"/>
 </p>
 
-**Model drift — why step 8 exists:**
+**Model drift (why step 8 exists):**
 - **Data drift**: the *input* data changes (new customer demographics, new product mix).
 - **Concept drift**: the *relationship* between input and output changes (post-pandemic buying behavior; fraudsters inventing new tactics).
 - Either way the model silently decays in production. **The fix is retraining on fresh data**, which is why the lifecycle is a loop.
 
-**When NOT to use AI/ML** (a real exam topic — ML is not always the answer):
-- Simple **deterministic rules** suffice ("flag any transaction over $10,000") — cheaper, instant, fully predictable.
-- **No data, or poor-quality data** available — no amount of modeling fixes this.
+**When NOT to use AI/ML** (a real exam topic; ML is not always the answer):
+- Simple **deterministic rules** suffice ("flag any transaction over $10,000"): cheaper, instant, fully predictable.
+- **No data, or poor-quality data** available; no amount of modeling fixes this.
 - **Full interpretability is legally required** and a black-box model can't provide it.
 - **Cost or latency outweighs the benefit**, or the outcome must be 100% accurate every time (ML is probabilistic by nature).
 
@@ -208,12 +208,12 @@ The lifecycle is a **loop, not a straight line** — monitoring feeds back into 
 
 **Inference** is the act of **feeding new, unseen data into an already-trained model and getting a prediction back**. Training is when the model *learns* the patterns; inference is when it *applies* them. It is step 7 of the lifecycle (deployment) and it's where a model finally delivers business value.
 
-**Training vs. inference — the distinction the exam leans on:**
+**Training vs. inference (the distinction the exam leans on):**
 
 | | **Training** | **Inference** |
 |---|---|---|
 | What happens | Model **learns** patterns from historical data | Model **applies** what it learned to new data |
-| Frequency | Occasional (once, then periodic retraining) | Continuous — every prediction request |
+| Frequency | Occasional (once, then periodic retraining) | Continuous, on every prediction request |
 | Cost profile | Expensive but short bursts | Cheaper per request, but **runs forever** → usually the larger lifetime cost |
 | Example | Feeding 5 years of past transactions to learn fraud patterns | Scoring the card swipe happening right now |
 
@@ -223,16 +223,16 @@ SageMaker offers four options, and the exam picks between them on **how fast the
 
 | Type | Latency | Endpoint / cost model | Payload & traffic | Best for |
 |---|---|---|---|---|
-| **Real-time inference** | **Milliseconds** — consistently the lowest | **Always-on** endpoint; you pay 24/7 whether used or not (most expensive) | Small payloads (~6 MB), **steady, predictable** traffic | Chatbots, fraud check at checkout, live product recommendations |
-| **Serverless inference** | **Milliseconds — but with cold starts** after idle periods | No servers to manage; **scales to zero**, pay per request only | Small payloads, **intermittent / spiky / unpredictable** traffic | An internal tool used a few times an hour; new apps with unknown traffic |
-| **Asynchronous inference** | **Seconds to minutes** — requests are **queued** | Endpoint that can **scale to zero** when the queue is empty | **Large payloads (up to ~1 GB)** and long processing times (up to ~1 hour) | Large video/image analysis, long documents — a wait is acceptable |
-| **Batch transform** | **Minutes to hours** | **No persistent endpoint at all** — spins up, runs, shuts down. **Cheapest** | Entire datasets read from S3, results written back to S3 | Nightly churn scoring of all customers; monthly demand forecast |
+| **Real-time inference** | **Milliseconds**, consistently the lowest | **Always-on** endpoint; you pay 24/7 whether used or not (most expensive) | Small payloads (~6 MB), **steady, predictable** traffic | Chatbots, fraud check at checkout, live product recommendations |
+| **Serverless inference** | **Milliseconds, but with cold starts** after idle periods | No servers to manage; **scales to zero**, pay per request only | Small payloads, **intermittent / spiky / unpredictable** traffic | An internal tool used a few times an hour; new apps with unknown traffic |
+| **Asynchronous inference** | **Seconds to minutes**; requests are **queued** | Endpoint that can **scale to zero** when the queue is empty | **Large payloads (up to ~1 GB)** and long processing times (up to ~1 hour) | Large video/image analysis, long documents where a wait is acceptable |
+| **Batch transform** | **Minutes to hours** | **No persistent endpoint at all**: spins up, runs, shuts down. **Cheapest** | Entire datasets read from S3, results written back to S3 | Nightly churn scoring of all customers; monthly demand forecast |
 
 **The tradeoff in one line:** speed costs money. Real-time is fastest and priciest because the endpoint idles at your expense; batch is slowest and cheapest because nothing runs between jobs.
 
-**Serverless vs. real-time** — both are millisecond-class, so the deciding factor is **traffic pattern, not speed**: steady traffic → real-time; sporadic traffic where you don't want to pay for idle time → serverless (accepting occasional cold-start delay).
+**Serverless vs. real-time.** Both are millisecond-class, so the deciding factor is **traffic pattern, not speed**: steady traffic → real-time; sporadic traffic where you don't want to pay for idle time → serverless (accepting occasional cold-start delay).
 
-**Asynchronous vs. batch** — both tolerate waiting, so the deciding factor is **how requests arrive**: one large request at a time as it comes in → asynchronous; a whole dataset processed in one sweep → batch.
+**Asynchronous vs. batch.** Both tolerate waiting, so the deciding factor is **how requests arrive**: one large request at a time as it comes in → asynchronous; a whole dataset processed in one sweep → batch.
 
 #### 💡 Exam patterns
 
@@ -250,40 +250,40 @@ SageMaker offers four options, and the exam picks between them on **how fast the
 
 | Feature | Purpose | Lifecycle stage |
 |---|---|---|
-| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Studio** | Web-based IDE for the whole ML lifecycle — notebooks, experiments, training, and deployment in one browser workspace, so nothing runs on a laptop | All |
+| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Studio** | Web-based IDE for the whole ML lifecycle: notebooks, experiments, training, and deployment in one browser workspace, so nothing runs on a laptop | All |
 | <img src="assets/Artificial-Intelligence/SageMaker-Ground-Truth.svg" width="36" height="36"/> &nbsp;**SageMaker Ground Truth** | Data **labeling**: sends raw data to human labelers (your team, a vendor, or Mechanical Turk) and uses **active learning** to auto-label the easy items, cutting labeling cost. This is how you create the labeled data supervised learning requires | 3. Prepare |
-| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Data Wrangler** | Visual, **low-code data preparation** — import from S3/Redshift/Athena, spot missing values and outliers, apply 300+ built-in transformations, and do **feature engineering** without writing pandas code | 3. Prepare |
+| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Data Wrangler** | Visual, **low-code data preparation**: import from S3/Redshift/Athena, spot missing values and outliers, apply 300+ built-in transformations, and do **feature engineering** without writing pandas code | 3. Prepare |
 | <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Feature Store** | Central repository to **store, share, and reuse features** across teams and models. Prevents **training/serving skew** by guaranteeing training and inference use the identical feature definitions | 3. Prepare |
-| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Autopilot / Canvas** | **AutoML** — hand it a tabular dataset and a target column; it automatically tries algorithms and hyperparameters and ranks the resulting models. **Canvas** is the **no-code, point-and-click** front end aimed at business analysts who don't write code | 4-6. Train/Tune |
+| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Autopilot / Canvas** | **AutoML**: hand it a tabular dataset and a target column; it automatically tries algorithms and hyperparameters and ranks the resulting models. **Canvas** is the **no-code, point-and-click** front end aimed at business analysts who don't write code | 4-6. Train/Tune |
 | <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker JumpStart** | A hub of **pre-trained models and ready-made solution templates** (including foundation models) you can deploy or fine-tune in a few clicks instead of training from scratch | 4. Train / 7. Deploy |
 | <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Clarify** | Two jobs: **detects bias** in the data *before* training and in the model *after* training, and provides **explainability** (which features drove a prediction, via feature attribution). The go-to answer for "explain the model" or "check for unfair treatment" | 5. Evaluate |
 | <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Model Monitor** | Continuously watches a **deployed** endpoint for **data drift, model-quality decay, and bias drift**, comparing live traffic against a training baseline and alerting via CloudWatch when it degrades | 8. Monitor |
-| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Pipelines** | **CI/CD orchestration for ML (MLOps)** — chains prepare → train → evaluate → deploy into a repeatable, automated, version-tracked workflow that can be re-run on new data | All (automation) |
-| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Model Cards** | **Governance documentation** for a model: intended use, risk rating, training data, evaluation results, and limitations — recorded in one auditable place for regulators and reviewers | Governance |
+| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Pipelines** | **CI/CD orchestration for ML (MLOps)**: chains prepare → train → evaluate → deploy into a repeatable, automated, version-tracked workflow that can be re-run on new data | All (automation) |
+| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Model Cards** | **Governance documentation** for a model: intended use, risk rating, training data, evaluation results, and limitations, recorded in one auditable place for regulators and reviewers | Governance |
 | <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Model Registry** | **Catalog and version control** for trained models, with an **approval workflow** so only reviewed model versions get promoted to production | 7. Deploy |
 
-### 1.9 Pre-trained AWS AI Services (no ML expertise needed — heavily tested "pick the right service" questions)
+### 1.9 Pre-trained AWS AI Services (no ML expertise needed; heavily tested "pick the right service" questions)
 
 | Service | Capability | Example (think of it as...) |
 |---|---|---|
 | <img src="assets/Artificial-Intelligence/Rekognition.svg" width="36" height="36"/> &nbsp;**Amazon Rekognition** | Image and video analysis: **object and scene detection**, facial analysis and face comparison, celebrity recognition, **content moderation** (nudity/violence), and text-in-image. Works on both stored files and live video streams | **Google Photos** recognizing your friends' faces, or **Instagram** auto-blurring graphic content. *Use case:* a dating app auto-rejecting inappropriate profile pictures |
-| <img src="assets/Artificial-Intelligence/Textract.svg" width="36" height="36"/> &nbsp;**Amazon Textract** | Extracts text, handwriting, **tables, and form key-value pairs** from scanned documents — going beyond plain OCR by preserving *structure*, so "Name: John" comes back as a labeled field, not loose text | **Adobe Scan** or a banking app's **check-deposit-by-photo**. *Use case:* an insurer auto-reading 10,000 scanned claim forms into a database |
+| <img src="assets/Artificial-Intelligence/Textract.svg" width="36" height="36"/> &nbsp;**Amazon Textract** | Extracts text, handwriting, **tables, and form key-value pairs** from scanned documents, going beyond plain OCR by preserving *structure*, so "Name: John" comes back as a labeled field, not loose text | **Adobe Scan** or a banking app's **check-deposit-by-photo**. *Use case:* an insurer auto-reading 10,000 scanned claim forms into a database |
 | <img src="assets/Artificial-Intelligence/Comprehend.svg" width="36" height="36"/> &nbsp;**Amazon Comprehend** | NLP over text: **sentiment** (positive/negative/neutral/mixed), entity extraction (people, places, dates), key phrases, language detection, topic modeling, and **PII detection/redaction** | The engine behind a **Trustpilot-style review dashboard** saying "78% positive". *Use case:* scanning support tickets to flag angry customers for escalation |
 | <img src="assets/Artificial-Intelligence/Transcribe.svg" width="36" height="36"/> &nbsp;**Amazon Transcribe** | **Speech-to-text** (audio → text) with speaker identification (diarization), timestamps, custom vocabularies for jargon, and automatic PII redaction | **Otter.ai**, **Zoom live captions**, or **YouTube auto-subtitles**. *Use case:* transcribing call-center recordings so they can be searched and analyzed |
 | <img src="assets/Artificial-Intelligence/Polly.svg" width="36" height="36"/> &nbsp;**Amazon Polly** | **Text-to-speech** (text → lifelike audio) in dozens of languages and voices, with **neural voices** and SSML control over pronunciation, pauses, and emphasis | The voice of **Alexa**, **Google Maps navigation**, or an audiobook narrator. *Use case:* a news site offering a "listen to this article" button |
 | <img src="assets/Artificial-Intelligence/Translate.svg" width="36" height="36"/> &nbsp;**Amazon Translate** | Neural machine **translation** between 75+ languages, with custom terminology so brand names and product terms stay untranslated | **Google Translate** / **DeepL**. *Use case:* an e-commerce site instantly localizing product listings into 12 languages |
-| <img src="assets/Artificial-Intelligence/Lex.svg" width="36" height="36"/> &nbsp;**Amazon Lex** | Builds conversational **chatbots and voice bots** using **intents** (what the user wants) and **slots** (the details needed) — the same speech + language engine that powers Alexa | **Alexa** or the automated phone menu that says *"Tell me why you're calling."* *Use case:* a bank bot handling "check my balance" and "reset my PIN" without an agent |
-| <img src="assets/Artificial-Intelligence/Kendra.svg" width="36" height="36"/> &nbsp;**Amazon Kendra** | Intelligent **enterprise search**: ask a natural-language question and get a specific answer (not a link list) from internal SharePoint, S3, Confluence, and databases — respecting each user's permissions | **Google search, but only over your company's internal documents**. *Use case:* an employee asking "how many vacation days do I get after 5 years?" and getting the exact HR-policy sentence |
-| <img src="assets/Artificial-Intelligence/Personalize.svg" width="36" height="36"/> &nbsp;**Amazon Personalize** | Real-time personalized **recommendations** and re-ranked search results from your user-interaction history — the same technology behind Amazon.com's "customers also bought" | **Netflix's "Because you watched..."** or **Spotify Discover Weekly**. *Use case:* a streaming service tailoring its homepage per viewer |
+| <img src="assets/Artificial-Intelligence/Lex.svg" width="36" height="36"/> &nbsp;**Amazon Lex** | Builds conversational **chatbots and voice bots** using **intents** (what the user wants) and **slots** (the details needed), the same speech + language engine that powers Alexa | **Alexa** or the automated phone menu that says *"Tell me why you're calling."* *Use case:* a bank bot handling "check my balance" and "reset my PIN" without an agent |
+| <img src="assets/Artificial-Intelligence/Kendra.svg" width="36" height="36"/> &nbsp;**Amazon Kendra** | Intelligent **enterprise search**: ask a natural-language question and get a specific answer (not a link list) from internal SharePoint, S3, Confluence, and databases, respecting each user's permissions | **Google search, but only over your company's internal documents**. *Use case:* an employee asking "how many vacation days do I get after 5 years?" and getting the exact HR-policy sentence |
+| <img src="assets/Artificial-Intelligence/Personalize.svg" width="36" height="36"/> &nbsp;**Amazon Personalize** | Real-time personalized **recommendations** and re-ranked search results from your user-interaction history, the same technology behind Amazon.com's "customers also bought" | **Netflix's "Because you watched..."** or **Spotify Discover Weekly**. *Use case:* a streaming service tailoring its homepage per viewer |
 | <img src="assets/Artificial-Intelligence/Forecast.svg" width="36" height="36"/> &nbsp;**Amazon Forecast** | **Time-series forecasting** for future numeric values, combining your history with related factors like price, promotions, weather, and holidays | The system telling a supermarket **how much milk to stock next Tuesday**. *Use case:* predicting energy demand or retail inventory per store |
-| <img src="assets/Artificial-Intelligence/Fraud-Detector.svg" width="36" height="36"/> &nbsp;**Amazon Fraud Detector** | Detects online **fraud** — fake account creation, payment fraud, promo/coupon abuse — scoring events in real time using your data plus 20+ years of Amazon fraud expertise | Your **bank texting "was this you?"** seconds after a suspicious purchase. *Use case:* blocking bots creating thousands of fake free-trial accounts |
+| <img src="assets/Artificial-Intelligence/Fraud-Detector.svg" width="36" height="36"/> &nbsp;**Amazon Fraud Detector** | Detects online **fraud** (fake account creation, payment fraud, promo/coupon abuse), scoring events in real time using your data plus 20+ years of Amazon fraud expertise | Your **bank texting "was this you?"** seconds after a suspicious purchase. *Use case:* blocking bots creating thousands of fake free-trial accounts |
 | <img src="assets/Artificial-Intelligence/Comprehend-Medical.svg" width="36" height="36"/> &nbsp;**Amazon Comprehend Medical** | **HIPAA-eligible** NLP for clinical text: extracts medications, dosages, diagnoses, symptoms, and test results from doctors' notes, and links them to standard medical codes (ICD-10, RxNorm) | A **digital medical scribe** reading a doctor's messy notes and filling in the chart. *Use case:* turning free-text physician notes into structured billing codes |
-| <img src="assets/Artificial-Intelligence/Augmented-AI-A2I.svg" width="36" height="36"/> &nbsp;**Amazon Augmented AI (A2I)** | Adds a **human-in-the-loop** review step: predictions below a confidence threshold are automatically routed to a person to verify, and the corrections can feed back into training | The **"we couldn't read this — a human will check it"** step in a deposit or ID-verification app. *Use case:* routing blurry scanned checks to a reviewer instead of guessing |
-| <img src="assets/Artificial-Intelligence/DeepRacer.svg" width="36" height="36"/> &nbsp;**AWS DeepRacer** | A 1/18-scale autonomous race car (plus a 3D simulator and racing league) for **learning reinforcement learning** hands-on by designing reward functions | A **video game for learning RL** — trial, error, and reward, like teaching a dog tricks with treats. *Use case:* educational only; never the answer to a production question |
+| <img src="assets/Artificial-Intelligence/Augmented-AI-A2I.svg" width="36" height="36"/> &nbsp;**Amazon Augmented AI (A2I)** | Adds a **human-in-the-loop** review step: predictions below a confidence threshold are automatically routed to a person to verify, and the corrections can feed back into training | The **"we couldn't read this, a human will check it"** step in a deposit or ID-verification app. *Use case:* routing blurry scanned checks to a reviewer instead of guessing |
+| <img src="assets/Artificial-Intelligence/DeepRacer.svg" width="36" height="36"/> &nbsp;**AWS DeepRacer** | A 1/18-scale autonomous race car (plus a 3D simulator and racing league) for **learning reinforcement learning** hands-on by designing reward functions | A **video game for learning RL**: trial, error, and reward, like teaching a dog tricks with treats. *Use case:* educational only; never the answer to a production question |
 
 **The three-layer AWS AI stack (know where each service sits):**
-1. **AI Services** (top, easiest): Rekognition, Comprehend, Translate, etc. — pre-trained APIs, no ML knowledge needed.
-2. **ML Platform** (middle): SageMaker AI — build, train, and deploy your own models.
+1. **AI Services** (top, easiest): Rekognition, Comprehend, Translate, etc. Pre-trained APIs, no ML knowledge needed.
+2. **ML Platform** (middle): SageMaker AI, to build, train, and deploy your own models.
 3. **Infrastructure** (bottom): EC2 GPU instances (P5, G6), **AWS Trainium** (training chips), **AWS Inferentia** (inference chips).
 
 ---
@@ -298,18 +298,18 @@ Domain 2 assumes this vocabulary in every question, so learn it first. The conce
 
 | Concept | Definition | In plain English / Example |
 |---|---|---|
-| **Foundation Model (FM)** | A very large model **pre-trained on broad, unlabeled data** (self-supervised) that can be adapted to many different downstream tasks without retraining from scratch | A **university graduate**: broadly educated, then quickly trained for a specific job. One FM can summarize, translate, and write code — older ML needed a separate model per task |
+| **Foundation Model (FM)** | A very large model **pre-trained on broad, unlabeled data** (self-supervised) that can be adapted to many different downstream tasks without retraining from scratch | A **university graduate**: broadly educated, then quickly trained for a specific job. One FM can summarize, translate, and write code, whereas older ML needed a separate model per task |
 | **Large Language Model (LLM)** | A foundation model specialized in understanding and generating **text** | Claude, Amazon Nova, Llama. **All LLMs are FMs, but not all FMs are LLMs** (image models are FMs too) |
 | **Transformer** | The neural-network **architecture** behind modern LLMs. Its **self-attention** mechanism weighs the relationship between *all* tokens at once rather than reading strictly left-to-right | Reading the whole sentence before deciding what "it" refers to. Processing tokens in **parallel** is what made training at this scale possible |
 | **Diffusion model** | The architecture behind **image generators**: starts from pure noise and **iteratively removes it** until an image matching the prompt emerges | Sculpting a statue out of static. Used by Stable Diffusion and Amazon Titan/Nova image models |
 | **Unimodal model** | Works with a **single** data type | Text in → text out |
-| **Multimodal model** | Accepts and/or produces **multiple** data types | Upload a photo of your fridge and ask "what can I cook?" — image + text in, text out |
+| **Multimodal model** | Accepts and/or produces **multiple** data types | Upload a photo of your fridge and ask "what can I cook?": image + text in, text out |
 
 #### B. How text is represented
 
 | Concept | Definition | In plain English / Example |
 |---|---|---|
-| **Token** | The basic unit of text a model processes — roughly a word fragment. Models don't see letters or words, only tokens, and **you are billed per token (input + output)** | "unbelievable" might split into `un` + `believ` + `able`. **Rule of thumb: 1 token ≈ 4 characters ≈ ¾ of a word**, so 1,000 tokens ≈ 750 words |
+| **Token** | The basic unit of text a model processes, roughly a word fragment. Models don't see letters or words, only tokens, and **you are billed per token (input + output)** | "unbelievable" might split into `un` + `believ` + `able`. **Rule of thumb: 1 token ≈ 4 characters ≈ ¾ of a word**, so 1,000 tokens ≈ 750 words |
 | **Embedding** | A numeric **vector** representation of text or images that captures **semantic meaning**, so similar meanings sit close together in vector space | "king" and "queen" land near each other; "king" and "banana" don't. This is what lets search match **meaning instead of exact keywords** |
 | **Vector database** | Stores embeddings and retrieves the most **semantically similar** items to a query | The searchable memory behind **RAG** (see 3.2). AWS options: OpenSearch Serverless, Aurora pgvector, Neptune Analytics |
 
@@ -319,9 +319,9 @@ Domain 2 assumes this vocabulary in every question, so learn it first. The conce
 
 | Concept | Definition | In plain English / Example |
 |---|---|---|
-| **Prompt** | The input or instruction given to the model | *"Summarize this contract in 3 bullet points."* Quality of prompt drives quality of output — hence prompt engineering |
+| **Prompt** | The input or instruction given to the model | *"Summarize this contract in 3 bullet points."* Quality of prompt drives quality of output, hence prompt engineering |
 | **Completion / Response** | The model's generated output | The 3 bullet points that come back |
-| **Context window** | The **maximum tokens a model can consider in one request — prompt *and* response combined**. It is the model's short-term memory and it does **not** persist between calls | A 200K-token window fits a ~500-page book. Exceed it and the request fails or the earliest content is dropped — a common cause of a chatbot "forgetting" the start of a long conversation |
+| **Context window** | The **maximum tokens a model can consider in one request, prompt *and* response combined**. It is the model's short-term memory and it does **not** persist between calls | A 200K-token window fits a ~500-page book. Exceed it and the request fails or the earliest content is dropped, a common cause of a chatbot "forgetting" the start of a long conversation |
 
 **Cost and limits both run on tokens**, which is why the exam keeps returning to them: longer prompts mean higher cost, higher latency, and a greater risk of hitting the context window.
 
@@ -347,21 +347,21 @@ At each step the model produces a **probability distribution over every possible
 | "windy" | 10% |
 | "purple" | 5% |
 
-**Inference parameters decide how that list gets turned into an actual choice.** Always picking the top token would make output repetitive and robotic, so the model *samples* — and that sampling is what you control.
+**Inference parameters decide how that list gets turned into an actual choice.** Always picking the top token would make output repetitive and robotic, so the model *samples*, and that sampling is what you control.
 
-👉 This also explains two things the exam tests: **why LLMs are non-deterministic** (sampling means the same prompt can give different answers), and **why they hallucinate** (the model optimizes for *plausible next token*, not *true statement* — it has no fact-checking step).
+👉 This also explains two things the exam tests: **why LLMs are non-deterministic** (sampling means the same prompt can give different answers), and **why they hallucinate** (the model optimizes for *plausible next token*, not *true statement*, and it has no fact-checking step).
 
 #### The inference parameters
 
 | Parameter | What it controls | How it works | Typical values |
 |---|---|---|---|
-| **Temperature** | **Randomness / creativity** | Reshapes the probability distribution. **Low (→0)** sharpens it — the top token dominates, output is focused and near-deterministic. **High (→1+)** flattens it, giving unlikely tokens ("purple") a real chance | **0-0.3** factual Q&A, extraction, code · **0.7-1.0** brainstorming, marketing copy |
+| **Temperature** | **Randomness / creativity** | Reshapes the probability distribution. **Low (→0)** sharpens it: the top token dominates, output is focused and near-deterministic. **High (→1+)** flattens it, giving unlikely tokens ("purple") a real chance | **0-0.3** factual Q&A, extraction, code · **0.7-1.0** brainstorming, marketing copy |
 | **Top-k** | **How many candidates** are eligible | Keeps only the **k most likely** tokens and samples from those. A fixed-size shortlist | `k=3` → only "sunny", "cloudy", "rainy" can be chosen |
 | **Top-p** (nucleus sampling) | **How much probability mass** is eligible | Adds tokens from most to least likely until their probabilities reach **p**, then samples from that set. The shortlist **resizes itself** based on model confidence | `p=0.85` → "sunny" + "cloudy" + "rainy" (0.40+0.25+0.20). `p=0.5` → just "sunny" + "cloudy" |
-| **Max tokens** | **Response length** | Hard cap on tokens generated. Also a **direct cost and latency control** | Set it deliberately — output tokens are billed |
+| **Max tokens** | **Response length** | Hard cap on tokens generated. Also a **direct cost and latency control** | Set it deliberately, since output tokens are billed |
 | **Stop sequences** | **Where to stop** | Generation halts immediately if the model produces one of these strings | `"\n\nHuman:"` to stop a chat turn running on |
 
-**Top-k vs. top-p** — both trim the candidate list, but top-k is a fixed count while top-p adapts: when the model is confident (one token at 95%), top-p narrows to almost nothing; when it's unsure (many similar options), top-p widens. **Guidance: tune temperature *or* top-p, not both** — stacking them makes behavior hard to reason about.
+**Top-k vs. top-p**: both trim the candidate list, but top-k is a fixed count while top-p adapts: when the model is confident (one token at 95%), top-p narrows to almost nothing; when it's unsure (many similar options), top-p widens. **Guidance: tune temperature *or* top-p, not both**, since stacking them makes behavior hard to reason about.
 
 **Generation stops when** one of three things happens: max tokens is reached, a stop sequence appears, or the model emits its own end-of-sequence token.
 
@@ -375,9 +375,9 @@ At each step the model produces a **probability distribution over every possible
 | "Model **keeps generating past** where it should" | *"A chatbot answers, then invents the user's next question and answers that too."* | **Add a stop sequence** | Halts generation the moment that string appears |
 | "Restrict to a **fixed number** of candidate words" | *"A team wants the model to only ever consider its 10 most likely next words."* | **Top-k** | Fixed-size shortlist, regardless of confidence |
 | "Restrict by **probability mass** / adapt to confidence" | *"A team wants a narrow candidate set when the model is confident but a wider one when it isn't."* | **Top-p** (nucleus sampling) | The shortlist resizes itself with the distribution |
-| "Same prompt gives **different answers** each time" | *"A QA tester files a bug: identical prompts return different wording on each run."* | Not a bug — LLMs are **non-deterministic**; lower temperature to reduce it | Output is *sampled* from a distribution, not looked up |
-| "The model states **false facts confidently**" | *"An assistant cites a court case that doesn't exist."* | **Hallucination** — lower temperature helps slightly; the real fix is **RAG** (see 3.2) | The model predicts plausible tokens, not verified truth |
-| Answer choices offer **both** temperature and top-p tuning | *"Which single change increases response diversity?"* | Adjust **one**, not both | Stacking them makes behavior unpredictable — standard AWS guidance |
+| "Same prompt gives **different answers** each time" | *"A QA tester files a bug: identical prompts return different wording on each run."* | Not a bug; LLMs are **non-deterministic**; lower temperature to reduce it | Output is *sampled* from a distribution, not looked up |
+| "The model states **false facts confidently**" | *"An assistant cites a court case that doesn't exist."* | **Hallucination**; lower temperature helps slightly; the real fix is **RAG** (see 3.2) | The model predicts plausible tokens, not verified truth |
+| Answer choices offer **both** temperature and top-p tuning | *"Which single change increases response diversity?"* | Adjust **one**, not both | Stacking them makes behavior unpredictable, per standard AWS guidance |
 | "Reduce **latency** of responses" | *"A voice assistant's replies take too long to start speaking."* | **Reduce max tokens** (and prompt length) | Fewer tokens generated = less time; latency scales with output length |
 
 ### 2.3 GenAI Use Cases and Limitations
@@ -393,53 +393,53 @@ At each step the model produces a **probability distribution over every possible
 - **Cost/latency**: bigger models = better quality but slower and more expensive.
 
 ### 2.4 The Foundation Model Lifecycle
-1. **Data selection** → 2. **Pre-training** (self-supervised, massive unlabeled data, extremely expensive) → 3. **Fine-tuning** (adapt to specific tasks/domains with labeled data) → 4. **Alignment** (RLHF — Reinforcement Learning from Human Feedback — to make outputs helpful/harmless) → 5. **Evaluation** → 6. **Deployment** → 7. **Feedback/monitoring**.
+1. **Data selection** → 2. **Pre-training** (self-supervised, massive unlabeled data, extremely expensive) → 3. **Fine-tuning** (adapt to specific tasks/domains with labeled data) → 4. **Alignment** (RLHF, Reinforcement Learning from Human Feedback, to make outputs helpful/harmless) → 5. **Evaluation** → 6. **Deployment** → 7. **Feedback/monitoring**.
 
-### 2.5 Model Customization Approaches (ordered by cost/complexity — VERY heavily tested)
+### 2.5 Model Customization Approaches (ordered by cost/complexity; VERY heavily tested)
 
-A foundation model arrives knowing a great deal about the world in general and **nothing about your company in particular**. **Customization** is how you close that gap. The exam almost never asks "what is fine-tuning?" — it describes a business situation and asks **which of the five approaches fits**, so the skill being tested is picking the *cheapest* approach that actually solves the stated problem.
+A foundation model arrives knowing a great deal about the world in general and **nothing about your company in particular**. **Customization** is how you close that gap. The exam almost never asks "what is fine-tuning?". Instead it describes a business situation and asks **which of the five approaches fits**, so the skill being tested is picking the *cheapest* approach that actually solves the stated problem.
 
 👉 **The golden rule: always start at the top of the ladder and only climb when the rung below genuinely cannot do the job.** If two options both work, the exam wants the cheaper/simpler one. Prompt engineering and RAG solve the large majority of real scenarios.
 
 | # | Approach | What it is | Data needed | Cost / effort | Time to value | Changes model weights? |
 |---|---|---|---|---|---|---|
-| 1 | **Prompt engineering** | Craft better instructions, context, and examples **inside the prompt** (zero-/few-shot, chain-of-thought, role setting) | None — just well-written text | Cheapest, essentially free | Minutes | ❌ No |
-| 2 | **RAG (Retrieval-Augmented Generation)** | Retrieve relevant documents from a knowledge base (**vector DB**) at query time and inject them into the prompt as context | Your documents (**unlabeled**, no training pairs) | Low–moderate (embedding + vector store + retrieval infra) | Days | ❌ No |
-| 3 | **Fine-tuning** | Further train the FM on your **labeled** prompt→response examples so it internalizes a task, tone, or format | Hundreds–thousands of **labeled** examples | High (labeled data + GPU compute + Provisioned Throughput to serve) | Weeks | ✅ Yes (private copy) |
-| 4 | **Continued pre-training** (a.k.a. domain adaptation) | Keep pre-training the FM on a large body of **unlabeled** domain text so it absorbs specialized vocabulary and style | Large volumes of raw **unlabeled** domain text | Higher still | Weeks–months | ✅ Yes (private copy) |
-| 5 | **Training from scratch** | Build your own foundation model from zero | Internet-scale data | Extreme — millions of dollars, months, a research team | Months–years | ✅ (an entirely new model) |
+| 1 | **Prompt engineering** | Craft better instructions, context, and examples **inside the prompt** (zero-/few-shot, chain-of-thought, role setting) | None, just well-written text | Cheapest, essentially free | Minutes | ❌ No |
+| 2 | **RAG (Retrieval-Augmented Generation)** | Retrieve relevant documents from a knowledge base (**vector DB**) at query time and inject them into the prompt as context | Your documents (**unlabeled**, no training pairs) | Low to moderate (embedding + vector store + retrieval infra) | Days | ❌ No |
+| 3 | **Fine-tuning** | Further train the FM on your **labeled** prompt→response examples so it internalizes a task, tone, or format | Hundreds to thousands of **labeled** examples | High (labeled data + GPU compute + Provisioned Throughput to serve) | Weeks | ✅ Yes (private copy) |
+| 4 | **Continued pre-training** (a.k.a. domain adaptation) | Keep pre-training the FM on a large body of **unlabeled** domain text so it absorbs specialized vocabulary and style | Large volumes of raw **unlabeled** domain text | Higher still | Weeks to months | ✅ Yes (private copy) |
+| 5 | **Training from scratch** | Build your own foundation model from zero | Internet-scale data | Extreme: millions of dollars, months, a research team | Months to years | ✅ (an entirely new model) |
 
-**The tradeoff in one line:** cost, effort, and required expertise climb steeply as you go down the table, while flexibility to change the model's *inherent behavior* climbs with it. Almost every exam answer is rung 1, 2, or 3 — rung 5 is nearly always a distractor.
+**The tradeoff in one line:** cost, effort, and required expertise climb steeply as you go down the table, while flexibility to change the model's *inherent behavior* climbs with it. Almost every exam answer is rung 1, 2, or 3; rung 5 is nearly always a distractor.
 
 #### The three distinctions that decide most questions
 
-**A. RAG vs. fine-tuning — the single most tested comparison.** They fix *different* problems, so "which is better" is never the real question; "what is broken" is.
+**A. RAG vs. fine-tuning: the single most tested comparison.** They fix *different* problems, so "which is better" is never the real question; "what is broken" is.
 
 | | **RAG** | **Fine-tuning** |
 |---|---|---|
 | Fixes | The model **doesn't know the facts** (missing, private, or out-of-date knowledge) | The model **doesn't behave the way you want** (wrong tone, format, or task skill) |
-| Knowledge freshness | **Real-time** — update the document store and the next answer reflects it | **Frozen** at training time — new facts require retraining |
+| Knowledge freshness | **Real-time**: update the document store and the next answer reflects it | **Frozen** at training time; new facts require retraining |
 | Hallucinations | **Reduces** them by grounding answers in retrieved source text | Does **not** fix them; can even increase confidence in wrong answers |
 | Citations / traceability | ✅ Can cite the source document | ❌ No source to point to |
 | Access control | Respects per-document permissions at retrieval time | ❌ Training data is baked in for everyone |
 | Cost shape | Ongoing retrieval + **longer prompts** (more input tokens per call) | Big upfront training cost, then **shorter prompts** per call |
 
-👉 Memory hook: **RAG = an open-book exam** (the model looks facts up). **Fine-tuning = studying for the exam** (the model changes what it knows how to do). And they are **not mutually exclusive** — "improve accuracy *and* adopt our house style" legitimately means **both**.
+👉 Memory hook: **RAG = an open-book exam** (the model looks facts up). **Fine-tuning = studying for the exam** (the model changes what it knows how to do). And they are **not mutually exclusive**: "improve accuracy *and* adopt our house style" legitimately means **both**.
 
-**B. Fine-tuning vs. continued pre-training — decided by the data you have.**
+**B. Fine-tuning vs. continued pre-training: decided by the data you have.**
 - **Labeled pairs** (prompt + ideal response, e.g., a support ticket and the approved reply) → **fine-tuning** (also called *instruction tuning* when the pairs are instructions).
 - **Raw unlabeled domain text** (a decade of legal filings, medical journals, internal wikis) → **continued pre-training**, to teach vocabulary and domain style rather than a specific task.
 - The giveaway word in the question is almost always **"labeled"** or **"unlabeled."**
 
-**C. Prompt engineering vs. everything else — decided by whether the knowledge fits in the prompt.** If the needed context is small and stable (a style guide, a handful of examples, a fixed policy), paste it into the prompt. If it's a large, growing, or frequently changing corpus that can't fit in the context window, you need **RAG**.
+**C. Prompt engineering vs. everything else: decided by whether the knowledge fits in the prompt.** If the needed context is small and stable (a style guide, a handful of examples, a fixed policy), paste it into the prompt. If it's a large, growing, or frequently changing corpus that can't fit in the context window, you need **RAG**.
 
 #### Supporting concepts the exam name-drops
 
-- **PEFT (Parameter-Efficient Fine-Tuning) / LoRA** — fine-tunes only a small set of added parameters instead of all of them. **Far cheaper and faster** than full fine-tuning with most of the benefit; the answer when a question stresses "fine-tune **on a limited budget**."
-- **Instruction tuning** — fine-tuning specifically on instruction→response pairs to make a model follow directions better.
-- **RLHF (Reinforcement Learning from Human Feedback)** — uses **human preference rankings** to align outputs with human values (helpful, honest, harmless). The keyword is **human feedback/preferences**, not labeled examples.
-- **Model distillation** — trains a **smaller, cheaper, faster "student" model** to imitate a large "teacher" model. The answer when a question wants **lower inference cost/latency** while preserving quality.
-- **In Amazon Bedrock:** fine-tuning and continued pre-training both produce a **private copy** of the model (your data never trains the base model), and serving a customized model **requires Provisioned Throughput** — a real recurring cost that makes customization meaningfully more expensive than RAG. **Bedrock Knowledge Bases** is the managed way to do RAG; **Bedrock Model Customization** is the managed way to fine-tune.
+- **PEFT (Parameter-Efficient Fine-Tuning) / LoRA**: fine-tunes only a small set of added parameters instead of all of them. **Far cheaper and faster** than full fine-tuning with most of the benefit; the answer when a question stresses "fine-tune **on a limited budget**."
+- **Instruction tuning**: fine-tuning specifically on instruction→response pairs to make a model follow directions better.
+- **RLHF (Reinforcement Learning from Human Feedback)**: uses **human preference rankings** to align outputs with human values (helpful, honest, harmless). The keyword is **human feedback/preferences**, not labeled examples.
+- **Model distillation**: trains a **smaller, cheaper, faster "student" model** to imitate a large "teacher" model. The answer when a question wants **lower inference cost/latency** while preserving quality.
+- **In Amazon Bedrock:** fine-tuning and continued pre-training both produce a **private copy** of the model (your data never trains the base model), and serving a customized model **requires Provisioned Throughput**, a real recurring cost that makes customization meaningfully more expensive than RAG. **Bedrock Knowledge Bases** is the managed way to do RAG; **Bedrock Model Customization** is the managed way to fine-tune.
 
 #### 💡 Exam patterns
 
@@ -456,22 +456,22 @@ A foundation model arrives knowing a great deal about the world in general and *
 | "**Quickest / cheapest / no infrastructure**", "improve output with **no data**" | *"A team must improve summary quality this afternoon with no budget."* | **Prompt engineering** (always try this rung first) |
 | Only **a few examples** are available to steer the model | *"They have 3 sample outputs showing the desired format."* | **Few-shot prompting**, not fine-tuning (too little data to train on) |
 | "Needs both **accurate current data** and **domain-specific tone**" | *"Answers must reflect this week's inventory and sound like our brand."* | **RAG + fine-tuning** (they're complementary) |
-| "Build our **own foundation model**", huge budget, no existing FM fits | *"A research lab needs a model for a language no FM supports."* | **Training from scratch** — but treat it as a **distractor** unless the question is explicit |
+| "Build our **own foundation model**", huge budget, no existing FM fits | *"A research lab needs a model for a language no FM supports."* | **Training from scratch**, but treat it as a **distractor** unless the question is explicit |
 | "Customized model in Bedrock must be **served in production**" | *"What's required to run a fine-tuned Bedrock model?"* | **Provisioned Throughput** |
 
 ### <img src="assets/Artificial-Intelligence/Bedrock.svg" width="48" height="48"/> &nbsp;2.6 Amazon Bedrock (the GenAI centerpiece of this exam)
 
-Bedrock is a **fully managed, serverless** service that offers foundation models from **multiple providers through a single API**. You never provision a GPU, patch a server, or manage an endpoint — you call an API, and AWS runs the model. It is the default correct answer whenever a scenario says "build a GenAI application on AWS."
+Bedrock is a **fully managed, serverless** service that offers foundation models from **multiple providers through a single API**. You never provision a GPU, patch a server, or manage an endpoint; you call an API, and AWS runs the model. It is the default correct answer whenever a scenario says "build a GenAI application on AWS."
 
 **Why "single API" matters:** swapping from one provider's model to another is a change of the model ID in your request, not a rewrite of your application. That is the flexibility argument the exam rewards.
 
-**The privacy guarantee (memorize this — it appears verbatim in questions):** your prompts and data are **NOT used to train the base models**, are **not shared with the model provider**, and **stay inside your AWS account/Region**. Traffic can stay off the public internet via **VPC endpoints (AWS PrivateLink)**, data is encrypted with **KMS**, and access is controlled by **IAM**.
+**The privacy guarantee (memorize this; it appears verbatim in questions):** your prompts and data are **NOT used to train the base models**, are **not shared with the model provider**, and **stay inside your AWS account/Region**. Traffic can stay off the public internet via **VPC endpoints (AWS PrivateLink)**, data is encrypted with **KMS**, and access is controlled by **IAM**.
 
 **Model providers available (know that it's multi-vendor, not just Amazon):**
 
 | Provider | Models | Typically known for |
 |---|---|---|
-| **Amazon** | **Nova**, Titan | Amazon's own family — text, image, video, and **embeddings**; strong price-performance |
+| **Amazon** | **Nova**, Titan | Amazon's own family: text, image, video, and **embeddings**; strong price-performance |
 | **Anthropic** | **Claude** | Long context windows, reasoning, high-quality text |
 | **Meta** | **Llama** | Open-weight models |
 | **Mistral AI** | Mistral, Mixtral | Efficient, low-cost models |
@@ -485,11 +485,11 @@ Bedrock is a **fully managed, serverless** service that offers foundation models
 |---|---|---|
 | <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Model catalog / Playground** | Compare and experiment with FMs in the console before committing | "Evaluate several models side by side without writing code" |
 | <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Knowledge Bases** | Fully managed **RAG**: point it at your data (e.g., S3) and Bedrock handles **chunking, embeddings, vector storage, retrieval, and citations** | "Answer from our internal documents with the least development effort" |
-| <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Agents** | **Multi-step task automation**: the FM plans the steps, calls APIs/**Lambda** functions (*action groups*), consults Knowledge Bases, and completes the task | "Not just answer — actually book the appointment / process the return" |
+| <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Agents** | **Multi-step task automation**: the FM plans the steps, calls APIs/**Lambda** functions (*action groups*), consults Knowledge Bases, and completes the task | "Not just answer, but actually book the appointment / process the return" |
 | <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Guardrails** | Configurable safety layer: **denied topics**, harmful-content filters, **word filters**, **PII redaction/masking**, and **contextual grounding checks** to catch hallucinations. Applies to **both the prompt and the response**, and works across models | Anything about blocking, filtering, redacting, or enforcing safety policy consistently |
-| <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Model customization** | **Fine-tuning** (labeled data) and **continued pre-training** (unlabeled data), producing a **private copy** of the model | See §2.5 — customization ladder rungs 3 and 4 |
+| <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Model customization** | **Fine-tuning** (labeled data) and **continued pre-training** (unlabeled data), producing a **private copy** of the model | See §2.5, customization ladder rungs 3 and 4 |
 | <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Model evaluation** | **Automatic** evaluation (built-in metrics/datasets) or **human** evaluation (your own team or an AWS-managed work team) for subjective qualities | "Compare models for accuracy" → automatic; "judge tone/brand friendliness/helpfulness" → **human** |
-| <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Provisioned Throughput** | Reserved capacity purchased in **model units** for guaranteed throughput — and **required to serve a customized (fine-tuned or continued-pre-trained) model** | "Predictable high volume" or "how do we run our fine-tuned model in production?" |
+| <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Provisioned Throughput** | Reserved capacity purchased in **model units** for guaranteed throughput, and **required to serve a customized (fine-tuned or continued-pre-trained) model** | "Predictable high volume" or "how do we run our fine-tuned model in production?" |
 | <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Watermark detection** | Detects whether an image was generated by Amazon **Titan/Nova** image models | "Verify whether this image was AI-generated" |
 | <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Bedrock Studio / PartyRock** | Low- and no-code environments for building and sharing GenAI apps | "Let non-developers prototype" |
 
@@ -497,11 +497,11 @@ Bedrock is a **fully managed, serverless** service that offers foundation models
 
 | Mode | How you pay | Use when |
 |---|---|---|
-| **On-Demand** | Per **input and output token** (or per image), **no commitment** | Variable, unpredictable, or exploratory workloads — the default |
+| **On-Demand** | Per **input and output token** (or per image), **no commitment** | Variable, unpredictable, or exploratory workloads; the default |
 | **Batch** | Bulk asynchronous processing at a **discount** (roughly half of on-demand) | Large jobs where results aren't needed immediately |
 | **Provisioned Throughput** | **Hourly commitment** (1- or 6-month terms) for guaranteed capacity | Steady high volume, latency guarantees, or **any custom model** |
 
-👉 **The cost lever the exam loves:** you pay per **token**, and **input tokens count too**. That is why stuffing huge context into every prompt (or a poorly tuned RAG retrieval) raises cost — and why a **smaller model** is often the right answer to "reduce cost/latency."
+👉 **The cost lever the exam loves:** you pay per **token**, and **input tokens count too**. That is why stuffing huge context into every prompt (or a poorly tuned RAG retrieval) raises cost, and why a **smaller model** is often the right answer to "reduce cost/latency."
 
 #### 💡 Exam patterns
 
@@ -509,13 +509,13 @@ Bedrock is a **fully managed, serverless** service that offers foundation models
 |---|---|
 | "Access **multiple providers'** models through **one API**", "avoid vendor lock-in" | **Amazon Bedrock** |
 | "**Serverless**, no infrastructure to manage" for GenAI | **Bedrock** (SageMaker means you manage infrastructure) |
-| "Will our data be used to **train the model**?" | **No** — Bedrock does not use your data to train base models |
+| "Will our data be used to **train the model**?" | **No**: Bedrock does not use your data to train base models |
 | "Keep Bedrock traffic **off the public internet**" | **VPC endpoints / PrivateLink** |
 | "Managed **RAG** with the least effort" | **Bedrock Knowledge Bases** (not a hand-built vector DB) |
 | "Model must **take actions** / call APIs / complete a multi-step task" | **Bedrock Agents** |
 | "**Block** certain topics, **redact PII**, filter harmful content" | **Bedrock Guardrails** |
 | "Detect when the model's answer **isn't supported by the source**" | **Guardrails contextual grounding checks** |
-| "Compare models on **subjective** quality like tone or brand fit" | **Bedrock Model Evaluation — human evaluation** |
+| "Compare models on **subjective** quality like tone or brand fit" | **Bedrock Model Evaluation (human evaluation)** |
 | "**Guaranteed capacity**" or "run our **fine-tuned** model" | **Provisioned Throughput** |
 | "Large volume of prompts, results **not needed immediately**, lowest cost" | **Batch** inference mode |
 | "Is this image **AI-generated**?" | **Watermark detection** |
@@ -526,10 +526,10 @@ The exam's recurring trap here is offering **Bedrock** when the scenario actuall
 
 | Service | Purpose | Think of it as... |
 |---|---|---|
-| <img src="assets/Artificial-Intelligence/Q.svg" width="36" height="36"/> &nbsp;**Amazon Q Business** | Ready-to-use GenAI **assistant for employees**: connects to company data via **40+ built-in connectors** (SharePoint, Salesforce, Confluence, S3, Slack…) and answers with **citations**. Critically, it is **permission-aware** — each user only sees answers drawn from documents they're already allowed to read | A search-and-answer assistant over the company intranet, with no building required |
+| <img src="assets/Artificial-Intelligence/Q.svg" width="36" height="36"/> &nbsp;**Amazon Q Business** | Ready-to-use GenAI **assistant for employees**: connects to company data via **40+ built-in connectors** (SharePoint, Salesforce, Confluence, S3, Slack…) and answers with **citations**. Critically, it is **permission-aware**: each user only sees answers drawn from documents they're already allowed to read | A search-and-answer assistant over the company intranet, with no building required |
 | <img src="assets/Artificial-Intelligence/App-Studio.svg" width="36" height="36"/> &nbsp;**Amazon Q Apps** | Lets employees turn a **plain-English description** into a small shareable internal app, built on Q Business | "Describe the tool you want" → a working internal app |
 | <img src="assets/Artificial-Intelligence/Q.svg" width="36" height="36"/> &nbsp;**Amazon Q Developer** | GenAI **coding assistant** (formerly **CodeWhisperer**): code generation and completion in the IDE, code explanation, **security vulnerability scanning**, unit-test and documentation generation, plus AWS expertise and cost/resource questions in the console | A pair programmer that also knows your AWS account |
-| <img src="assets/Artificial-Intelligence/Nova.svg" width="36" height="36"/> &nbsp;**Amazon Nova / Titan** | Amazon's own **foundation models** — text, image, video, and **embeddings** — available in Bedrock. **Titan Embeddings** is the usual answer for converting text to vectors for a vector database | Amazon's in-house model family |
+| <img src="assets/Artificial-Intelligence/Nova.svg" width="36" height="36"/> &nbsp;**Amazon Nova / Titan** | Amazon's own **foundation models** (text, image, video, and **embeddings**) available in Bedrock. **Titan Embeddings** is the usual answer for converting text to vectors for a vector database | Amazon's in-house model family |
 | <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**PartyRock** | **Free, no-code** Bedrock playground for building and sharing GenAI apps; requires no AWS account | A sandbox for learning and prototyping, not production |
 | <img src="assets/Artificial-Intelligence/Kendra.svg" width="36" height="36"/> &nbsp;**Amazon Kendra** | **Intelligent enterprise search** using natural-language queries over connected repositories; frequently used as the **retrieval layer** in a custom RAG architecture | Enterprise search that returns answers, not just links |
 | <img src="assets/Artificial-Intelligence/Augmented-AI-A2I.svg" width="36" height="36"/> &nbsp;**Amazon A2I (Augmented AI)** | Routes **low-confidence predictions to human reviewers**, building a human-in-the-loop workflow | The "escalate to a person when the model isn't sure" answer |
@@ -539,9 +539,9 @@ The exam's recurring trap here is offering **Bedrock** when the scenario actuall
 
 | Level | Service | You supply | You get | Expertise needed |
 |---|---|---|---|---|
-| Highest abstraction | **Amazon Q** | Your data connectors | A **finished assistant** — no building | Lowest — business users |
-| Middle | **Amazon Bedrock** | Prompts and API calls | **Managed FMs** to build your own app on | Moderate — developers |
-| Lowest abstraction | **SageMaker AI** | Data, code, model choice, infrastructure decisions | **Full control** to train, tune, and host models | Highest — ML practitioners |
+| Highest abstraction | **Amazon Q** | Your data connectors | A **finished assistant**, no building | Lowest: business users |
+| Middle | **Amazon Bedrock** | Prompts and API calls | **Managed FMs** to build your own app on | Moderate: developers |
+| Lowest abstraction | **SageMaker AI** | Data, code, model choice, infrastructure decisions | **Full control** to train, tune, and host models | Highest: ML practitioners |
 
 👉 **Decide by what the company wants to own.** "We want an assistant" → **Q**. "We want to build an application" → **Bedrock**. "We need our own model, our own training, our own endpoints" → **SageMaker AI**. The cheapest and fastest option that satisfies the requirement is always the intended answer.
 
@@ -580,26 +580,26 @@ This section is easy points: the questions are usually "which AWS benefit addres
 
 # <img src="assets/Artificial-Intelligence/Bedrock-AgentCore.svg" width="48" height="48"/> &nbsp;DOMAIN 3: APPLICATIONS OF FOUNDATION MODELS (28%, largest weight)
 
-**What this domain is really about:** Domains 1 and 2 asked *what* things are. Domain 3 — the largest slice of the exam — asks *how you actually build something*. Every topic here is a step in the same journey: **pick a model → feed it your knowledge (RAG) → talk to it well (prompting) → change it if needed (fine-tuning) → prove it works (evaluation) → let it take actions (agents) → wire it all together (architecture)**. Keep that order in mind and the whole domain hangs together as one story.
+**What this domain is really about:** Domains 1 and 2 asked *what* things are. Domain 3, the largest slice of the exam, asks *how you actually build something*. Every topic here is a step in the same journey: **pick a model → feed it your knowledge (RAG) → talk to it well (prompting) → change it if needed (fine-tuning) → prove it works (evaluation) → let it take actions (agents) → wire it all together (architecture)**. Keep that order in mind and the domain reads as a single sequence.
 
 ### 3.1 Criteria for Selecting a Foundation Model
 
-There is no "best" foundation model — only the best fit for a specific job and budget. The exam gives you a business requirement and expects you to name the criterion that decides it.
+There is no "best" foundation model, only the best fit for a specific job and budget. The exam gives you a business requirement and expects you to name the criterion that decides it.
 
 | Criterion | The question it answers | Why it decides things |
 |---|---|---|
-| **Modality** | What kind of data goes in and comes out — text, image, audio, video, **multimodal**, or **embeddings**? | A text-only model can't caption photos. This is the **first filter**: it eliminates most candidates instantly |
+| **Modality** | What kind of data goes in and comes out: text, image, audio, video, **multimodal**, or **embeddings**? | A text-only model can't caption photos. This is the **first filter**: it eliminates most candidates instantly |
 | **Model size / capability** | How hard is the reasoning? | Bigger ≈ smarter, but **slower and pricier**. A simple classification job does not need the largest model |
 | **Context window** | How much text must fit in a **single request**? | Measured in tokens. Summarizing a 300-page contract in one call needs a large window; a short chat does not |
 | **Latency** | Does a human wait for the answer in real time? | Interactive chat needs a fast, smaller model; an overnight batch job does not |
 | **Cost** | What's the per-token price × expected volume? | Remember **input tokens are billed too**, so long RAG contexts drive real cost |
-| **Customization support** | Can it be fine-tuned or continued pre-trained? | Not every model in Bedrock supports customization — this can rule one out |
+| **Customization support** | Can it be fine-tuned or continued pre-trained? | Not every model in Bedrock supports customization, so this can rule one out |
 | **Language and domain coverage** | Does it handle the languages/jargon you need? | A model strong in English may be weak in Japanese or in medical terminology |
 | **Licensing and provider terms** | Are the usage rights acceptable? | Commercial-use restrictions and data-handling terms vary by provider |
-| **Benchmark and task performance** | Does it do well on **your** task? | Public benchmarks are a starting point only — **always evaluate on your own data** |
+| **Benchmark and task performance** | Does it do well on **your** task? | Public benchmarks are a starting point only; **always evaluate on your own data** |
 | **Responsible-AI profile** | Known bias, safety behavior, transparency | Check the provider's documentation and **AWS AI Service Cards** |
 
-👉 **The cost/quality tradeoff in one line:** larger model = better quality, higher latency, higher price. When a question emphasizes **speed or cost**, the intended answer is usually **a smaller model** (or distillation) — not a bigger one.
+👉 **The cost/quality tradeoff in one line:** larger model = better quality, higher latency, higher price. When a question emphasizes **speed or cost**, the intended answer is usually **a smaller model** (or distillation), not a bigger one.
 
 👉 **The two-step method the exam rewards:** first filter by **hard requirements** (modality, context window, language, customization support), then choose among survivors by **cost, latency, and measured accuracy on your own data**.
 
@@ -607,34 +607,34 @@ There is no "best" foundation model — only the best fit for a specific job and
 
 | The question says... | The answer is... |
 |---|---|
-| "Analyze **images and text together**" | A **multimodal** model — modality is the deciding criterion |
+| "Analyze **images and text together**" | A **multimodal** model; modality is the deciding criterion |
 | "Summarize very **long documents in one request**" | **Context window** size |
-| "Responses must be **instant** for chat users" and cost matters | A **smaller/faster** model — latency and cost |
-| "Which model is **best**?" | **Evaluate on your own data** — no universal best model |
+| "Responses must be **instant** for chat users" and cost matters | A **smaller/faster** model; latency and cost decide |
+| "Which model is **best**?" | **Evaluate on your own data**; no universal best model |
 | "Convert text into **vectors** for search" | An **embeddings** model (e.g., Amazon Titan Embeddings) |
 | "We must be able to **fine-tune** it later" | **Customization support** narrows the choice |
 
-### 3.2 Retrieval-Augmented Generation (RAG) — know this flow cold
+### 3.2 Retrieval-Augmented Generation (RAG): know this flow cold
 
-**The plain-English idea:** an FM only knows what it saw during training. RAG hands it the right pages from *your* documents at the moment of the question, so it can answer about things it never learned. It's the **open-book exam** for a model — and no retraining is involved.
+**The plain-English idea:** an FM only knows what it saw during training. RAG hands it the right pages from *your* documents at the moment of the question, so it can answer about things it never learned. It's the **open-book exam** for a model, and no retraining is involved.
 
 **The two phases.** The exam sometimes splits these, so keep them separate in your head:
 
-**Phase 1 — Ingestion (done ahead of time, once per document):**
-1. **Chunk** — split your documents into passages small enough to be meaningful and to fit in a prompt.
-2. **Embed** — an **embeddings model** turns each chunk into a **vector** (a list of numbers capturing its *meaning*).
-3. **Store** — the vectors go into a **vector database**, indexed for similarity search.
+**Phase 1. Ingestion (done ahead of time, once per document):**
+1. **Chunk**: split your documents into passages small enough to be meaningful and to fit in a prompt.
+2. **Embed**: an **embeddings model** turns each chunk into a **vector** (a list of numbers capturing its *meaning*).
+3. **Store**: the vectors go into a **vector database**, indexed for similarity search.
 
-**Phase 2 — Retrieval and generation (every time a user asks something):**
+**Phase 2. Retrieval and generation (every time a user asks something):**
 4. **Embed the question** using the *same* embeddings model, then find the **semantically most similar chunks** (nearest vectors).
-5. **Augment the prompt** — the retrieved chunks are pasted in as context alongside the user's question.
-6. **Generate** — the LLM answers **grounded in your data**, and can **cite the source chunks**.
+5. **Augment the prompt**: the retrieved chunks are pasted in as context alongside the user's question.
+6. **Generate**: the LLM answers **grounded in your data**, and can **cite the source chunks**.
 
 👉 **Why vectors and not keyword search:** embeddings capture meaning, so a question about "time off policy" retrieves a chunk titled "annual leave entitlement" even though **no words match**. That's **semantic search**, and it's the whole point of the vector database.
 
 **What RAG buys you (each of these is a possible exam answer):** current, up-to-the-minute knowledge without retraining · **fewer hallucinations** (answers grounded in real text) · **citations** for traceability · access to **private data** the model never saw · **per-user permissions** enforced at retrieval time · far cheaper than fine-tuning.
 
-**What RAG does *not* fix:** the model's **tone, style, or output format** — that's fine-tuning territory (see §2.5). RAG also cannot answer if the right chunk isn't retrieved, so **retrieval quality is the usual culprit when a RAG app gives bad answers**.
+**What RAG does *not* fix:** the model's **tone, style, or output format**; that's fine-tuning territory (see §2.5). RAG also cannot answer if the right chunk isn't retrieved, so **retrieval quality is the usual culprit when a RAG app gives bad answers**.
 
 **AWS vector database options (recognize these as vector stores):**
 
@@ -645,9 +645,9 @@ There is no "best" foundation model — only the best fit for a specific job and
 | <img src="assets/Databases/Neptune.svg" width="36" height="36"/> &nbsp;**Amazon Neptune Analytics** | Graph relationships **plus** vectors |
 | <img src="assets/Databases/DocumentDB.svg" width="36" height="36"/> &nbsp;**Amazon DocumentDB** / <img src="assets/Databases/MemoryDB.svg" width="36" height="36"/> &nbsp;**Amazon MemoryDB** | Document and in-memory options (MemoryDB = lowest latency) |
 | <img src="assets/Storage/Simple-Storage-Service.svg" width="36" height="36"/> &nbsp;**Amazon S3 Vectors** | Low-cost vector storage in S3 |
-| <img src="assets/Artificial-Intelligence/Kendra.svg" width="36" height="36"/> &nbsp;**Amazon Kendra** | Not a vector DB per se — a managed **intelligent search** retrieval layer for RAG |
+| <img src="assets/Artificial-Intelligence/Kendra.svg" width="36" height="36"/> &nbsp;**Amazon Kendra** | Not a vector DB per se, but a managed **intelligent search** retrieval layer for RAG |
 
-👉 **On AWS, the managed shortcut is Bedrock Knowledge Bases**: it performs chunking, embedding, vector storage, retrieval, and citation for you. If a question says "**implement RAG with the least operational effort**," that is the answer — not a hand-built pipeline.
+👉 **On AWS, the managed shortcut is Bedrock Knowledge Bases**: it performs chunking, embedding, vector storage, retrieval, and citation for you. If a question says "**implement RAG with the least operational effort**," that is the answer, not a hand-built pipeline.
 
 #### 💡 Exam patterns
 
@@ -655,12 +655,12 @@ There is no "best" foundation model — only the best fit for a specific job and
 |---|---|
 | "Answer from **internal/private documents** without retraining" | **RAG** |
 | "Reduce **hallucinations** by grounding answers in real sources" | **RAG** (plus Guardrails contextual grounding) |
-| "Information changes **daily/weekly**" | **RAG** — fine-tuning would be stale immediately |
+| "Information changes **daily/weekly**" | **RAG**; fine-tuning would be stale immediately |
 | "What stores the **embeddings**?" | A **vector database** |
 | "What converts text into embeddings?" | An **embeddings model** (e.g., **Titan Embeddings**) |
 | "Users find documents by **meaning, not exact keywords**" | **Semantic search** via vector similarity |
 | "RAG with the **least effort / fully managed**" | **Bedrock Knowledge Bases** |
-| "The RAG app returns **irrelevant answers**" | Fix **retrieval** — chunking strategy, embeddings, or number of retrieved results |
+| "The RAG app returns **irrelevant answers**" | Fix **retrieval**: chunking strategy, embeddings, or number of retrieved results |
 
 ### 3.3 Prompt Engineering Techniques (heavily tested)
 
@@ -670,13 +670,13 @@ There is no "best" foundation model — only the best fit for a specific job and
 |---|---|---|
 | **Zero-shot prompting** | Ask for the task directly, with **no examples** | The task is common and the model already knows it ("Summarize this email") |
 | **One-shot prompting** | Provide **exactly one** worked example | You need to show a format and have a single sample |
-| **Few-shot prompting** | Provide **a handful of worked examples** showing the desired pattern | You need a specific format/style and have 2–5 samples — **the answer whenever a question mentions "a few examples"** |
+| **Few-shot prompting** | Provide **a handful of worked examples** showing the desired pattern | You need a specific format/style and have 2-5 samples; **the answer whenever a question mentions "a few examples"** |
 | **Chain-of-thought (CoT)** | Ask the model to reason **step by step** before answering ("Let's think step by step") | Math, logic, and multi-step reasoning problems where the model jumps to a wrong answer |
 | **Prompt templates** | Reusable prompt skeletons with **variables** filled at runtime | You need consistency across many requests in an application |
 | **Negative prompting** | State explicitly what the model must **NOT** do or include | Excluding topics, formats, or unwanted elements (common in image generation) |
 | **Role / persona prompting** | Tell the model who to be ("You are a senior tax accountant") | You want a specific voice, expertise level, or audience framing |
 
-**Anatomy of a good prompt** — the four parts the exam expects you to recognize:
+**Anatomy of a good prompt.** The four parts the exam expects you to recognize:
 
 | Part | Purpose | Example |
 |---|---|---|
@@ -687,7 +687,7 @@ There is no "best" foundation model — only the best fit for a specific job and
 
 👉 **Prompt engineering vs. inference parameters:** prompting shapes *what* you ask; **temperature / top-p / top-k** (§2.2) shape *how randomly* the model answers. "Make outputs more consistent and repeatable" → **lower the temperature**, not a better prompt.
 
-**Prompt attacks — know the difference, they are near-identical distractors:**
+**Prompt attacks (know the difference, they are near-identical distractors):**
 
 | Attack | What the attacker is doing | Memory hook |
 |---|---|---|
@@ -713,23 +713,23 @@ There is no "best" foundation model — only the best fit for a specific job and
 
 ### 3.4 Fine-Tuning in Practice
 
-**When you've already tried prompting and RAG and the model still doesn't *behave* right, you change the model itself.** (Revisit §2.5 for choosing between the options — this section is about doing it.)
+**When you've already tried prompting and RAG and the model still doesn't *behave* right, you change the model itself.** (Revisit §2.5 for choosing between the options; this section is about doing it.)
 
 | Concept | What it means in practice |
 |---|---|
 | **Instruction tuning** | The standard fine-tune: train on a **labeled dataset of prompt→completion pairs** so the model learns your task, tone, and format |
-| **Domain-adaptation fine-tuning** | Teach industry vocabulary using **continued pre-training on unlabeled domain text** — no labels required |
+| **Domain-adaptation fine-tuning** | Teach industry vocabulary using **continued pre-training on unlabeled domain text**, no labels required |
 | **PEFT / LoRA** | **Parameter-efficient** fine-tuning: updates only a small set of parameters, so it's much **cheaper and faster** with most of the benefit |
 | **RLHF** | Humans **rank** outputs → a **reward model** learns those preferences → the FM is tuned toward them. This is **alignment**, and the keyword is **human preferences** |
 | **In Bedrock** | Fine-tuning creates a **private copy** of the model (your data never trains the base model), and serving it **requires Provisioned Throughput** |
 
-**Data quality is the whole game.** A fine-tune is only as good as its dataset: examples must be **representative, correctly labeled, diverse, and free of bias and PII**. Split data into **training / validation / test** sets, and remember the classic failure — **overfitting**, where the model memorizes the training examples and performs poorly on anything new (§1.4).
+**Data quality decides the result.** A fine-tune is only as good as its dataset: examples must be **representative, correctly labeled, diverse, and free of bias and PII**. Split data into **training / validation / test** sets, and remember the classic failure, **overfitting**, where the model memorizes the training examples and performs poorly on anything new (§1.4).
 
 **The risks the exam names explicitly:**
-- **Catastrophic forgetting** — tuning too narrowly degrades the model's *general* abilities. The model gets great at your task and worse at everything else.
-- **Cost** — labeling, training compute, and mandatory Provisioned Throughput to serve it.
-- **Staleness** — a fine-tuned model's knowledge is **frozen** at training time; new facts require retraining (this is exactly why **RAG** exists).
-- **Baked-in data** — anything in the training set is available to every user, with no per-document access control.
+- **Catastrophic forgetting**: tuning too narrowly degrades the model's *general* abilities. The model gets great at your task and worse at everything else.
+- **Cost**: labeling, training compute, and mandatory Provisioned Throughput to serve it.
+- **Staleness**: a fine-tuned model's knowledge is **frozen** at training time; new facts require retraining (this is exactly why **RAG** exists).
+- **Baked-in data**: anything in the training set is available to every user, with no per-document access control.
 
 #### 💡 Exam patterns
 
@@ -747,45 +747,45 @@ There is no "best" foundation model — only the best fit for a specific job and
 
 #### The core problem: there is no single right answer
 
-For a classic ML model you check **accuracy** or **F1**, because there is exactly one correct label — the email either *was* spam or it wasn't. Generative AI breaks that. Ask ten people to summarize the same article and you get ten different summaries, all correct. There is nothing to do an exact match against, so accuracy and F1 are **wrong answers** in any GenAI evaluation question.
+For a classic ML model you check **accuracy** or **F1**, because there is exactly one correct label: the email either *was* spam or it wasn't. Generative AI breaks that. Ask ten people to summarize the same article and you get ten different summaries, all correct. There is nothing to do an exact match against, so accuracy and F1 are **wrong answers** in any GenAI evaluation question.
 
 That leaves only three honest ways to judge generated text:
 
 | Approach | The question it answers | When you use it |
 |---|---|---|
-| **Compare to a reference** | "How close is the output to a human-written *good* answer?" | You have example answers written by humans — automatic, cheap, repeatable |
-| **Ask a human** | "Is this actually *good*?" | Quality is subjective — tone, helpfulness, safety, brand fit |
+| **Compare to a reference** | "How close is the output to a human-written *good* answer?" | You have example answers written by humans; automatic, cheap, repeatable |
+| **Ask a human** | "Is this actually *good*?" | Quality is subjective: tone, helpfulness, safety, brand fit |
 | **Measure the business** | "Did this make anything better?" | The system is already live and you need to justify it |
 
 Everything below is one of those three.
 
 ---
 
-#### Approach 1 — Automatic metrics (compare output to a reference)
+#### Approach 1: Automatic metrics (compare output to a reference)
 
 These all work the same way: you supply a **reference answer** written by a human, the model produces its answer, and the metric scores how similar they are. The metrics differ in *what kind* of similarity they measure.
 
 | Metric | How it scores | Plain English | Best for |
 |---|---|---|---|
-| **ROUGE** | **Recall** of overlapping words/phrases | "Of everything the reference said, **how much did the output cover?**" — punishes leaving things out | **Summarization** |
-| **BLEU** | **Precision** of overlapping words/phrases | "Of everything the output said, **how much was actually right?**" — punishes making things up | **Translation** |
-| **BERTScore** | **Semantic** (meaning) similarity via embeddings | "Different words, same meaning — that still counts." Scores paraphrases fairly | Any generation task where wording may vary |
+| **ROUGE** | **Recall** of overlapping words/phrases | "Of everything the reference said, **how much did the output cover?**" It punishes leaving things out | **Summarization** |
+| **BLEU** | **Precision** of overlapping words/phrases | "Of everything the output said, **how much was actually right?**" It punishes making things up | **Translation** |
+| **BERTScore** | **Semantic** (meaning) similarity via embeddings | "Different words, same meaning: that still counts." Scores paraphrases fairly | Any generation task where wording may vary |
 | **Perplexity** | How **surprised** the model is by the next token | "How confidently does this model predict real text?" **Lower = better** | Comparing base models' raw language quality |
 
 **Why ROUGE ≠ BLEU (the distinction the exam wants):** a summary must not *miss* key points → measure **recall** → **ROUGE**. A translation must not *invent* words that were never in the source → measure **precision** → **BLEU**.
 
-**The weakness of word-overlap metrics:** "The film was excellent" vs. "The movie was great" means the same thing but shares almost no words, so ROUGE and BLEU score it low. That is exactly the gap **BERTScore** fills — it compares meaning instead of spelling.
+**The weakness of word-overlap metrics:** "The film was excellent" vs. "The movie was great" means the same thing but shares almost no words, so ROUGE and BLEU score it low. **BERTScore** closes that gap by comparing meaning instead of spelling.
 
 ---
 
-#### Approach 2 — Benchmarks (compare models to each other)
+#### Approach 2: Benchmarks (compare models to each other)
 
-Before you test anything on *your* data, you can look at published scores on standardized test sets. These tell you which models are generally capable — they say **nothing** about whether a model is good at *your* task.
+Before you test anything on *your* data, you can look at published scores on standardized test sets. These tell you which models are generally capable; they say **nothing** about whether a model is good at *your* task.
 
 | Benchmark | What it tests |
 |---|---|
 | **MMLU** | Broad general knowledge and reasoning across 57 academic subjects |
-| **HELM** | Holistic evaluation — accuracy *plus* fairness, bias, toxicity, efficiency |
+| **HELM** | Holistic evaluation: accuracy *plus* fairness, bias, toxicity, efficiency |
 | **GLUE / SuperGLUE** | General language-understanding tasks |
 | **BIG-bench** | A large, hard, diverse set of reasoning challenges |
 
@@ -793,7 +793,7 @@ Before you test anything on *your* data, you can look at published scores on sta
 
 ---
 
-#### Approach 3 — Human evaluation (the gold standard)
+#### Approach 3: Human evaluation (the gold standard)
 
 Humans review outputs and rate or rank them. It is **slow and expensive**, and it is the **only** valid answer when the thing being judged can't be reduced to a number:
 
@@ -801,17 +801,17 @@ Humans review outputs and rate or rank them. It is **slow and expensive**, and i
 - Safety, offensiveness, appropriateness
 - Preference between two models ("which response do you like better?")
 
-If a question mentions **subjective quality, tone, or brand**, the answer is human evaluation — not a metric.
+If a question mentions **subjective quality, tone, or brand**, the answer is human evaluation, not a metric.
 
 ---
 
-#### Approach 4 — Business metrics (did it actually work?)
+#### Approach 4: Business metrics (did it actually work?)
 
-Model scores don't pay for the project. Once the system is in production, success is measured in outcomes:
+Model scores alone don't establish business value. Once the system is in production, success is measured in outcomes:
 
 **CSAT / user satisfaction · task-completion rate · deflection rate** (tickets resolved without a human) **· conversion rate · average handling time · cost per interaction**
 
-If the question asks whether the **deployment or the project** succeeded — not whether the model is accurate — the answer is a business metric.
+If the question asks whether the **deployment or the project** succeeded, not whether the model is accurate, the answer is a business metric.
 
 ---
 
@@ -841,25 +841,25 @@ Related, and easy to confuse: **SageMaker Clarify** evaluates **bias and explain
 | "Output must not **miss key information**" | **ROUGE** (recall-oriented) |
 | "Compare **meaning** rather than exact wording / paraphrases are fine" | **BERTScore** |
 | "Judge **brand voice / helpfulness / tone / creativity**" | **Human evaluation** (Bedrock Model Evaluation) |
-| "Compare general capability before choosing a model" | **Benchmarks** (MMLU, HELM) — then test on your own data |
+| "Compare general capability before choosing a model" | **Benchmarks** (MMLU, HELM), then test on your own data |
 | "Did the deployment **succeed for the business**?" | **Business metrics** (CSAT, deflection rate, cost per interaction) |
 | "Lower is better" | **Perplexity** (or loss) |
-| "Which metric for a **generative** task?" | **Not accuracy / F1** — those need a single correct label |
+| "Which metric for a **generative** task?" | **Not accuracy / F1**; those need a single correct label |
 | "Managed way to compare FMs on AWS" | **Bedrock Model Evaluation** (automatic *or* human) |
 
 ### 3.6 Agents and Multi-Step Applications
 
-**The distinction to hold onto:** a plain FM **produces text**. An **agent takes actions**. If the scenario requires something to actually happen in another system — a ticket created, an order refunded, a flight booked — the answer involves an **agent**, not a better prompt.
+**The distinction to hold onto:** a plain FM **produces text**. An **agent takes actions**. If the scenario requires something to actually happen in another system (a ticket created, an order refunded, a flight booked), the answer involves an **agent**, not a better prompt.
 
-**How an agent works:** you give it a goal in plain language; the FM **plans** the steps, decides **which tool to call** and with what parameters, **calls** it, reads the result, and **loops** until the goal is met — then reports back.
+**How an agent works:** you give it a goal in plain language; the FM **plans** the steps, decides **which tool to call** and with what parameters, **calls** it, reads the result, and **loops** until the goal is met, then reports back.
 
 | Bedrock Agents concept | What it is |
 |---|---|
-| **Action groups** | The tools the agent may use — API operations defined by an **OpenAPI schema**, backed by **AWS Lambda** functions that do the real work |
+| **Action groups** | The tools the agent may use: API operations defined by an **OpenAPI schema**, backed by **AWS Lambda** functions that do the real work |
 | **Knowledge Bases** | Attach RAG so the agent can look facts up while it works |
 | **Orchestration** | The managed plan → call → observe → repeat loop, so you don't build it |
 | **Session memory / state** | Retains context across turns in a conversation |
-| **Traces** | A step-by-step record of the agent's reasoning and tool calls — essential for debugging and transparency |
+| **Traces** | A step-by-step record of the agent's reasoning and tool calls; essential for debugging and transparency |
 
 **Security note the exam likes:** an agent that can call APIs can also be **tricked into calling them** via prompt injection. The mitigations are **least-privilege IAM** on the Lambda functions, **Guardrails**, and **human approval** for high-impact actions.
 
@@ -900,7 +900,7 @@ Response to user
 |---|---|---|
 | Interface | Front end + <img src="assets/Networking-Content-Delivery/API-Gateway.svg" width="36" height="36"/> &nbsp;API Gateway / <img src="assets/Compute/Lambda.svg" width="36" height="36"/> &nbsp;Lambda | Where users interact; keeps credentials off the client |
 | Reasoning | <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Bedrock FM** | Generates the response |
-| Safety | <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Guardrails** | Blocks disallowed topics, redacts PII, checks grounding — **on input and output** |
+| Safety | <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Guardrails** | Blocks disallowed topics, redacts PII, checks grounding, **on input and output** |
 | Knowledge | <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Knowledge Base** + vector store over <img src="assets/Storage/Simple-Storage-Service.svg" width="36" height="36"/> &nbsp;**S3** | Grounds answers in your data, with citations |
 | Action | <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Agent** + action groups + <img src="assets/Compute/Lambda.svg" width="36" height="36"/> &nbsp;**Lambda** | Lets the system *do* things, not just talk |
 | Observability | <img src="assets/Management-Tools/CloudWatch.svg" width="36" height="36"/> &nbsp;**CloudWatch** | Logs, latency, token usage, error rates |
@@ -952,7 +952,7 @@ Response to user
 
 # <img src="assets/Category/Security-Identity.svg" width="48" height="48"/> &nbsp;DOMAIN 5: SECURITY, COMPLIANCE, AND GOVERNANCE FOR AI (14%)
 
-### 5.1 Securing AI Systems with AWS Services (mostly reused from core AWS security — easy points)
+### 5.1 Securing AI Systems with AWS Services (mostly reused from core AWS security; easy points)
 
 | Service | Role in AI workloads |
 |---|---|
@@ -1014,28 +1014,28 @@ Each row is a pair the exam deliberately puts in the same question. The **Key Di
 | Comparison | Key Distinction | Tell-tale in the question |
 |---|---|---|
 | AI vs. ML vs. DL vs. GenAI | Four **nested circles**, not four alternatives: **AI ⊃ ML ⊃ Deep Learning ⊃ GenAI**. AI is the whole field of machines doing smart things; ML is the subset that *learns from data* instead of following hand-written rules; DL is the subset of ML using **multi-layer neural networks**; GenAI is the subset of DL that **creates new content** | "Which is a subset of which" · "creates new content" → GenAI |
-| Supervised vs. Unsupervised vs. RL | The difference is **what the data looks like**. Supervised = you already have the **right answers (labels)**, so the model learns to reproduce them. Unsupervised = **no labels**, so the model can only find structure (clusters, anomalies). RL = **no dataset at all** — an agent acts, gets **rewards/penalties**, and learns by trial and error | "Historical labeled data" → supervised · "group similar customers" → unsupervised · "reward" / "game" / "robot" → RL |
+| Supervised vs. Unsupervised vs. RL | The difference is **what the data looks like**. Supervised = you already have the **right answers (labels)**, so the model learns to reproduce them. Unsupervised = **no labels**, so the model can only find structure (clusters, anomalies). RL = **no dataset at all**: an agent acts, gets **rewards/penalties**, and learns by trial and error | "Historical labeled data" → supervised · "group similar customers" → unsupervised · "reward" / "game" / "robot" → RL |
 | Classification vs. Regression | Both are supervised; only the **output type** differs. Classification predicts a **category** from a fixed list (spam/not-spam, which of 5 products). Regression predicts a **continuous number** (price, temperature, days until failure) | "Which category / will they churn (yes-no)" → classification · "how much / how many" → regression |
 | Overfitting vs. Underfitting | Both are failures to **generalize**, at opposite extremes. Overfitting = the model **memorized** the training data including its noise → near-perfect on training, poor on new data (**high variance**). Underfitting = the model is **too simple to learn the pattern** → poor on training *and* new data (**high bias**). Fixes: overfitting → more data, simpler model, regularization; underfitting → bigger model, more features, train longer | "Great on training, bad in production" → overfitting · "bad on everything" → underfitting |
 | Precision vs. Recall | Which **mistake** you can least afford. Precision = of everything you flagged, how much was correct → optimize when a **false alarm is costly** (blocking a legitimate transaction). Recall = of everything that was truly there, how much did you catch → optimize when a **miss is costly** (cancer screening, fraud detection) | "Cannot afford false positives" → precision · "must not miss any case" → recall |
-| Bedrock vs. SageMaker AI vs. Amazon Q | **How much you build.** Bedrock = call **someone else's foundation models** through an API to build your own GenAI app — no infrastructure. SageMaker = the full workbench to **build, train, tune, and host your own models** — maximum control, maximum effort. Q = a **finished application** you just turn on and use | "Least operational overhead for a GenAI app" → Bedrock · "train our own model on our data" → SageMaker · "ready-made assistant, no development" → Q |
-| Q Business vs. Q Developer | Same brand, different audience. **Q Business** = an assistant for **employees**, answering from connected company content (S3, SharePoint, Salesforce). **Q Developer** = an assistant for **engineers** — code suggestions, refactoring, AWS help (formerly CodeWhisperer) | "Employees ask questions about internal documents" → Q Business · "write/explain code" → Q Developer |
-| Prompt engineering vs. RAG vs. Fine-tuning | Three escalating levels of effort — and only one touches the model. **Prompting** changes only the words you send (instant, cheapest). **RAG** attaches an external, up-to-date knowledge source at query time — **model weights unchanged**. **Fine-tuning** actually **retrains the weights** on labeled examples, which is the expensive, permanent option | "Cheapest/fastest first" → prompting · "answers must come from our docs" → RAG · "must adopt our tone/format" → fine-tuning |
+| Bedrock vs. SageMaker AI vs. Amazon Q | **How much you build.** Bedrock = call **someone else's foundation models** through an API to build your own GenAI app, with no infrastructure. SageMaker = the full workbench to **build, train, tune, and host your own models**, with maximum control and maximum effort. Q = a **finished application** you just turn on and use | "Least operational overhead for a GenAI app" → Bedrock · "train our own model on our data" → SageMaker · "ready-made assistant, no development" → Q |
+| Q Business vs. Q Developer | Same brand, different audience. **Q Business** = an assistant for **employees**, answering from connected company content (S3, SharePoint, Salesforce). **Q Developer** = an assistant for **engineers**: code suggestions, refactoring, AWS help (formerly CodeWhisperer) | "Employees ask questions about internal documents" → Q Business · "write/explain code" → Q Developer |
+| Prompt engineering vs. RAG vs. Fine-tuning | Three escalating levels of effort, and only one touches the model. **Prompting** changes only the words you send (instant, cheapest). **RAG** attaches an external, up-to-date knowledge source at query time, with **model weights unchanged**. **Fine-tuning** actually **retrains the weights** on labeled examples, which is the expensive, permanent option | "Cheapest/fastest first" → prompting · "answers must come from our docs" → RAG · "must adopt our tone/format" → fine-tuning |
 | RAG vs. Fine-tuning (when?) | RAG changes **what the model knows**; fine-tuning changes **how the model behaves**. Knowledge that changes daily, is proprietary, or needs **citations and per-user access control** → RAG. A permanent shift in **style, format, tone, or domain vocabulary** → fine-tuning | "Frequently updated / must cite sources" → RAG · "consistent brand voice / specialized jargon" → fine-tuning |
 | Knowledge Bases vs. Agents vs. Guardrails (Bedrock) | The three add-ons answer three different needs. **Knowledge Bases** = managed RAG, so the model can **look things up**. **Agents** = orchestration + tool calls, so the model can **do things** in other systems. **Guardrails** = safety filters on input and output, so the model **doesn't say things** it shouldn't | "Answer from our documents" → Knowledge Base · "create the ticket / complete the booking" → Agents · "block topics, redact PII" → Guardrails |
-| Textract vs. Rekognition | Both read images, but for opposite content. **Textract** pulls **text, tables, forms, and key-value pairs out of documents** (invoices, IDs, contracts) — structure-aware OCR. **Rekognition** understands the **visual scene** in images/video — objects, faces, celebrities, unsafe content | "Invoice / form / scanned PDF" → Textract · "detect objects, faces, or moderate images" → Rekognition |
+| Textract vs. Rekognition | Both read images, but for opposite content. **Textract** pulls **text, tables, forms, and key-value pairs out of documents** (invoices, IDs, contracts); structure-aware OCR. **Rekognition** understands the **visual scene** in images/video: objects, faces, celebrities, unsafe content | "Invoice / form / scanned PDF" → Textract · "detect objects, faces, or moderate images" → Rekognition |
 | Transcribe vs. Polly vs. Translate | Three one-way conversions. **Transcribe** = speech **→** text (call recordings, captions). **Polly** = text **→** speech (voice responses, audiobooks). **Translate** = text in one language **→** text in another | "Call recording to text" → Transcribe · "read the answer aloud" → Polly · "support multiple languages" → Translate |
-| Comprehend vs. Kendra | **Analyze** vs. **find**. Comprehend takes text you already have and extracts **meaning** — sentiment, entities, key phrases, language, **PII**. Kendra is a **search service**: ask a natural-language question and it returns the answer/passage from a large document corpus | "Sentiment / detect PII / extract entities" → Comprehend · "employees search across document repositories" → Kendra |
-| Lex vs. Q Business | **Scripted** vs. **generative**. Lex is a chatbot builder where **you define the intents and slots** — deterministic, ideal for transactions like booking or order status. Q Business is a **GenAI assistant** that answers open-ended questions over enterprise content without you scripting the flows | "Book a flight / collect specific details" → Lex · "open-ended Q&A over company knowledge" → Q Business |
+| Comprehend vs. Kendra | **Analyze** vs. **find**. Comprehend takes text you already have and extracts **meaning**: sentiment, entities, key phrases, language, **PII**. Kendra is a **search service**: ask a natural-language question and it returns the answer/passage from a large document corpus | "Sentiment / detect PII / extract entities" → Comprehend · "employees search across document repositories" → Kendra |
+| Lex vs. Q Business | **Scripted** vs. **generative**. Lex is a chatbot builder where **you define the intents and slots**; deterministic, ideal for transactions like booking or order status. Q Business is a **GenAI assistant** that answers open-ended questions over enterprise content without you scripting the flows | "Book a flight / collect specific details" → Lex · "open-ended Q&A over company knowledge" → Q Business |
 | Personalize vs. Forecast | Both predict, but along different axes. **Personalize** predicts **what a specific user will like** (recommendations, ranking, "customers also bought"). **Forecast** predicts **a value over time** (demand, inventory, staffing, revenue) | "Recommend items to users" → Personalize · "predict next quarter's demand" → Forecast |
 | SageMaker Clarify vs. Model Monitor vs. A2I | Three different checkpoints. **Clarify** inspects **data and models for bias**, and explains predictions (feature importance/SHAP). **Model Monitor** watches a **deployed** model for **drift** and data-quality decay. **A2I** routes **low-confidence predictions to human reviewers** | "Is the model unfair / why did it decide that" → Clarify · "quality degrading in production" → Model Monitor · "human reviews uncertain cases" → A2I |
 | Ground Truth vs. Data Wrangler vs. Feature Store | Three stages of preparing data. **Ground Truth** creates the **labels** (human or automated labeling). **Data Wrangler** does visual **cleaning and transformation**. **Feature Store** is the **central repository** where finished features are stored, shared, and reused across teams and models | "We need labeled data" → Ground Truth · "clean and transform" → Data Wrangler · "reuse the same features" → Feature Store |
-| JumpStart vs. Bedrock | **Who runs the infrastructure.** JumpStart deploys a pre-trained model **into your own SageMaker environment** — you pick the instance, you manage and pay for the endpoint. Bedrock is a **serverless API** — AWS runs everything and you pay per token | "Least operational overhead / serverless" → Bedrock · "deploy into our own SageMaker environment" → JumpStart |
+| JumpStart vs. Bedrock | **Who runs the infrastructure.** JumpStart deploys a pre-trained model **into your own SageMaker environment**: you pick the instance, you manage and pay for the endpoint. Bedrock is a **serverless API**: AWS runs everything and you pay per token | "Least operational overhead / serverless" → Bedrock · "deploy into our own SageMaker environment" → JumpStart |
 | Trainium vs. Inferentia | Purpose-built AWS chips for the two phases of a model's life. **Trainium** = cheaper, faster **training**. **Inferentia** = cheaper, faster **inference** (serving predictions) | "Reduce **training** cost" → Trainium · "reduce **inference/serving** cost" → Inferentia |
-| ROUGE vs. BLEU | Both compare output to a human reference, but score opposite risks. **ROUGE** is **recall**-oriented — did the output **cover** everything important? → **summarization**. **BLEU** is **precision**-oriented — was everything the output said **correct**? → **translation** | "Quality of generated summaries" → ROUGE · "machine translation quality" → BLEU |
-| Temperature vs. Top-p/Top-k | Both control randomness, at different points. **Temperature** reshapes the whole probability distribution — low = focused and deterministic, high = creative and varied. **Top-k / Top-p** don't reshape anything; they **shrink the pool of candidate tokens** before sampling (top-k = fixed count, top-p = smallest set reaching a cumulative probability) | "Make output more/less creative or deterministic" → temperature · "limit which tokens can be chosen" → top-k/top-p |
-| On-Demand vs. Provisioned Throughput (Bedrock) | A pricing and capacity decision. **On-Demand** = pay per token with no commitment — right for **spiky, low, or unpredictable** volume. **Provisioned Throughput** = reserved capacity billed hourly — right for **high, steady** volume, guaranteed throughput, and **mandatory for serving custom/fine-tuned models** | "Unpredictable, low usage" → On-Demand · "high steady volume" or "how do we serve our fine-tuned model" → Provisioned Throughput |
-| Interpretability vs. Explainability | Whether understanding is **built in** or **added afterward**. Interpretable models (linear regression, **decision trees**) are transparent by design — you can read the logic directly. Explainability is what you apply to a **black box** (a neural network) after the fact, using tools like **SHAP / SageMaker Clarify**. Tradeoff: more interpretable usually means less powerful | "Transparent by design / simple model required" → interpretability · "explain a complex model's prediction" → explainability (Clarify/SHAP) |
+| ROUGE vs. BLEU | Both compare output to a human reference, but score opposite risks. **ROUGE** is **recall**-oriented: did the output **cover** everything important? → **summarization**. **BLEU** is **precision**-oriented: was everything the output said **correct**? → **translation** | "Quality of generated summaries" → ROUGE · "machine translation quality" → BLEU |
+| Temperature vs. Top-p/Top-k | Both control randomness, at different points. **Temperature** reshapes the whole probability distribution: low = focused and deterministic, high = creative and varied. **Top-k / Top-p** don't reshape anything; they **shrink the pool of candidate tokens** before sampling (top-k = fixed count, top-p = smallest set reaching a cumulative probability) | "Make output more/less creative or deterministic" → temperature · "limit which tokens can be chosen" → top-k/top-p |
+| On-Demand vs. Provisioned Throughput (Bedrock) | A pricing and capacity decision. **On-Demand** = pay per token with no commitment, right for **spiky, low, or unpredictable** volume. **Provisioned Throughput** = reserved capacity billed hourly, right for **high, steady** volume, guaranteed throughput, and **mandatory for serving custom/fine-tuned models** | "Unpredictable, low usage" → On-Demand · "high steady volume" or "how do we serve our fine-tuned model" → Provisioned Throughput |
+| Interpretability vs. Explainability | Whether understanding is **built in** or **added afterward**. Interpretable models (linear regression, **decision trees**) are transparent by design; you can read the logic directly. Explainability is what you apply to a **black box** (a neural network) after the fact, using tools like **SHAP / SageMaker Clarify**. Tradeoff: more interpretable usually means less powerful | "Transparent by design / simple model required" → interpretability · "explain a complex model's prediction" → explainability (Clarify/SHAP) |
 
 ---
 
