@@ -745,21 +745,92 @@ There is no "best" foundation model — only the best fit for a specific job and
 
 ### 3.5 Evaluating Foundation Model Performance
 
-**You cannot use accuracy or F1 here.** Those need one correct answer to compare against, and generated text has many valid forms. So GenAI evaluation compares output to **reference text**, or asks **humans**, or measures **business results**.
+#### The core problem: there is no single right answer
 
-| Method / Metric | What it measures | Used for |
+For a classic ML model you check **accuracy** or **F1**, because there is exactly one correct label — the email either *was* spam or it wasn't. Generative AI breaks that. Ask ten people to summarize the same article and you get ten different summaries, all correct. There is nothing to do an exact match against, so accuracy and F1 are **wrong answers** in any GenAI evaluation question.
+
+That leaves only three honest ways to judge generated text:
+
+| Approach | The question it answers | When you use it |
 |---|---|---|
-| **ROUGE** | **Recall**-oriented overlap with reference text — how much of the reference the output captured | **Summarization** |
-| **BLEU** | **Precision**-oriented overlap with reference text | **Translation** |
-| **BERTScore** | **Semantic** similarity (meaning, not exact words) between output and reference | Any generation task where paraphrasing is acceptable |
-| **Perplexity** | How well the model predicts the next token — **lower is better** | General language-modeling quality; comparing base models |
-| **Benchmarks (MMLU, HELM, GLUE, BIG-bench)** | Standardized general-capability scores | Comparing models before you test on your own data |
-| **Human evaluation** | Subjective quality — fluency, helpfulness, safety, **brand tone** | The **gold standard** for anything a metric can't score |
-| **Business metrics** | Real-world outcome — user satisfaction/CSAT, task-completion rate, conversion, deflection rate, cost per interaction | What ultimately justifies the project |
+| **Compare to a reference** | "How close is the output to a human-written *good* answer?" | You have example answers written by humans — automatic, cheap, repeatable |
+| **Ask a human** | "Is this actually *good*?" | Quality is subjective — tone, helpfulness, safety, brand fit |
+| **Measure the business** | "Did this make anything better?" | The system is already live and you need to justify it |
 
-👉 **Memory hooks:** **ROUGE = summa**R**ization** · **BLEU = translation (Bilingual)** · **Perplexity = perplexed, so lower is better**.
+Everything below is one of those three.
 
-👉 **The judgment the exam tests:** if the quality is **objective and has a reference answer**, use an automatic metric. If it's **subjective** (tone, helpfulness, brand fit), use **human evaluation**. If the question asks whether the *project* succeeded, use **business metrics**. In Bedrock, both automatic and human evaluation are offered through **Model Evaluation**.
+---
+
+#### Approach 1 — Automatic metrics (compare output to a reference)
+
+These all work the same way: you supply a **reference answer** written by a human, the model produces its answer, and the metric scores how similar they are. The metrics differ in *what kind* of similarity they measure.
+
+| Metric | How it scores | Plain English | Best for |
+|---|---|---|---|
+| **ROUGE** | **Recall** of overlapping words/phrases | "Of everything the reference said, **how much did the output cover?**" — punishes leaving things out | **Summarization** |
+| **BLEU** | **Precision** of overlapping words/phrases | "Of everything the output said, **how much was actually right?**" — punishes making things up | **Translation** |
+| **BERTScore** | **Semantic** (meaning) similarity via embeddings | "Different words, same meaning — that still counts." Scores paraphrases fairly | Any generation task where wording may vary |
+| **Perplexity** | How **surprised** the model is by the next token | "How confidently does this model predict real text?" **Lower = better** | Comparing base models' raw language quality |
+
+**Why ROUGE ≠ BLEU (the distinction the exam wants):** a summary must not *miss* key points → measure **recall** → **ROUGE**. A translation must not *invent* words that were never in the source → measure **precision** → **BLEU**.
+
+**The weakness of word-overlap metrics:** "The film was excellent" vs. "The movie was great" means the same thing but shares almost no words, so ROUGE and BLEU score it low. That is exactly the gap **BERTScore** fills — it compares meaning instead of spelling.
+
+---
+
+#### Approach 2 — Benchmarks (compare models to each other)
+
+Before you test anything on *your* data, you can look at published scores on standardized test sets. These tell you which models are generally capable — they say **nothing** about whether a model is good at *your* task.
+
+| Benchmark | What it tests |
+|---|---|
+| **MMLU** | Broad general knowledge and reasoning across 57 academic subjects |
+| **HELM** | Holistic evaluation — accuracy *plus* fairness, bias, toxicity, efficiency |
+| **GLUE / SuperGLUE** | General language-understanding tasks |
+| **BIG-bench** | A large, hard, diverse set of reasoning challenges |
+
+👉 Correct exam reasoning: **use benchmarks to shortlist candidate models, then evaluate the shortlist on your own data.** A benchmark alone is never sufficient proof.
+
+---
+
+#### Approach 3 — Human evaluation (the gold standard)
+
+Humans review outputs and rate or rank them. It is **slow and expensive**, and it is the **only** valid answer when the thing being judged can't be reduced to a number:
+
+- Brand voice and tone · helpfulness · creativity
+- Safety, offensiveness, appropriateness
+- Preference between two models ("which response do you like better?")
+
+If a question mentions **subjective quality, tone, or brand**, the answer is human evaluation — not a metric.
+
+---
+
+#### Approach 4 — Business metrics (did it actually work?)
+
+Model scores don't pay for the project. Once the system is in production, success is measured in outcomes:
+
+**CSAT / user satisfaction · task-completion rate · deflection rate** (tickets resolved without a human) **· conversion rate · average handling time · cost per interaction**
+
+If the question asks whether the **deployment or the project** succeeded — not whether the model is accurate — the answer is a business metric.
+
+---
+
+#### Where AWS does this: Bedrock Model Evaluation
+
+One Bedrock feature covers two of the approaches above:
+
+| Mode | What it does |
+|---|---|
+| **Automatic evaluation** | Bedrock scores models on built-in datasets or your own, using metrics like accuracy, robustness, and **toxicity** |
+| **Human evaluation** | You use **your own work team** or an **AWS-managed team**; they rate or rank outputs on criteria you define |
+
+Related, and easy to confuse: **SageMaker Clarify** evaluates **bias and explainability** (§4.3), and **Guardrails** *prevents* bad output rather than measuring it (§5).
+
+---
+
+👉 **Memory hooks:** **ROUGE = summa**R**ization** (Recall) · **BLEU = translation** (Bilingual, precision) · **BERTScore = meaning** · **Perplexity = perplexed, so lower is better**.
+
+👉 **The one decision to internalize:** objective with a reference answer → **automatic metric**; subjective → **human evaluation**; "did the project pay off?" → **business metrics**; "which model should we even try?" → **benchmarks**.
 
 #### 💡 Exam patterns
 
@@ -767,11 +838,14 @@ There is no "best" foundation model — only the best fit for a specific job and
 |---|---|
 | "Evaluate quality of **generated summaries**" | **ROUGE** |
 | "Evaluate **machine translation**" | **BLEU** |
-| "Compare **meaning** rather than exact wording" | **BERTScore** |
-| "Judge **brand voice / helpfulness / tone**" | **Human evaluation** (Bedrock Model Evaluation) |
-| "Compare general capability across models" | **Benchmarks** — then test on your own data |
+| "Output must not **miss key information**" | **ROUGE** (recall-oriented) |
+| "Compare **meaning** rather than exact wording / paraphrases are fine" | **BERTScore** |
+| "Judge **brand voice / helpfulness / tone / creativity**" | **Human evaluation** (Bedrock Model Evaluation) |
+| "Compare general capability before choosing a model" | **Benchmarks** (MMLU, HELM) — then test on your own data |
 | "Did the deployment **succeed for the business**?" | **Business metrics** (CSAT, deflection rate, cost per interaction) |
 | "Lower is better" | **Perplexity** (or loss) |
+| "Which metric for a **generative** task?" | **Not accuracy / F1** — those need a single correct label |
+| "Managed way to compare FMs on AWS" | **Bedrock Model Evaluation** (automatic *or* human) |
 
 ### 3.6 Agents and Multi-Step Applications
 
@@ -935,31 +1009,33 @@ Response to user
 
 ## CRITICAL SERVICE COMPARISON CHEAT SHEET
 
-| Comparison | Key Distinction |
-|---|---|
-| AI vs. ML vs. DL vs. GenAI | Nested subsets: AI ⊃ ML ⊃ Deep Learning ⊃ GenAI |
-| Supervised vs. Unsupervised vs. RL | Supervised = labeled data, predict outputs. Unsupervised = unlabeled, find patterns. RL = agent maximizes reward via trial/error |
-| Classification vs. Regression | Classification = predict a category. Regression = predict a number |
-| Overfitting vs. Underfitting | Overfitting = great on training, bad on new data (high variance). Underfitting = bad everywhere (high bias) |
-| Precision vs. Recall | Precision = minimize false positives. Recall = minimize false negatives (catch everything) |
-| Bedrock vs. SageMaker AI vs. Amazon Q | Bedrock = build GenAI apps on managed FMs (API). SageMaker = build/train/deploy your own ML models. Q = ready-to-use assistant, no building |
-| Q Business vs. Q Developer | Q Business = employee assistant over company data. Q Developer = coding assistant (ex-CodeWhisperer) |
-| Prompt engineering vs. RAG vs. Fine-tuning | Prompting = cheapest, no data change. RAG = inject fresh external knowledge, no weight change. Fine-tuning = retrain weights on labeled data for style/domain behavior |
-| RAG vs. Fine-tuning (when?) | Frequently changing/proprietary knowledge → RAG. Consistent style, domain vocabulary, task specialization → fine-tuning |
-| Knowledge Bases vs. Agents vs. Guardrails (Bedrock) | Knowledge Bases = managed RAG. Agents = multi-step actions/API calls. Guardrails = content safety filters/PII redaction |
-| Textract vs. Rekognition | Textract = extract text/tables/forms from documents. Rekognition = analyze images/videos (objects, faces, moderation) |
-| Transcribe vs. Polly vs. Translate | Transcribe = speech→text. Polly = text→speech. Translate = language→language |
-| Comprehend vs. Kendra | Comprehend = extract meaning from text (sentiment, entities, PII). Kendra = natural-language enterprise search |
-| Lex vs. Q Business | Lex = build task-oriented chatbots (intents/slots). Q Business = GenAI answers over enterprise content |
-| Personalize vs. Forecast | Personalize = recommendations for users. Forecast = time-series predictions |
-| SageMaker Clarify vs. Model Monitor vs. A2I | Clarify = bias detection + explainability. Model Monitor = production drift detection. A2I = human review of predictions |
-| Ground Truth vs. Data Wrangler vs. Feature Store | Ground Truth = labeling. Data Wrangler = visual data prep. Feature Store = store/share features |
-| JumpStart vs. Bedrock | JumpStart = deploy pre-trained models into YOUR SageMaker environment (you manage infra). Bedrock = serverless FM API (AWS manages infra) |
-| Trainium vs. Inferentia | Trainium = custom chip for **training**. Inferentia = custom chip for **inference** |
-| ROUGE vs. BLEU | ROUGE = summarization quality. BLEU = translation quality |
-| Temperature vs. Top-p/Top-k | Temperature = randomness dial. Top-p/Top-k = restrict the candidate token pool |
-| On-Demand vs. Provisioned Throughput (Bedrock) | On-Demand = pay per token, spiky/low volume. Provisioned = hourly commitment, high volume + required for fine-tuned models |
-| Interpretability vs. Explainability | Interpretable = transparent by design (decision trees). Explainable = post-hoc explanation of a black box (SHAP/Clarify) |
+Each row is a pair the exam deliberately puts in the same question. The **Key Distinction** explains what actually separates them; the **Tell-tale in the question** is the phrase that decides the answer.
+
+| Comparison | Key Distinction | Tell-tale in the question |
+|---|---|---|
+| AI vs. ML vs. DL vs. GenAI | Four **nested circles**, not four alternatives: **AI ⊃ ML ⊃ Deep Learning ⊃ GenAI**. AI is the whole field of machines doing smart things; ML is the subset that *learns from data* instead of following hand-written rules; DL is the subset of ML using **multi-layer neural networks**; GenAI is the subset of DL that **creates new content** | "Which is a subset of which" · "creates new content" → GenAI |
+| Supervised vs. Unsupervised vs. RL | The difference is **what the data looks like**. Supervised = you already have the **right answers (labels)**, so the model learns to reproduce them. Unsupervised = **no labels**, so the model can only find structure (clusters, anomalies). RL = **no dataset at all** — an agent acts, gets **rewards/penalties**, and learns by trial and error | "Historical labeled data" → supervised · "group similar customers" → unsupervised · "reward" / "game" / "robot" → RL |
+| Classification vs. Regression | Both are supervised; only the **output type** differs. Classification predicts a **category** from a fixed list (spam/not-spam, which of 5 products). Regression predicts a **continuous number** (price, temperature, days until failure) | "Which category / will they churn (yes-no)" → classification · "how much / how many" → regression |
+| Overfitting vs. Underfitting | Both are failures to **generalize**, at opposite extremes. Overfitting = the model **memorized** the training data including its noise → near-perfect on training, poor on new data (**high variance**). Underfitting = the model is **too simple to learn the pattern** → poor on training *and* new data (**high bias**). Fixes: overfitting → more data, simpler model, regularization; underfitting → bigger model, more features, train longer | "Great on training, bad in production" → overfitting · "bad on everything" → underfitting |
+| Precision vs. Recall | Which **mistake** you can least afford. Precision = of everything you flagged, how much was correct → optimize when a **false alarm is costly** (blocking a legitimate transaction). Recall = of everything that was truly there, how much did you catch → optimize when a **miss is costly** (cancer screening, fraud detection) | "Cannot afford false positives" → precision · "must not miss any case" → recall |
+| Bedrock vs. SageMaker AI vs. Amazon Q | **How much you build.** Bedrock = call **someone else's foundation models** through an API to build your own GenAI app — no infrastructure. SageMaker = the full workbench to **build, train, tune, and host your own models** — maximum control, maximum effort. Q = a **finished application** you just turn on and use | "Least operational overhead for a GenAI app" → Bedrock · "train our own model on our data" → SageMaker · "ready-made assistant, no development" → Q |
+| Q Business vs. Q Developer | Same brand, different audience. **Q Business** = an assistant for **employees**, answering from connected company content (S3, SharePoint, Salesforce). **Q Developer** = an assistant for **engineers** — code suggestions, refactoring, AWS help (formerly CodeWhisperer) | "Employees ask questions about internal documents" → Q Business · "write/explain code" → Q Developer |
+| Prompt engineering vs. RAG vs. Fine-tuning | Three escalating levels of effort — and only one touches the model. **Prompting** changes only the words you send (instant, cheapest). **RAG** attaches an external, up-to-date knowledge source at query time — **model weights unchanged**. **Fine-tuning** actually **retrains the weights** on labeled examples, which is the expensive, permanent option | "Cheapest/fastest first" → prompting · "answers must come from our docs" → RAG · "must adopt our tone/format" → fine-tuning |
+| RAG vs. Fine-tuning (when?) | RAG changes **what the model knows**; fine-tuning changes **how the model behaves**. Knowledge that changes daily, is proprietary, or needs **citations and per-user access control** → RAG. A permanent shift in **style, format, tone, or domain vocabulary** → fine-tuning | "Frequently updated / must cite sources" → RAG · "consistent brand voice / specialized jargon" → fine-tuning |
+| Knowledge Bases vs. Agents vs. Guardrails (Bedrock) | The three add-ons answer three different needs. **Knowledge Bases** = managed RAG, so the model can **look things up**. **Agents** = orchestration + tool calls, so the model can **do things** in other systems. **Guardrails** = safety filters on input and output, so the model **doesn't say things** it shouldn't | "Answer from our documents" → Knowledge Base · "create the ticket / complete the booking" → Agents · "block topics, redact PII" → Guardrails |
+| Textract vs. Rekognition | Both read images, but for opposite content. **Textract** pulls **text, tables, forms, and key-value pairs out of documents** (invoices, IDs, contracts) — structure-aware OCR. **Rekognition** understands the **visual scene** in images/video — objects, faces, celebrities, unsafe content | "Invoice / form / scanned PDF" → Textract · "detect objects, faces, or moderate images" → Rekognition |
+| Transcribe vs. Polly vs. Translate | Three one-way conversions. **Transcribe** = speech **→** text (call recordings, captions). **Polly** = text **→** speech (voice responses, audiobooks). **Translate** = text in one language **→** text in another | "Call recording to text" → Transcribe · "read the answer aloud" → Polly · "support multiple languages" → Translate |
+| Comprehend vs. Kendra | **Analyze** vs. **find**. Comprehend takes text you already have and extracts **meaning** — sentiment, entities, key phrases, language, **PII**. Kendra is a **search service**: ask a natural-language question and it returns the answer/passage from a large document corpus | "Sentiment / detect PII / extract entities" → Comprehend · "employees search across document repositories" → Kendra |
+| Lex vs. Q Business | **Scripted** vs. **generative**. Lex is a chatbot builder where **you define the intents and slots** — deterministic, ideal for transactions like booking or order status. Q Business is a **GenAI assistant** that answers open-ended questions over enterprise content without you scripting the flows | "Book a flight / collect specific details" → Lex · "open-ended Q&A over company knowledge" → Q Business |
+| Personalize vs. Forecast | Both predict, but along different axes. **Personalize** predicts **what a specific user will like** (recommendations, ranking, "customers also bought"). **Forecast** predicts **a value over time** (demand, inventory, staffing, revenue) | "Recommend items to users" → Personalize · "predict next quarter's demand" → Forecast |
+| SageMaker Clarify vs. Model Monitor vs. A2I | Three different checkpoints. **Clarify** inspects **data and models for bias**, and explains predictions (feature importance/SHAP). **Model Monitor** watches a **deployed** model for **drift** and data-quality decay. **A2I** routes **low-confidence predictions to human reviewers** | "Is the model unfair / why did it decide that" → Clarify · "quality degrading in production" → Model Monitor · "human reviews uncertain cases" → A2I |
+| Ground Truth vs. Data Wrangler vs. Feature Store | Three stages of preparing data. **Ground Truth** creates the **labels** (human or automated labeling). **Data Wrangler** does visual **cleaning and transformation**. **Feature Store** is the **central repository** where finished features are stored, shared, and reused across teams and models | "We need labeled data" → Ground Truth · "clean and transform" → Data Wrangler · "reuse the same features" → Feature Store |
+| JumpStart vs. Bedrock | **Who runs the infrastructure.** JumpStart deploys a pre-trained model **into your own SageMaker environment** — you pick the instance, you manage and pay for the endpoint. Bedrock is a **serverless API** — AWS runs everything and you pay per token | "Least operational overhead / serverless" → Bedrock · "deploy into our own SageMaker environment" → JumpStart |
+| Trainium vs. Inferentia | Purpose-built AWS chips for the two phases of a model's life. **Trainium** = cheaper, faster **training**. **Inferentia** = cheaper, faster **inference** (serving predictions) | "Reduce **training** cost" → Trainium · "reduce **inference/serving** cost" → Inferentia |
+| ROUGE vs. BLEU | Both compare output to a human reference, but score opposite risks. **ROUGE** is **recall**-oriented — did the output **cover** everything important? → **summarization**. **BLEU** is **precision**-oriented — was everything the output said **correct**? → **translation** | "Quality of generated summaries" → ROUGE · "machine translation quality" → BLEU |
+| Temperature vs. Top-p/Top-k | Both control randomness, at different points. **Temperature** reshapes the whole probability distribution — low = focused and deterministic, high = creative and varied. **Top-k / Top-p** don't reshape anything; they **shrink the pool of candidate tokens** before sampling (top-k = fixed count, top-p = smallest set reaching a cumulative probability) | "Make output more/less creative or deterministic" → temperature · "limit which tokens can be chosen" → top-k/top-p |
+| On-Demand vs. Provisioned Throughput (Bedrock) | A pricing and capacity decision. **On-Demand** = pay per token with no commitment — right for **spiky, low, or unpredictable** volume. **Provisioned Throughput** = reserved capacity billed hourly — right for **high, steady** volume, guaranteed throughput, and **mandatory for serving custom/fine-tuned models** | "Unpredictable, low usage" → On-Demand · "high steady volume" or "how do we serve our fine-tuned model" → Provisioned Throughput |
+| Interpretability vs. Explainability | Whether understanding is **built in** or **added afterward**. Interpretable models (linear regression, **decision trees**) are transparent by design — you can read the logic directly. Explainability is what you apply to a **black box** (a neural network) after the fact, using tools like **SHAP / SageMaker Clarify**. Tradeoff: more interpretable usually means less powerful | "Transparent by design / simple model required" → interpretability · "explain a complex model's prediction" → explainability (Clarify/SHAP) |
 
 ---
 
