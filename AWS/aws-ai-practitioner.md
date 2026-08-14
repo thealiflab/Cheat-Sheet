@@ -173,13 +173,13 @@ The lifecycle is a **loop, not a straight line** — monitoring feeds back into 
 | # | Stage | What actually happens | AWS service |
 |---|---|---|---|
 | 1 | **Define the business problem** | Turn a business goal into an ML question, define success in *business* terms ("cut churn 10%") **and** a model metric (recall ≥ 0.85). Decide whether ML is even the right tool | — |
-| 2 | **Collect data** | Gather and centralize raw data; check you have **enough, and that it's representative** | S3 (data lake), Kinesis, Glue |
-| 3 | **Prepare / clean data** | Handle missing values, remove duplicates, label data, **feature engineering** (creating and encoding the input variables), split into train/validation/test | SageMaker **Data Wrangler**, **Ground Truth** (labeling), **Feature Store** |
-| 4 | **Train the model** | Choose an algorithm, feed it the training data, let it learn the patterns | SageMaker Training Jobs |
-| 5 | **Evaluate** | Score the model on **held-out test data** using the metrics in 1.5; check for over/underfitting and bias | SageMaker **Clarify** (bias + explainability) |
-| 6 | **Tune hyperparameters** | Adjust the settings *you* control (learning rate, tree depth, epochs) and re-evaluate against the **validation** set | SageMaker **AMT** (Automatic Model Tuning) |
-| 7 | **Deploy** | Push the model to production as a real-time endpoint, batch job, or serverless (see 1.7) | SageMaker Endpoints / Batch Transform |
-| 8 | **Monitor & retrain** | Watch live quality, detect **drift**, retrain when performance decays — this loops back to step 2 | SageMaker **Model Monitor**, CloudWatch |
+| 2 | **Collect data** | Gather and centralize raw data; check you have **enough, and that it's representative** | <img src="assets/Storage/Simple-Storage-Service.svg" width="36" height="36"/> &nbsp;S3 (data lake), <img src="assets/Analytics/Kinesis.svg" width="36" height="36"/> &nbsp;Kinesis, <img src="assets/Analytics/Glue.svg" width="36" height="36"/> &nbsp;Glue |
+| 3 | **Prepare / clean data** | Handle missing values, remove duplicates, label data, **feature engineering** (creating and encoding the input variables), split into train/validation/test | <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;SageMaker **Data Wrangler**, <img src="assets/Artificial-Intelligence/SageMaker-Ground-Truth.svg" width="36" height="36"/> &nbsp;**Ground Truth** (labeling), **Feature Store** |
+| 4 | **Train the model** | Choose an algorithm, feed it the training data, let it learn the patterns | <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;SageMaker Training Jobs |
+| 5 | **Evaluate** | Score the model on **held-out test data** using the metrics in 1.5; check for over/underfitting and bias | <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;SageMaker **Clarify** (bias + explainability) |
+| 6 | **Tune hyperparameters** | Adjust the settings *you* control (learning rate, tree depth, epochs) and re-evaluate against the **validation** set | <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;SageMaker **AMT** (Automatic Model Tuning) |
+| 7 | **Deploy** | Push the model to production as a real-time endpoint, batch job, or serverless (see 1.7) | <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;SageMaker Endpoints / Batch Transform |
+| 8 | **Monitor & retrain** | Watch live quality, detect **drift**, retrain when performance decays — this loops back to step 2 | <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;SageMaker **Model Monitor**, <img src="assets/Management-Tools/CloudWatch.svg" width="36" height="36"/> &nbsp;CloudWatch |
 
 👉 Steps 2-3 typically consume **~70-80% of the total effort**. If an exam question asks where teams spend the most time, the answer is **data preparation**.
 
@@ -250,17 +250,17 @@ SageMaker offers four options, and the exam picks between them on **how fast the
 
 | Feature | Purpose | Lifecycle stage |
 |---|---|---|
-| **SageMaker Studio** | Web-based IDE for the whole ML lifecycle — notebooks, experiments, training, and deployment in one browser workspace, so nothing runs on a laptop | All |
+| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Studio** | Web-based IDE for the whole ML lifecycle — notebooks, experiments, training, and deployment in one browser workspace, so nothing runs on a laptop | All |
 | <img src="assets/Artificial-Intelligence/SageMaker-Ground-Truth.svg" width="36" height="36"/> &nbsp;**SageMaker Ground Truth** | Data **labeling**: sends raw data to human labelers (your team, a vendor, or Mechanical Turk) and uses **active learning** to auto-label the easy items, cutting labeling cost. This is how you create the labeled data supervised learning requires | 3. Prepare |
-| **SageMaker Data Wrangler** | Visual, **low-code data preparation** — import from S3/Redshift/Athena, spot missing values and outliers, apply 300+ built-in transformations, and do **feature engineering** without writing pandas code | 3. Prepare |
-| **SageMaker Feature Store** | Central repository to **store, share, and reuse features** across teams and models. Prevents **training/serving skew** by guaranteeing training and inference use the identical feature definitions | 3. Prepare |
-| **SageMaker Autopilot / Canvas** | **AutoML** — hand it a tabular dataset and a target column; it automatically tries algorithms and hyperparameters and ranks the resulting models. **Canvas** is the **no-code, point-and-click** front end aimed at business analysts who don't write code | 4-6. Train/Tune |
-| **SageMaker JumpStart** | A hub of **pre-trained models and ready-made solution templates** (including foundation models) you can deploy or fine-tune in a few clicks instead of training from scratch | 4. Train / 7. Deploy |
-| **SageMaker Clarify** | Two jobs: **detects bias** in the data *before* training and in the model *after* training, and provides **explainability** (which features drove a prediction, via feature attribution). The go-to answer for "explain the model" or "check for unfair treatment" | 5. Evaluate |
-| **SageMaker Model Monitor** | Continuously watches a **deployed** endpoint for **data drift, model-quality decay, and bias drift**, comparing live traffic against a training baseline and alerting via CloudWatch when it degrades | 8. Monitor |
-| **SageMaker Pipelines** | **CI/CD orchestration for ML (MLOps)** — chains prepare → train → evaluate → deploy into a repeatable, automated, version-tracked workflow that can be re-run on new data | All (automation) |
-| **SageMaker Model Cards** | **Governance documentation** for a model: intended use, risk rating, training data, evaluation results, and limitations — recorded in one auditable place for regulators and reviewers | Governance |
-| **SageMaker Model Registry** | **Catalog and version control** for trained models, with an **approval workflow** so only reviewed model versions get promoted to production | 7. Deploy |
+| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Data Wrangler** | Visual, **low-code data preparation** — import from S3/Redshift/Athena, spot missing values and outliers, apply 300+ built-in transformations, and do **feature engineering** without writing pandas code | 3. Prepare |
+| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Feature Store** | Central repository to **store, share, and reuse features** across teams and models. Prevents **training/serving skew** by guaranteeing training and inference use the identical feature definitions | 3. Prepare |
+| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Autopilot / Canvas** | **AutoML** — hand it a tabular dataset and a target column; it automatically tries algorithms and hyperparameters and ranks the resulting models. **Canvas** is the **no-code, point-and-click** front end aimed at business analysts who don't write code | 4-6. Train/Tune |
+| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker JumpStart** | A hub of **pre-trained models and ready-made solution templates** (including foundation models) you can deploy or fine-tune in a few clicks instead of training from scratch | 4. Train / 7. Deploy |
+| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Clarify** | Two jobs: **detects bias** in the data *before* training and in the model *after* training, and provides **explainability** (which features drove a prediction, via feature attribution). The go-to answer for "explain the model" or "check for unfair treatment" | 5. Evaluate |
+| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Model Monitor** | Continuously watches a **deployed** endpoint for **data drift, model-quality decay, and bias drift**, comparing live traffic against a training baseline and alerting via CloudWatch when it degrades | 8. Monitor |
+| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Pipelines** | **CI/CD orchestration for ML (MLOps)** — chains prepare → train → evaluate → deploy into a repeatable, automated, version-tracked workflow that can be re-run on new data | All (automation) |
+| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Model Cards** | **Governance documentation** for a model: intended use, risk rating, training data, evaluation results, and limitations — recorded in one auditable place for regulators and reviewers | Governance |
+| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Model Registry** | **Catalog and version control** for trained models, with an **approval workflow** so only reviewed model versions get promoted to production | 7. Deploy |
 
 ### 1.9 Pre-trained AWS AI Services (no ML expertise needed — heavily tested "pick the right service" questions)
 
@@ -483,15 +483,15 @@ Bedrock is a **fully managed, serverless** service that offers foundation models
 
 | Bedrock feature | Purpose | The scenario that points to it |
 |---|---|---|
-| **Model catalog / Playground** | Compare and experiment with FMs in the console before committing | "Evaluate several models side by side without writing code" |
-| **Knowledge Bases** | Fully managed **RAG**: point it at your data (e.g., S3) and Bedrock handles **chunking, embeddings, vector storage, retrieval, and citations** | "Answer from our internal documents with the least development effort" |
-| **Agents** | **Multi-step task automation**: the FM plans the steps, calls APIs/**Lambda** functions (*action groups*), consults Knowledge Bases, and completes the task | "Not just answer — actually book the appointment / process the return" |
-| **Guardrails** | Configurable safety layer: **denied topics**, harmful-content filters, **word filters**, **PII redaction/masking**, and **contextual grounding checks** to catch hallucinations. Applies to **both the prompt and the response**, and works across models | Anything about blocking, filtering, redacting, or enforcing safety policy consistently |
-| **Model customization** | **Fine-tuning** (labeled data) and **continued pre-training** (unlabeled data), producing a **private copy** of the model | See §2.5 — customization ladder rungs 3 and 4 |
-| **Model evaluation** | **Automatic** evaluation (built-in metrics/datasets) or **human** evaluation (your own team or an AWS-managed work team) for subjective qualities | "Compare models for accuracy" → automatic; "judge tone/brand friendliness/helpfulness" → **human** |
-| **Provisioned Throughput** | Reserved capacity purchased in **model units** for guaranteed throughput — and **required to serve a customized (fine-tuned or continued-pre-trained) model** | "Predictable high volume" or "how do we run our fine-tuned model in production?" |
-| **Watermark detection** | Detects whether an image was generated by Amazon **Titan/Nova** image models | "Verify whether this image was AI-generated" |
-| **Bedrock Studio / PartyRock** | Low- and no-code environments for building and sharing GenAI apps | "Let non-developers prototype" |
+| <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Model catalog / Playground** | Compare and experiment with FMs in the console before committing | "Evaluate several models side by side without writing code" |
+| <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Knowledge Bases** | Fully managed **RAG**: point it at your data (e.g., S3) and Bedrock handles **chunking, embeddings, vector storage, retrieval, and citations** | "Answer from our internal documents with the least development effort" |
+| <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Agents** | **Multi-step task automation**: the FM plans the steps, calls APIs/**Lambda** functions (*action groups*), consults Knowledge Bases, and completes the task | "Not just answer — actually book the appointment / process the return" |
+| <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Guardrails** | Configurable safety layer: **denied topics**, harmful-content filters, **word filters**, **PII redaction/masking**, and **contextual grounding checks** to catch hallucinations. Applies to **both the prompt and the response**, and works across models | Anything about blocking, filtering, redacting, or enforcing safety policy consistently |
+| <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Model customization** | **Fine-tuning** (labeled data) and **continued pre-training** (unlabeled data), producing a **private copy** of the model | See §2.5 — customization ladder rungs 3 and 4 |
+| <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Model evaluation** | **Automatic** evaluation (built-in metrics/datasets) or **human** evaluation (your own team or an AWS-managed work team) for subjective qualities | "Compare models for accuracy" → automatic; "judge tone/brand friendliness/helpfulness" → **human** |
+| <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Provisioned Throughput** | Reserved capacity purchased in **model units** for guaranteed throughput — and **required to serve a customized (fine-tuned or continued-pre-trained) model** | "Predictable high volume" or "how do we run our fine-tuned model in production?" |
+| <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Watermark detection** | Detects whether an image was generated by Amazon **Titan/Nova** image models | "Verify whether this image was AI-generated" |
+| <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Bedrock Studio / PartyRock** | Low- and no-code environments for building and sharing GenAI apps | "Let non-developers prototype" |
 
 #### Bedrock pricing modes
 
@@ -530,7 +530,7 @@ The exam's recurring trap here is offering **Bedrock** when the scenario actuall
 | <img src="assets/Artificial-Intelligence/App-Studio.svg" width="36" height="36"/> &nbsp;**Amazon Q Apps** | Lets employees turn a **plain-English description** into a small shareable internal app, built on Q Business | "Describe the tool you want" → a working internal app |
 | <img src="assets/Artificial-Intelligence/Q.svg" width="36" height="36"/> &nbsp;**Amazon Q Developer** | GenAI **coding assistant** (formerly **CodeWhisperer**): code generation and completion in the IDE, code explanation, **security vulnerability scanning**, unit-test and documentation generation, plus AWS expertise and cost/resource questions in the console | A pair programmer that also knows your AWS account |
 | <img src="assets/Artificial-Intelligence/Nova.svg" width="36" height="36"/> &nbsp;**Amazon Nova / Titan** | Amazon's own **foundation models** — text, image, video, and **embeddings** — available in Bedrock. **Titan Embeddings** is the usual answer for converting text to vectors for a vector database | Amazon's in-house model family |
-| **PartyRock** | **Free, no-code** Bedrock playground for building and sharing GenAI apps; requires no AWS account | A sandbox for learning and prototyping, not production |
+| <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**PartyRock** | **Free, no-code** Bedrock playground for building and sharing GenAI apps; requires no AWS account | A sandbox for learning and prototyping, not production |
 | <img src="assets/Artificial-Intelligence/Kendra.svg" width="36" height="36"/> &nbsp;**Amazon Kendra** | **Intelligent enterprise search** using natural-language queries over connected repositories; frequently used as the **retrieval layer** in a custom RAG architecture | Enterprise search that returns answers, not just links |
 | <img src="assets/Artificial-Intelligence/Augmented-AI-A2I.svg" width="36" height="36"/> &nbsp;**Amazon A2I (Augmented AI)** | Routes **low-confidence predictions to human reviewers**, building a human-in-the-loop workflow | The "escalate to a person when the model isn't sure" answer |
 | <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker JumpStart** | Deploy or fine-tune **pre-trained models and FMs** inside SageMaker, where **you control the hosting infrastructure** | Bedrock's alternative when you need infrastructure-level control |
@@ -640,12 +640,12 @@ There is no "best" foundation model — only the best fit for a specific job and
 
 | Option | Note |
 |---|---|
-| **Amazon OpenSearch Service** (vector engine) | The most common default for Bedrock Knowledge Bases |
-| **Amazon Aurora PostgreSQL / RDS for PostgreSQL** (**pgvector**) | Add vectors to a relational database you already run |
-| **Amazon Neptune Analytics** | Graph relationships **plus** vectors |
-| **Amazon DocumentDB** / **Amazon MemoryDB** | Document and in-memory options (MemoryDB = lowest latency) |
-| **Amazon S3 Vectors** | Low-cost vector storage in S3 |
-| **Amazon Kendra** | Not a vector DB per se — a managed **intelligent search** retrieval layer for RAG |
+| <img src="assets/Analytics/OpenSearch-Service.svg" width="36" height="36"/> &nbsp;**Amazon OpenSearch Service** (vector engine) | The most common default for Bedrock Knowledge Bases |
+| <img src="assets/Databases/Aurora.svg" width="36" height="36"/> &nbsp;**Amazon Aurora PostgreSQL / RDS for PostgreSQL** (**pgvector**) | Add vectors to a relational database you already run |
+| <img src="assets/Databases/Neptune.svg" width="36" height="36"/> &nbsp;**Amazon Neptune Analytics** | Graph relationships **plus** vectors |
+| <img src="assets/Databases/DocumentDB.svg" width="36" height="36"/> &nbsp;**Amazon DocumentDB** / <img src="assets/Databases/MemoryDB.svg" width="36" height="36"/> &nbsp;**Amazon MemoryDB** | Document and in-memory options (MemoryDB = lowest latency) |
+| <img src="assets/Storage/Simple-Storage-Service.svg" width="36" height="36"/> &nbsp;**Amazon S3 Vectors** | Low-cost vector storage in S3 |
+| <img src="assets/Artificial-Intelligence/Kendra.svg" width="36" height="36"/> &nbsp;**Amazon Kendra** | Not a vector DB per se — a managed **intelligent search** retrieval layer for RAG |
 
 👉 **On AWS, the managed shortcut is Bedrock Knowledge Bases**: it performs chunking, embedding, vector storage, retrieval, and citation for you. If a question says "**implement RAG with the least operational effort**," that is the answer — not a hand-built pipeline.
 
@@ -898,14 +898,14 @@ Response to user
 
 | Layer | Component | Why it's there |
 |---|---|---|
-| Interface | Front end + API Gateway/Lambda | Where users interact; keeps credentials off the client |
-| Reasoning | **Bedrock FM** | Generates the response |
-| Safety | **Guardrails** | Blocks disallowed topics, redacts PII, checks grounding — **on input and output** |
-| Knowledge | **Knowledge Base** + vector store over **S3** | Grounds answers in your data, with citations |
-| Action | **Agent** + action groups + **Lambda** | Lets the system *do* things, not just talk |
-| Observability | **CloudWatch** | Logs, latency, token usage, error rates |
-| Audit | **CloudTrail** | Records who called which API and when |
-| Security | **IAM**, **KMS**, **PrivateLink/VPC endpoints** | Access control, encryption, private network path |
+| Interface | Front end + <img src="assets/Networking-Content-Delivery/API-Gateway.svg" width="36" height="36"/> &nbsp;API Gateway / <img src="assets/Compute/Lambda.svg" width="36" height="36"/> &nbsp;Lambda | Where users interact; keeps credentials off the client |
+| Reasoning | <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Bedrock FM** | Generates the response |
+| Safety | <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Guardrails** | Blocks disallowed topics, redacts PII, checks grounding — **on input and output** |
+| Knowledge | <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Knowledge Base** + vector store over <img src="assets/Storage/Simple-Storage-Service.svg" width="36" height="36"/> &nbsp;**S3** | Grounds answers in your data, with citations |
+| Action | <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Agent** + action groups + <img src="assets/Compute/Lambda.svg" width="36" height="36"/> &nbsp;**Lambda** | Lets the system *do* things, not just talk |
+| Observability | <img src="assets/Management-Tools/CloudWatch.svg" width="36" height="36"/> &nbsp;**CloudWatch** | Logs, latency, token usage, error rates |
+| Audit | <img src="assets/Management-Tools/CloudTrail.svg" width="36" height="36"/> &nbsp;**CloudTrail** | Records who called which API and when |
+| Security | <img src="assets/Security-Identity/Identity-and-Access-Management.svg" width="36" height="36"/> &nbsp;**IAM**, <img src="assets/Security-Identity/Key-Management-Service.svg" width="36" height="36"/> &nbsp;**KMS**, <img src="assets/Networking-Content-Delivery/PrivateLink.svg" width="36" height="36"/> &nbsp;**PrivateLink/VPC endpoints** | Access control, encryption, private network path |
 
 👉 **Reading the question:** the requirement tells you which layer to add. "Answers must come from our docs" → **Knowledge Base**. "Must not discuss competitors or expose PII" → **Guardrails**. "Must file the ticket" → **Agent**. "We need an audit trail for regulators" → **CloudTrail**. "Monitor cost and latency" → **CloudWatch**. "Data must never traverse the public internet" → **VPC endpoints/PrivateLink**.
 
@@ -932,13 +932,13 @@ Response to user
 
 | Tool | Purpose |
 |---|---|
-| **SageMaker Clarify** | Detects statistical **bias** in datasets and models; generates **explainability** reports (feature importance / SHAP values) |
-| **SageMaker Model Cards** | Document a model's purpose, training data, metrics, risk rating, and intended/unintended uses |
-| **AWS AI Service Cards** | AWS-published responsible-AI documentation for its own AI services (intended use cases, limitations, design choices) |
-| **SageMaker Model Monitor** | Detects data drift/quality degradation in production |
+| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Clarify** | Detects statistical **bias** in datasets and models; generates **explainability** reports (feature importance / SHAP values) |
+| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Model Cards** | Document a model's purpose, training data, metrics, risk rating, and intended/unintended uses |
+| <img src="assets/Category/Artificial-Intelligence.svg" width="36" height="36"/> &nbsp;**AWS AI Service Cards** | AWS-published responsible-AI documentation for its own AI services (intended use cases, limitations, design choices) |
+| <img src="assets/Artificial-Intelligence/SageMaker-AI.svg" width="36" height="36"/> &nbsp;**SageMaker Model Monitor** | Detects data drift/quality degradation in production |
 | <img src="assets/Artificial-Intelligence/Augmented-AI-A2I.svg" width="36" height="36"/> &nbsp;**Amazon A2I** | Routes low-confidence predictions to **human reviewers** (human-in-the-loop) |
-| **Bedrock Guardrails** | Blocks harmful content, denied topics, PII exposure; contextual grounding checks against hallucination |
-| **Bedrock Model Evaluation** | Compare models on quality AND responsible-AI dimensions (toxicity, robustness) |
+| <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Bedrock Guardrails** | Blocks harmful content, denied topics, PII exposure; contextual grounding checks against hallucination |
+| <img src="assets/Artificial-Intelligence/Bedrock.svg" width="36" height="36"/> &nbsp;**Bedrock Model Evaluation** | Compare models on quality AND responsible-AI dimensions (toxicity, robustness) |
 
 **Interpretability vs. explainability:** interpretable models (linear regression, **decision trees**) are transparent by design; complex models (neural networks) need post-hoc **explainability** techniques. Tradeoff: interpretability ↔ performance.
 
@@ -972,7 +972,7 @@ Response to user
 - **Data quality**: curate, clean, deduplicate; garbage in → garbage out.
 - **Data residency/sovereignty**: keep data in required Regions (Bedrock processes data in-Region).
 - **Retention and deletion policies**; secure the **entire lifecycle**: collect → store (encrypt) → process → share → archive/delete.
-- <img src="assets/Analytics/Glue.svg" width="36" height="36"/> &nbsp;**AWS Glue / Glue Data Quality / DataZone / Lake Formation**: catalog, quality-check, govern, and control access to data lakes feeding AI.
+- <img src="assets/Analytics/Glue.svg" width="36" height="36"/> &nbsp;**AWS Glue / Glue Data Quality** / <img src="assets/Analytics/DataZone.svg" width="36" height="36"/> &nbsp;**DataZone** / <img src="assets/Analytics/Lake-Formation.svg" width="36" height="36"/> &nbsp;**Lake Formation**: catalog, quality-check, govern, and control access to data lakes feeding AI.
 
 ### 5.3 Compliance and Governance Services
 
